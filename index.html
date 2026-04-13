@@ -390,7 +390,7 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
   <div class="content-area">
     <div class="tbl-wrap">
       <table>
-        <thead><tr><th>#</th><th>Desde</th><th>Hasta</th><th>Importe s/IVA</th><th>Fecha cobro</th><th>Bultos</th><th>$/bulto</th><th>Precio prom.</th><th>Val. declarado</th><th>% s/val.dec.</th><th>$/b x val.dec.</th><th>1%</th><th>Diferencia</th></tr></thead>
+        <thead><tr><th>#</th><th>Desde</th><th>Hasta</th><th>Importe s/IVA</th><th>Fecha cobro</th><th>Bultos</th><th>$/bulto</th><th>Precio prom.</th><th>Val. declarado</th><th>% s/val.dec.</th><th>$/b x val.dec.</th><th>1%</th><th>Diferencia</th><th>Estado</th></tr></thead>
         <tbody id="tbody-jonas"></tbody>
       </table>
     </div>
@@ -406,7 +406,7 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
   <div class="content-area">
     <div class="tbl-wrap">
       <table>
-        <thead><tr><th>#</th><th>Desde</th><th>Hasta</th><th>Importe</th><th>Fecha cobro</th><th>$/bulto</th><th>Bultos</th><th>Precio prom.</th><th>% val.dec.</th></tr></thead>
+        <thead><tr><th>#</th><th>Desde</th><th>Hasta</th><th>Importe</th><th>Fecha cobro</th><th>$/bulto</th><th>Bultos</th><th>Precio prom.</th><th>% val.dec.</th><th>Estado</th></tr></thead>
         <tbody id="tbody-casapaso"></tbody>
       </table>
     </div>
@@ -422,7 +422,7 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
   <div class="content-area">
     <div class="tbl-wrap">
       <table>
-        <thead><tr><th>#</th><th>Desde</th><th>Hasta</th><th>Fecha entregada</th><th>Importe</th><th>Cobrado (día / quién)</th></tr></thead>
+        <thead><tr><th>#</th><th>Desde</th><th>Hasta</th><th>Fecha entregada</th><th>Importe</th><th>Estado</th></tr></thead>
         <tbody id="tbody-banana"></tbody>
       </table>
     </div>
@@ -438,7 +438,7 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
   <div class="content-area">
     <div class="tbl-wrap">
       <table>
-        <thead><tr><th>#</th><th>Desde</th><th>Hasta</th><th>Fecha entregada</th><th>Importe</th><th>Cobrado (día / quién)</th></tr></thead>
+        <thead><tr><th>#</th><th>Desde</th><th>Hasta</th><th>Fecha entregada</th><th>Importe</th><th>Estado</th></tr></thead>
         <tbody id="tbody-nahuel"></tbody>
       </table>
     </div>
@@ -454,7 +454,7 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
   <div class="content-area">
     <div class="tbl-wrap">
       <table>
-        <thead><tr><th>#</th><th>Desde</th><th>Hasta</th><th>Fecha entregada</th><th>Importe</th><th>Cobrado (día / quién)</th></tr></thead>
+        <thead><tr><th>#</th><th>Desde</th><th>Hasta</th><th>Fecha entregada</th><th>Importe</th><th>Estado</th></tr></thead>
         <tbody id="tbody-home"></tbody>
       </table>
     </div>
@@ -470,7 +470,7 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
   <div class="content-area">
     <div class="tbl-wrap">
       <table>
-        <thead><tr><th>#</th><th>Quincena</th><th>Fecha entrega</th><th>Z $</th><th>Fecha cobro Z</th><th>A $</th><th>Fecha cobro A</th><th>IPC %</th><th>Mes</th><th>Ajuste %</th><th>Fecha ajuste</th></tr></thead>
+        <thead><tr><th>#</th><th>Quincena</th><th>Fecha entrega</th><th>Z $</th><th>Fecha cobro Z</th><th>A $</th><th>Fecha cobro A</th><th>IPC %</th><th>Mes</th><th>Ajuste %</th><th>Fecha ajuste</th><th>Estado</th></tr></thead>
         <tbody id="tbody-futuros"></tbody>
       </table>
     </div>
@@ -1134,7 +1134,7 @@ function renderPendientes(){
       </tr>`;})
   ].join('');
 }
-function addPendiente(){ state.cobros.pendientes.push({fecha:'',cliente:'',importe:'',estado:'Pendiente',manual:true}); renderPendientes(); }
+function addPendiente(){ state.cobros.pendientes.push({fecha:'',cliente:'',importe:'',estado:'Pendiente',manual:true}); renderPendientes(); autoGuardar(); }
 
 // ── CRÉDITOS ──
 // Helper: extrae desde/hasta del campo periodo guardado como "YYYY-MM-DD|YYYY-MM-DD"
@@ -1157,13 +1157,16 @@ function renderCredito(key){
   const tb=document.getElementById(tbodyId);
   if(!tb) return;
   if(key==='jonas'){
-    ensureRows(rows,EMPTY,{periodoDesde:'',periodoHasta:'',importe:'',fcobro:'',bultos:'',vdec:''});
+    ensureRows(rows,EMPTY,{periodoDesde:'',periodoHasta:'',importe:'',fcobro:'',bultos:'',vdec:'',estado:'Pendiente'});
+    const totCob=rows.reduce((s,r)=>r.estado==='Cobrado'?s+parseN(r.importe):s,0);
+    const totPend=rows.reduce((s,r)=>r.estado!=='Cobrado'?s+parseN(r.importe):s,0);
     tb.innerHTML=rows.map((r,i)=>{
       const pm=parseN(r.importe)&&parseN(r.bultos)?parseN(r.importe)/parseN(r.bultos):0;
       const pct=parseN(r.importe)&&parseN(r.vdec)?parseN(r.importe)/parseN(r.vdec):0;
       const pbvd=parseN(r.vdec)&&parseN(r.bultos)?parseN(r.vdec)/parseN(r.bultos):0;
       const col1=parseN(r.vdec)*0.01; const dif=parseN(r.vdec)-col1;
       const isFoc=FOC&&FOC.tbodyId===tbodyId&&FOC.row===i;
+      const est=r.estado||'Pendiente';
       return `<tr class="${isFoc?'row-selected':''}">
         <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;">${i+1}</td>
         ${credPeriodoInput(i,'jonas',i,r)}
@@ -1177,13 +1180,20 @@ function renderCredito(key){
         <td class="calc">$${fmt(pbvd)}</td>
         <td class="calc">$${fmt(col1)}</td>
         <td class="calc" style="color:var(--accent3);font-weight:600;">$${fmt(dif)}</td>
+        <td style="padding:2px 4px;"><span class="badge ${est==='Cobrado'?'cobrado':'pend'}" style="cursor:pointer;" onclick="state.creditos.jonas[${i}].estado=state.creditos.jonas[${i}].estado==='Pendiente'?'Cobrado':'Pendiente';renderCredito('jonas');autoGuardar()">${est}</span></td>
       </tr>`;}).join('');
-    bindGridCells(tbodyId,3,()=>rows,()=>{rows.push({periodoDesde:'',periodoHasta:'',importe:'',fcobro:'',bultos:'',vdec:''});renderCredito('jonas');},()=>renderCredito('jonas'),(r,c,v)=>{const ks=['importe','bultos','vdec'];rows[r][ks[c]]=v;if(c===1||c===2)renderCredito('jonas');});
+    // Actualizar totales en header
+    const hdr=document.querySelector('#screen-cred-jonas .client-header');
+    if(hdr){ let t=hdr.querySelector('.cred-totales'); if(!t){t=document.createElement('span');t.className='cred-totales';hdr.appendChild(t);} t.innerHTML=`<span style="margin-left:16px;font-size:12px;color:#3ecf5a;">✓ $${fmt(totCob)}</span><span style="margin-left:10px;font-size:12px;color:var(--accent2);">⏳ $${fmt(totPend)}</span>`; }
+    bindGridCells(tbodyId,3,()=>rows,()=>{rows.push({periodoDesde:'',periodoHasta:'',importe:'',fcobro:'',bultos:'',vdec:'',estado:'Pendiente'});renderCredito('jonas');},()=>renderCredito('jonas'),(r,c,v)=>{const ks=['importe','bultos','vdec'];rows[r][ks[c]]=v;if(c===1||c===2)renderCredito('jonas');});
   } else if(key==='casapaso'){
-    ensureRows(rows,EMPTY,{periodoDesde:'',periodoHasta:'',importe:'',fcobro:'',bultos:''});
+    ensureRows(rows,EMPTY,{periodoDesde:'',periodoHasta:'',importe:'',fcobro:'',bultos:'',estado:'Pendiente'});
+    const totCob=rows.reduce((s,r)=>r.estado==='Cobrado'?s+parseN(r.importe):s,0);
+    const totPend=rows.reduce((s,r)=>r.estado!=='Cobrado'?s+parseN(r.importe):s,0);
     tb.innerHTML=rows.map((r,i)=>{
       const pm=parseN(r.importe)&&parseN(r.bultos)?parseN(r.importe)/parseN(r.bultos):0;
       const isFoc=FOC&&FOC.tbodyId===tbodyId&&FOC.row===i;
+      const est=r.estado||'Pendiente';
       return `<tr class="${isFoc?'row-selected':''}">
         <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;">${i+1}</td>
         ${credPeriodoInput(i,'casapaso',i,r)}
@@ -1193,24 +1203,36 @@ function renderCredito(key){
         <td>${cellHtml(tbodyId,i,1,r.bultos,'60px','0')}</td>
         <td class="calc">$${fmt(pm)}</td>
         <td class="calc">${pm?(pm*100/PRECIO_BULTO['CASA PASO']).toFixed(2)+'%':'—'}</td>
+        <td style="padding:2px 4px;"><span class="badge ${est==='Cobrado'?'cobrado':'pend'}" style="cursor:pointer;" onclick="state.creditos.casapaso[${i}].estado=state.creditos.casapaso[${i}].estado==='Pendiente'?'Cobrado':'Pendiente';renderCredito('casapaso');autoGuardar()">${est}</span></td>
       </tr>`;}).join('');
-    bindGridCells(tbodyId,2,()=>rows,()=>{rows.push({periodoDesde:'',periodoHasta:'',importe:'',fcobro:'',bultos:''});renderCredito('casapaso');},()=>renderCredito('casapaso'),(r,c,v)=>{const ks=['importe','bultos'];rows[r][ks[c]]=v;if(c===1)renderCredito('casapaso');});
+    const hdr=document.querySelector('#screen-cred-casapaso .client-header');
+    if(hdr){ let t=hdr.querySelector('.cred-totales'); if(!t){t=document.createElement('span');t.className='cred-totales';hdr.appendChild(t);} t.innerHTML=`<span style="margin-left:16px;font-size:12px;color:#3ecf5a;">✓ $${fmt(totCob)}</span><span style="margin-left:10px;font-size:12px;color:var(--accent2);">⏳ $${fmt(totPend)}</span>`; }
+    bindGridCells(tbodyId,2,()=>rows,()=>{rows.push({periodoDesde:'',periodoHasta:'',importe:'',fcobro:'',bultos:'',estado:'Pendiente'});renderCredito('casapaso');},()=>renderCredito('casapaso'),(r,c,v)=>{const ks=['importe','bultos'];rows[r][ks[c]]=v;if(c===1)renderCredito('casapaso');});
   } else if(['banana','nahuel','home'].includes(key)){
-    ensureRows(rows,EMPTY,{periodoDesde:'',periodoHasta:'',fentrega:'',importe:'',cobrado:''});
+    ensureRows(rows,EMPTY,{periodoDesde:'',periodoHasta:'',fentrega:'',importe:'',estado:'Pendiente'});
+    const totCob=rows.reduce((s,r)=>r.estado==='Cobrado'?s+parseN(r.importe):s,0);
+    const totPend=rows.reduce((s,r)=>r.estado!=='Cobrado'?s+parseN(r.importe):s,0);
+    const screenId={'banana':'screen-cred-banana','nahuel':'screen-cred-nahuel','home':'screen-cred-home'}[key];
     tb.innerHTML=rows.map((r,i)=>{
       const isFoc=FOC&&FOC.tbodyId===tbodyId&&FOC.row===i;
+      const est=r.estado||'Pendiente';
       return `<tr class="${isFoc?'row-selected':''}">
         <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;">${i+1}</td>
         ${credPeriodoInput(i,key,i,r)}
         <td style="padding:2px 4px;">${dateInputHtml(r.fentrega,"state.creditos['"+key+"']["+i+"].fentrega=this.value",'120px')}</td>
         <td>${cellHtml(tbodyId,i,0,r.importe,'110px','0,00')}</td>
-        <td>${cellHtml(tbodyId,i,1,r.cobrado,'','ej: Juan')}</td>
+        <td style="padding:2px 4px;"><span class="badge ${est==='Cobrado'?'cobrado':'pend'}" style="cursor:pointer;" onclick="state.creditos['${key}'][${i}].estado=state.creditos['${key}'][${i}].estado==='Pendiente'?'Cobrado':'Pendiente';renderCredito('${key}');autoGuardar()">${est}</span></td>
       </tr>`;}).join('');
-    bindGridCells(tbodyId,2,()=>rows,()=>{rows.push({periodoDesde:'',periodoHasta:'',fentrega:'',importe:'',cobrado:''});renderCredito(key);},()=>renderCredito(key),(r,c,v)=>{const ks=['importe','cobrado'];rows[r][ks[c]]=v;});
+    const hdr=document.querySelector('#'+screenId+' .client-header');
+    if(hdr){ let t=hdr.querySelector('.cred-totales'); if(!t){t=document.createElement('span');t.className='cred-totales';hdr.appendChild(t);} t.innerHTML=`<span style="margin-left:16px;font-size:12px;color:#3ecf5a;">✓ $${fmt(totCob)}</span><span style="margin-left:10px;font-size:12px;color:var(--accent2);">⏳ $${fmt(totPend)}</span>`; }
+    bindGridCells(tbodyId,1,()=>rows,()=>{rows.push({periodoDesde:'',periodoHasta:'',fentrega:'',importe:'',estado:'Pendiente'});renderCredito(key);},()=>renderCredito(key),(r,c,v)=>{rows[r].importe=v;});
   } else if(key==='futuros'){
-    ensureRows(rows,EMPTY,{quincena:'1ra',fentrega:'',z:'',fcobz:'',a:'',fcoba:'',ipc:'',mes:'',ajuste:'',fajuste:''});
+    ensureRows(rows,EMPTY,{quincena:'1ra',fentrega:'',z:'',fcobz:'',a:'',fcoba:'',ipc:'',mes:'',ajuste:'',fajuste:'',estado:'Pendiente'});
+    const totCob=rows.reduce((s,r)=>r.estado==='Cobrado'?s+parseN(r.z)+parseN(r.a):s,0);
+    const totPend=rows.reduce((s,r)=>r.estado!=='Cobrado'?s+parseN(r.z)+parseN(r.a):s,0);
     tb.innerHTML=rows.map((r,i)=>{
       const isFoc=FOC&&FOC.tbodyId===tbodyId&&FOC.row===i;
+      const est=r.estado||'Pendiente';
       return `<tr class="${isFoc?'row-selected':''}">
         <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;">${i+1}</td>
         <td>${cellHtml(tbodyId,i,0,r.quincena,'70px','1ra/2da')}</td>
@@ -1223,13 +1245,16 @@ function renderCredito(key){
         <td>${cellHtml(tbodyId,i,7,r.mes,'70px','Mes')}</td>
         <td>${cellHtml(tbodyId,i,8,r.ajuste,'60px','%')}</td>
         <td style="padding:2px 4px;">${dateInputHtml(r.fajuste,"state.creditos.futuros["+i+"].fajuste=this.value",'115px')}</td>
+        <td style="padding:2px 4px;"><span class="badge ${est==='Cobrado'?'cobrado':'pend'}" style="cursor:pointer;" onclick="state.creditos.futuros[${i}].estado=state.creditos.futuros[${i}].estado==='Pendiente'?'Cobrado':'Pendiente';renderCredito('futuros');autoGuardar()">${est}</span></td>
       </tr>`;}).join('');
-    bindGridCells(tbodyId,10,()=>rows,()=>{rows.push({quincena:'1ra',fentrega:'',z:'',fcobz:'',a:'',fcoba:'',ipc:'',mes:'',ajuste:'',fajuste:''});renderCredito('futuros');},()=>renderCredito('futuros'),(r,c,v)=>{const ks=['quincena',null,'z',null,'a',null,'ipc','mes','ajuste',null];if(ks[c])rows[r][ks[c]]=v;});
+    const hdr=document.querySelector('#screen-cred-futuros .client-header');
+    if(hdr){ let t=hdr.querySelector('.cred-totales'); if(!t){t=document.createElement('span');t.className='cred-totales';hdr.appendChild(t);} t.innerHTML=`<span style="margin-left:16px;font-size:12px;color:#3ecf5a;">✓ $${fmt(totCob)}</span><span style="margin-left:10px;font-size:12px;color:var(--accent2);">⏳ $${fmt(totPend)}</span>`; }
+    bindGridCells(tbodyId,10,()=>rows,()=>{rows.push({quincena:'1ra',fentrega:'',z:'',fcobz:'',a:'',fcoba:'',ipc:'',mes:'',ajuste:'',fajuste:'',estado:'Pendiente'});renderCredito('futuros');},()=>renderCredito('futuros'),(r,c,v)=>{const ks=['quincena',null,'z',null,'a',null,'ipc','mes','ajuste',null];if(ks[c])rows[r][ks[c]]=v;});
   }
 }
 function addCredito(key){
-  const defs={jonas:{periodo:'',importe:'',fcobro:'',bultos:'',vdec:''},casapaso:{periodo:'',importe:'',fcobro:'',bultos:''},banana:{periodo:'',fentrega:'',importe:'',cobrado:''},nahuel:{periodo:'',fentrega:'',importe:'',cobrado:''},home:{periodo:'',fentrega:'',importe:'',cobrado:''},futuros:{quincena:'1ra',fentrega:'',z:'',fcobz:'',a:'',fcoba:'',ipc:'',mes:'',ajuste:'',fajuste:''}};
-  state.creditos[key].push(defs[key]||{}); renderCredito(key);
+  const defs={jonas:{periodoDesde:'',periodoHasta:'',importe:'',fcobro:'',bultos:'',vdec:'',estado:'Pendiente'},casapaso:{periodoDesde:'',periodoHasta:'',importe:'',fcobro:'',bultos:'',estado:'Pendiente'},banana:{periodoDesde:'',periodoHasta:'',fentrega:'',importe:'',estado:'Pendiente'},nahuel:{periodoDesde:'',periodoHasta:'',fentrega:'',importe:'',estado:'Pendiente'},home:{periodoDesde:'',periodoHasta:'',fentrega:'',importe:'',estado:'Pendiente'},futuros:{quincena:'1ra',fentrega:'',z:'',fcobz:'',a:'',fcoba:'',ipc:'',mes:'',ajuste:'',fajuste:'',estado:'Pendiente'}};
+  state.creditos[key].push(defs[key]||{}); renderCredito(key); autoGuardar();
 }
 
 // ── RETIROS ──
@@ -1261,7 +1286,7 @@ function renderRetiros(){
     tf.innerHTML=`<td></td><td></td><td style="color:var(--muted);font-size:11px;padding:8px 10px;">TOTALES</td>${tots.map(t=>`<td style="color:var(--accent3);padding:8px 10px;">${sym}${fmt(t)}</td>`).join('')}`;
   });
 }
-function addRetiro(mon){ state.retiros[mon].push({fecha:'',detalle:'',Nito:'',Johnny:'',Fede:'',Diego:''}); renderRetiros(); }
+function addRetiro(mon){ state.retiros[mon].push({fecha:'',detalle:'',Nito:'',Johnny:'',Fede:'',Diego:''}); renderRetiros(); autoGuardar(); }
 
 // ── CHICOS (planilla mensual) ──
 // Estructura de cada empleado en state.chicos:
@@ -1313,6 +1338,7 @@ function chicosMigrateState(){
     if(!ch.fechaIngreso) ch.fechaIngreso = '';
     if(!ch.notas) ch.notas = {};
     if(!ch.datosPersonales) ch.datosPersonales = {nombreCompleto:'',fechaIngreso:'',dni:'',domicilio:'',telefono:'',hijos:'',recomendadoPor:''};
+    if(!ch.extras) ch.extras = {aguinaldo:'',vacaciones:'',deuda:'',notasGenerales:''};
   });
 }
 
@@ -1412,22 +1438,20 @@ function renderChicos(){
   let th2 = '';
 
   semanasLab.forEach(({labs},si)=>{
-    // FIX 1: NOTA va después de cada viernes (al final de cada semana)
-    // colspan = días laborables + 1 (nota)
     th1+=`<th colspan="${labs.length}" style="background:#131825;color:#4a5070;font-size:9px;letter-spacing:.06em;border-bottom:1px solid #2a2f42;border-left:${si>0?'2px solid #3a4060':''};">SEM ${si+1}</th>`;
-    th1+=`<th class="th-nota" style="border-left:2px solid #3a4060;">NOTA</th>`;
+    th1+=`<th class="th-nota" colspan="3" style="border-left:2px solid #3a4060;">SEM ${si+1} EXTRAS</th>`;
 
-    // FIX 2: semana 5 (o cualquier semana parcial al final) mismo color que el resto
     labs.forEach(d=>{
       const isHoy = d.getTime()===hoy.getTime();
       const isFut = d > hoy;
-      // FIX 2: NO usar clase especial para última semana, mismo color que todas
       const cls = isHoy?'th-hoy':isFut?'th-fut':'';
       const dow = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'][d.getDay()];
       const borderLeft = d.getDay()===1&&si>0 ? 'border-left:2px solid #3a4060;' : '';
       th2+=`<th class="${cls}" style="min-width:26px;width:26px;${borderLeft}">${dow}<br><span style="font-size:9px;opacity:.7;">${d.getDate()}</span></th>`;
     });
-    th2+=`<th style="min-width:80px;width:80px;background:#0f1118;border-left:2px solid #3a4060;"></th>`;
+    th2+=`<th style="min-width:70px;width:70px;background:#0a1a0a;border-left:2px solid #3a4060;color:#3ecf5a;font-size:9px;">COBRADO</th>`;
+    th2+=`<th style="min-width:70px;width:70px;background:#0a0a1a;border-left:1px solid #2a2f42;color:#4f8ef7;font-size:9px;">ADELANTO</th>`;
+    th2+=`<th style="min-width:80px;width:80px;background:#0f1118;border-left:1px solid #2a2f42;"></th>`;
   });
 
   let html = css + `<div class="pm-wrap"><table class="pm">
@@ -1456,9 +1480,11 @@ function renderChicos(){
       const tdNombre = isFirst
         ? `<td class="td-nombre" rowspan="${nf}" style="vertical-align:top;padding-top:4px;">
             <div>${ch.nombre}${apodoHtml}${fechaHtml}</div>
-            <div style="margin-top:2px;">
+            <div style="margin-top:2px;display:flex;align-items:center;gap:2px;">
               <button class="pm-edit-emp" onclick="chicosEditarEmpleado(${ci})" title="Editar">✎</button>
               <button class="pm-del-emp" onclick="chicosEliminar(${ci})" title="Eliminar">✕</button>
+              <button class="pm-edit-emp" onclick="chicosMoverArr(${ci},-1)" title="Subir" style="font-size:9px;">▲</button>
+              <button class="pm-edit-emp" onclick="chicosMoverArr(${ci},1)" title="Bajar" style="font-size:9px;">▼</button>
             </div>
           </td>`
         : '';
@@ -1497,9 +1523,24 @@ function renderChicos(){
               onfocus="this.select()" style="width:26px;height:20px;">
           </td>`;
         });
-        // FIX 1: NOTA después de cada viernes (fin de semana)
-        const notaKey = `nota_s${si}_f${fi}`;
-        const notaVal = (ch.notas&&ch.notas[notaKey])||'';
+        // Cobrado, Adelanto y Nota después de cada semana
+        const notaKey    = `nota_s${si}_f${fi}`;
+        const cobradoKey = `cobrado_s${si}`;
+        const adelantoKey= `adelanto_s${si}`;
+        const notaVal    = (ch.notas&&ch.notas[notaKey])||'';
+        const cobradoVal = isFirst ? ((ch.notas&&ch.notas[cobradoKey])||'') : null;
+        const adelantoVal= isFirst ? ((ch.notas&&ch.notas[adelantoKey])||'') : null;
+
+        if(isFirst){
+          tdDias+=`<td class="td-nota" rowspan="${nf}" style="background:#0a1a0a;border-left:2px solid #3a4060;vertical-align:middle;">
+            <input class="pc-nota" value="${(cobradoVal||'').replace(/"/g,'&quot;')}"
+              oninput="if(!state.chicos[${ci}].notas)state.chicos[${ci}].notas={};state.chicos[${ci}].notas['${cobradoKey}']=this.value;autoGuardar()"
+              style="width:68px;color:#3ecf5a;" placeholder="$"></td>`;
+          tdDias+=`<td class="td-nota" rowspan="${nf}" style="background:#0a0a1a;border-left:1px solid #2a2f42;vertical-align:middle;">
+            <input class="pc-nota" value="${(adelantoVal||'').replace(/"/g,'&quot;')}"
+              oninput="if(!state.chicos[${ci}].notas)state.chicos[${ci}].notas={};state.chicos[${ci}].notas['${adelantoKey}']=this.value;autoGuardar()"
+              style="width:68px;color:#4f8ef7;" placeholder="$"></td>`;
+        }
         tdDias+=`<td class="td-nota"><input class="pc-nota" value="${notaVal.replace(/"/g,'&quot;')}"
           oninput="if(!state.chicos[${ci}].notas)state.chicos[${ci}].notas={};state.chicos[${ci}].notas['${notaKey}']=this.value"
           data-ci="${ci}" data-fi="${fi}" data-isnota="1" style="width:78px;"></td>`;
@@ -1621,6 +1662,17 @@ function addChicoNuevo(){
     ]
   });
   renderChicos();
+  autoGuardar();
+}
+
+function chicosMoverArr(idx, dir){
+  const newIdx = idx + dir;
+  if(newIdx < 0 || newIdx >= state.chicos.length) return;
+  const tmp = state.chicos[idx];
+  state.chicos[idx] = state.chicos[newIdx];
+  state.chicos[newIdx] = tmp;
+  renderChicos();
+  autoGuardar();
 }
 
 function addChico(){ addChicoNuevo(); }
@@ -1635,6 +1687,7 @@ function chicosEditarEmpleado(ci){
   ch.apodo=(apodo||'').trim();
   ch.fechaIngreso=(fecha||'').trim();
   renderChicos();
+  autoGuardar();
 }
 
 function chicosAddFila(ci){
@@ -1642,6 +1695,7 @@ function chicosAddFila(ci){
   if(!label) return;
   state.chicos[ci].filas.push({tipo:'custom',label:label.trim(),dias:{}});
   renderChicos();
+  autoGuardar();
 }
 
 function chicosRemoveFila(ci){
@@ -1650,6 +1704,7 @@ function chicosRemoveFila(ci){
   if(confirm('¿Eliminar la última fila de '+ch.nombre+'?')){
     ch.filas.pop();
     renderChicos();
+    autoGuardar();
   }
 }
 
@@ -1658,6 +1713,7 @@ function chicosEliminar(idx){
   if(confirm('¿Eliminar a '+state.chicos[idx].nombre+'?')){
     state.chicos.splice(idx,1);
     renderChicos();
+    autoGuardar();
   }
 }
 
@@ -1686,24 +1742,84 @@ function renderCheques(){
     const tf=document.getElementById('cheques-'+t+'-total');
     const tb=document.getElementById(tbodyId); if(!tb) return;
     ensureRows(state.cheques[t],10,{destino:'',fecha:'',nro:'',cliente:'',banco:'',importe:'',entregado:'No entregado'});
+
+    // Ordenar por fecha
     const rows=state.cheques[t];
-    tb.innerHTML=rows.map((r,i)=>`<tr class="${FOC&&FOC.tbodyId===tbodyId&&FOC.row===i?'row-selected':''}">
-      <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;">${i+1}</td>
-      <td>${cellHtml(tbodyId,i,0,r.destino,'','Destino')}</td>
-      <td style="padding:3px 6px;">${dateInputHtml(r.fecha,"state.cheques['"+t+"']["+i+"].fecha=this.value;renderCheques()",'130px')}</td>
-      <td>${cellHtml(tbodyId,i,2,r.nro,'90px','Nro.')}</td>
-      <td>${cellHtml(tbodyId,i,3,r.cliente,'','Cliente')}</td>
-      <td>${cellHtml(tbodyId,i,4,r.banco,'','Banco')}</td>
-      <td>${cellHtml(tbodyId,i,5,r.importe,'110px','0,00')}</td>
-      <td style="padding:4px 8px;"><span class="badge ${(r.entregado||'No entregado')==='Entregado'?'cobrado':'pend'}" style="cursor:pointer;white-space:nowrap;" onclick="state.cheques['${t}'][${i}].entregado=state.cheques['${t}'][${i}].entregado==='Entregado'?'No entregado':'Entregado';renderCheques()">${r.entregado||'No entregado'}</span></td>
-    </tr>`).join('');
-    // bindGridCells sin columna fecha (col 1 ahora es date input nativo)
-    bindGridCells(tbodyId,6,()=>rows,()=>{state.cheques[t].push({destino:'',fecha:'',nro:'',cliente:'',banco:'',importe:'',entregado:'No entregado'});renderCheques();},renderCheques,(r,c,v)=>{const ks=['destino',null,'nro','cliente','banco','importe'];if(ks[c])rows[r][ks[c]]=v;});
+    rows.sort((a,b)=>{
+      if(!a.fecha && !b.fecha) return 0;
+      if(!a.fecha) return 1;
+      if(!b.fecha) return -1;
+      return a.fecha.localeCompare(b.fecha);
+    });
+
+    // Separar en pendientes y entregados/rechazados
+    const pendientes = rows.filter(r=>r.entregado==='No entregado'||(r.entregado||'No entregado')==='No entregado');
+    const entregados = rows.filter(r=>r.entregado==='Entregado'||r.entregado==='Rechazado');
+
+    function estadoBadge(est, t, i){
+      const e = est||'No entregado';
+      const cls = e==='Entregado'?'cobrado':e==='Rechazado'?'pend':'pend';
+      const color = e==='Rechazado'?'background:rgba(139,0,139,.3);color:#e040fb;border-color:#e040fb;':'';
+      return `<span class="badge ${cls}" style="cursor:pointer;white-space:nowrap;${color}" 
+        onclick="const opts=['No entregado','Entregado','Rechazado'];const cur=state.cheques['${t}'][${i}].entregado||'No entregado';const idx=opts.indexOf(cur);state.cheques['${t}'][${i}].entregado=opts[(idx+1)%3];renderCheques();autoGuardar()">${e}</span>`;
+    }
+
+    function filaHtml(r, i){
+      return `<tr class="${FOC&&FOC.tbodyId===tbodyId&&FOC.row===i?'row-selected':''}">
+        <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;">${i+1}</td>
+        <td>${cellHtml(tbodyId,i,0,r.destino,'','Destino')}</td>
+        <td style="padding:3px 6px;">${dateInputHtml(r.fecha,"state.cheques['"+t+"']["+i+"].fecha=this.value;renderCheques();autoGuardar()",'130px')}</td>
+        <td>${cellHtml(tbodyId,i,2,r.nro,'90px','Nro.')}</td>
+        <td>${cellHtml(tbodyId,i,3,r.cliente,'','Cliente')}</td>
+        <td>${cellHtml(tbodyId,i,4,r.banco,'','Banco')}</td>
+        <td>${cellHtml(tbodyId,i,5,r.importe,'110px','0,00')}</td>
+        <td style="padding:4px 8px;">${estadoBadge(r.entregado,t,i)}</td>
+      </tr>`;
+    }
+
+    tb.innerHTML = rows.map((r,i)=>filaHtml(r,i)).join('');
+
+    bindGridCells(tbodyId,6,()=>rows,()=>{state.cheques[t].push({destino:'',fecha:'',nro:'',cliente:'',banco:'',importe:'',entregado:'No entregado'});renderCheques();},renderCheques,(r,c,v)=>{const ks=['destino',null,'nro','cliente','banco','importe'];if(ks[c])rows[r][ks[c]]=v;autoGuardar();});
+
     const tot=rows.reduce((s,r)=>s+parseN(r.importe),0);
-    tf.innerHTML=`<td colspan="7" style="color:var(--muted);font-size:11px;padding:8px 10px;">TOTAL CHEQUES ${t.toUpperCase()}</td><td style="color:var(--accent1);padding:8px 10px;">$${fmt(tot)}</td>`;
+    const totEnt=entregados.reduce((s,r)=>s+parseN(r.importe),0);
+    tf.innerHTML=`<td colspan="7" style="color:var(--muted);font-size:11px;padding:8px 10px;">TOTAL</td><td style="color:var(--accent1);padding:8px 10px;">$${fmt(tot)}</td>`;
+
+    // Sección cheques entregados/rechazados
+    const secId='cheques-'+t+'-entregados';
+    let sec=document.getElementById(secId);
+    if(!sec){
+      sec=document.createElement('div');
+      sec.id=secId;
+      tb.closest('.content-area').appendChild(sec);
+    }
+    if(entregados.length>0){
+      sec.innerHTML=`<div style="margin-top:20px;">
+        <div style="font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:.08em;color:#6b7194;margin-bottom:10px;">CHEQUES ENTREGADOS / RECHAZADOS</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>#</th><th>Destino</th><th>Fecha</th><th>Nro.</th><th>Cliente</th><th>Banco</th><th>Importe</th><th>Estado</th></tr></thead>
+          <tbody>${entregados.map((r,i)=>{
+            const origIdx=rows.indexOf(r);
+            return `<tr style="opacity:.7;">
+              <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;">${i+1}</td>
+              <td style="padding:6px 10px;font-size:12px;">${r.destino||'—'}</td>
+              <td style="padding:6px 10px;font-size:12px;">${fmtFechaDisplay(r.fecha)||'—'}</td>
+              <td style="padding:6px 10px;font-size:12px;">${r.nro||'—'}</td>
+              <td style="padding:6px 10px;font-size:12px;">${r.cliente||'—'}</td>
+              <td style="padding:6px 10px;font-size:12px;">${r.banco||'—'}</td>
+              <td style="padding:6px 10px;font-size:12px;">$${fmt(r.importe)}</td>
+              <td style="padding:4px 8px;">${estadoBadge(r.entregado,t,origIdx)}</td>
+            </tr>`;
+          }).join('')}</tbody>
+          <tfoot><tr><td colspan="7" style="color:var(--muted);font-size:11px;padding:8px 10px;">TOTAL ENTREGADOS/RECHAZADOS</td><td style="color:#6b7194;padding:8px 10px;">$${fmt(totEnt)}</td></tr></tfoot>
+        </table></div>
+      </div>`;
+    } else {
+      sec.innerHTML='';
+    }
   });
 }
-function addCheque(t){ state.cheques[t].push({destino:'',fecha:'',nro:'',cliente:'',banco:'',importe:'',entregado:'No entregado'}); renderCheques(); }
+function addCheque(t){ state.cheques[t].push({destino:'',fecha:'',nro:'',cliente:'',banco:'',importe:'',entregado:'No entregado'}); renderCheques(); autoGuardar(); }
 
 // ── CENTRAL ──
 function renderCentral(){
@@ -1805,6 +1921,7 @@ function verChicoInd(idx){
   const dp = ch.datosPersonales||{};
   const camposFicha = [
     {key:'nombreCompleto', label:'Nombre completo', placeholder:'Nombre y apellido'},
+    {key:'fechaIngreso',   label:'Fecha de ingreso', placeholder:'ej: 01-03-18'},
     {key:'dni',            label:'DNI',             placeholder:'XX.XXX.XXX'},
     {key:'domicilio',      label:'Domicilio',       placeholder:'Dirección'},
     {key:'telefono',       label:'Teléfono',        placeholder:'Número de contacto'},
@@ -1812,7 +1929,7 @@ function verChicoInd(idx){
     {key:'recomendadoPor', label:'Recomendado por', placeholder:'Nombre de quien lo recomendó'},
   ];
 
-  let fichaHtml = `<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:20px;">
+  let fichaHtml = `<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px;">
     <div style="font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:.08em;color:var(--accent1);margin-bottom:14px;">📋 FICHA PERSONAL</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">`;
   camposFicha.forEach(c=>{
@@ -1820,13 +1937,34 @@ function verChicoInd(idx){
     fichaHtml+=`<div>
       <div style="font-size:10px;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em;">${c.label}</div>
       <input value="${val}" placeholder="${c.placeholder}"
-        oninput="if(!state.chicos[${idx}].datosPersonales)state.chicos[${idx}].datosPersonales={};state.chicos[${idx}].datosPersonales['${c.key}']=this.value"
+        oninput="if(!state.chicos[${idx}].datosPersonales)state.chicos[${idx}].datosPersonales={};state.chicos[${idx}].datosPersonales['${c.key}']=this.value;autoGuardar()"
         style="width:100%;padding:6px 9px;font-size:12px;border:1px solid var(--border);border-radius:7px;background:rgba(255,255,255,.04);color:var(--text);font-family:'DM Sans',sans-serif;box-sizing:border-box;">
     </div>`;
   });
   fichaHtml+=`</div></div>`;
 
-  // Tarjetas resumen
+  // Sección extras: aguinaldo, vacaciones, deuda, notas
+  const ex = ch.extras||{};
+  const camposExtras = [
+    {key:'aguinaldo',     label:'Aguinaldo',   placeholder:'Monto / estado',   color:'#3ecf5a'},
+    {key:'vacaciones',    label:'Vacaciones',  placeholder:'Días / período',    color:'#4f8ef7'},
+    {key:'deuda',         label:'Deuda',       placeholder:'Monto / detalle',   color:'#e05c5c'},
+    {key:'notasGenerales',label:'Notas',       placeholder:'Observaciones...',  color:'#a0a8c0'},
+  ];
+  let extrasHtml = `<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:20px;">
+    <div style="font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:.08em;color:var(--accent1);margin-bottom:14px;">📑 DATOS ADICIONALES</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">`;
+  camposExtras.forEach(c=>{
+    const val=(ex[c.key]||'').replace(/"/g,'&quot;');
+    extrasHtml+=`<div>
+      <div style="font-size:10px;color:${c.color};margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em;">${c.label}</div>
+      <input value="${val}" placeholder="${c.placeholder}"
+        oninput="if(!state.chicos[${idx}].extras)state.chicos[${idx}].extras={};state.chicos[${idx}].extras['${c.key}']=this.value;autoGuardar()"
+        style="width:100%;padding:6px 9px;font-size:12px;border:1px solid var(--border);border-radius:7px;background:rgba(255,255,255,.04);color:var(--text);font-family:'DM Sans',sans-serif;box-sizing:border-box;">
+    </div>`;
+  });
+  extrasHtml+=`</div></div>`;
+
   let html = `
     <div style="margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
       <span style="font-family:'Bebas Neue',cursive;font-size:1.5rem;color:#ffff00;letter-spacing:.08em;">${ch.nombre}</span>
@@ -1834,6 +1972,7 @@ function verChicoInd(idx){
       ${ch.fechaIngreso?`<span style="font-size:11px;color:#4a5070;background:rgba(255,255,255,.04);padding:2px 8px;border-radius:10px;">${ch.fechaIngreso}</span>`:''}
     </div>
     ${fichaHtml}
+    ${extrasHtml}
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:24px;">
       <div class="stat-card"><div class="stat-label">Faltas</div><div class="stat-val" style="color:var(--accent2);">${totalAusentes}</div></div>
       <div class="stat-card"><div class="stat-label">Tardes</div><div class="stat-val" style="color:#f5a623;">${totalTardes}</div></div>
@@ -1874,14 +2013,20 @@ function verChicoInd(idx){
     const medEnSem  = eventosSem.filter(e=>e.val.toUpperCase()==='1/2'||e.val==='½').length;
     const dinEnSem = eventosSem.filter(e=>{ const v=e.val.toUpperCase(); return v!=='A'&&v!=='T'&&v!=='1/2'&&v!=='½'&&parseN(e.val)>0; }).reduce((s,e)=>s+parseN(e.val),0);
 
+    // Cobrado y adelanto de esta semana
+    const cobradoSem  = (ch.notas&&ch.notas[`cobrado_s${si}`])||'';
+    const adelantoSem = (ch.notas&&ch.notas[`adelanto_s${si}`])||'';
+
     html+=`<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:6px;">
         <span style="font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:.06em;color:var(--accent1);">${semLabel}</span>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
           ${ausEnSem>0?`<span class="badge pend">Faltas: ${ausEnSem}</span>`:''}
           ${tardEnSem>0?`<span style="display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:500;background:rgba(245,166,35,.15);color:#f5a623;border:1px solid rgba(245,166,35,.25);">Tardes: ${tardEnSem}</span>`:''}
           ${medEnSem>0?`<span style="display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:500;background:rgba(201,162,39,.15);color:#c9a227;border:1px solid rgba(201,162,39,.25);">½ día: ${medEnSem}</span>`:''}
           ${dinEnSem>0?`<span class="badge cobrado">$${fmt(dinEnSem)}</span>`:''}
+          ${cobradoSem?`<span style="padding:2px 9px;border-radius:20px;font-size:11px;background:rgba(62,207,90,.1);color:#3ecf5a;border:1px solid rgba(62,207,90,.25);">Cobrado: $${cobradoSem}</span>`:''}
+          ${adelantoSem?`<span style="padding:2px 9px;border-radius:20px;font-size:11px;background:rgba(79,142,247,.1);color:#4f8ef7;border:1px solid rgba(79,142,247,.25);">Adelanto: $${adelantoSem}</span>`:''}
         </div>
       </div>`;
 
@@ -1991,16 +2136,23 @@ function renderInforme(){
     '<tr class="total-row"><td style="padding:8px 10px;">Total bancos</td><td style="padding:8px 10px;color:var(--accent3);">$'+fmt(totalBancos)+'</td><td></td></tr>') +
     infAddBtn("informeState.bancos.push({label:'',importe:''});renderInforme()");
 
-  // ── 3. CARTERA DE CHEQUES ──
-  const totalCartera = s.cartera.reduce((a,b)=>a+parseN(b.importe),0);
-  const carteraRows = s.cartera.map((r,i)=>
-    '<tr><td style="padding:7px 10px;font-size:12px;">'+infInput(r.label,'Concepto','180px','informeState.cartera['+i+'].label=this.value')+'</td>'+
-    '<td>'+infInput(r.importe,'0,00','130px','informeState.cartera['+i+'].importe=this.value;refreshInformeResumen()')+'</td>'+
-    '<td><button onclick="informeState.cartera.splice('+i+',1);renderInforme()" style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:12px;" onmouseover="this.style.color=\'var(--accent2)\'" onmouseout="this.style.color=\'var(--muted)\'">✕</button></td>'+
-    '</tr>').join('');
-  const carteraContent = infTable(['Concepto','Importe $',''], carteraRows,
-    '<tr class="total-row"><td style="padding:8px 10px;">Total cartera</td><td style="padding:8px 10px;color:var(--accent3);">$'+fmt(totalCartera)+'</td><td></td></tr>') +
-    infAddBtn("informeState.cartera.push({label:'',importe:''});renderInforme()");
+  // ── 3. CARTERA DE CHEQUES (datos reales del módulo Cheques) ──
+  const chequesEnCartera = [
+    ...state.cheques.z.filter(c=>c.cliente&&c.entregado!=='Entregado'&&c.entregado!=='Rechazado').map(c=>({...c,tipo:'Z'})),
+    ...state.cheques.a.filter(c=>c.cliente&&c.entregado!=='Entregado'&&c.entregado!=='Rechazado').map(c=>({...c,tipo:'A'}))
+  ].sort((a,b)=>a.fecha?a.fecha.localeCompare(b.fecha||''):1);
+  const totalCartera = chequesEnCartera.reduce((s,c)=>s+parseN(c.importe),0);
+  const carteraRows = chequesEnCartera.length
+    ? chequesEnCartera.map((c,i)=>`<tr>
+        <td style="padding:7px 10px;font-size:12px;"><span class="badge ${c.tipo==='Z'?'z':'a'}" style="font-size:10px;">${c.tipo}</span></td>
+        <td style="padding:7px 10px;font-size:12px;">${c.cliente||'—'}</td>
+        <td style="padding:7px 10px;font-size:12px;">${c.banco||'—'}</td>
+        <td style="padding:7px 10px;font-size:12px;">${fmtFechaDisplay(c.fecha)||'—'}</td>
+        <td style="padding:7px 10px;font-size:12px;">$${fmt(c.importe)}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="5" style="color:var(--muted);padding:14px;text-align:center;">Sin cheques en cartera</td></tr>';
+  const carteraContent = infTable(['Tipo','Cliente','Banco','Fecha','Importe $'], carteraRows,
+    `<tr class="total-row"><td colspan="4" style="padding:8px 10px;">Total cartera</td><td style="padding:8px 10px;color:var(--accent3);">$${fmt(totalCartera)}</td></tr>`);
 
   // ── 4. USD MEP ──
   const totalUsdMep = s.usdMep.reduce((a,b)=>a+parseN(b.usdMep),0);
