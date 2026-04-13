@@ -611,7 +611,7 @@ const CLIENTES_ZONA = {
   'Paso 100/200': ['Yoni','Diddier','Mimiss','Marcelo','Pedidos 11','Lodeli','Medilen'],
   'Paso 300': ['Ktaleya','B Esencial','Hueso Toxico','Embrujo','Vxm','Bautismo','Venus'],
   'Castelli': ['Blanco Castelli','Nuevo Mitre','Super Peron','Tejido de punto','Moda Top','Papelera Dimpa','Emporio Castelli','Blau'],
-  'Sarmiento': ['Ari','Deme 10','Nmo','Todomedias','Mas blanco','Akytodo','Cachito','Toblanc','Casa Ale 2784','Casa Ale 2737','Casa Ale 2765'],
+  'Sarmiento': ['Deme 10','Nmo','Todomedias','Mas blanco','Akytodo','Cachito','Toblanc','Casa Ale 2784','Casa Ale 2737','Casa Ale 2765'],
   'Ctes / V.Gómez / Larrea': ['Maple','Suery','Thriller','Esteban','Gema','Alex','M51','Sol y Luna','Lucho']
 };
 
@@ -619,6 +619,7 @@ const ESPECIALES = [
   {key:'reydavid',  label:'REY DAVID',  renglones:4},
   {key:'casaedu',   label:'CASA EDU',   renglones:4},
   {key:'enchulate', label:'ENCHULATE',  renglones:4},
+  {key:'casaari',   label:'CASA ARI',   renglones:4},
 ];
 
 const SEM_RENGLONES = {jonas:2, nahuel:2, banana:2, casapaso:8, futuros:8, home:4};
@@ -806,6 +807,10 @@ function cargarFecha(fecha){
 function renderEspeciales(container){
   if(!state.cobros.especiales) state.cobros.especiales=initEspeciales();
   const esp=state.cobros.especiales;
+  // Asegurar que todos los keys existan (por si se agregó uno nuevo)
+  ESPECIALES.forEach(e=>{
+    if(!esp[e.key]) esp[e.key]={rows:Array.from({length:e.renglones},()=>({fecha:'',importe:'',estado:'Cobrado'}))};
+  });
   let tc=0,tp=0;
   ESPECIALES.forEach(e=>{ esp[e.key].rows.forEach(r=>{ const imp=parseN(r.importe); if(r.estado==='Cobrado') tc+=imp; else tp+=imp; }); });
 
@@ -823,9 +828,9 @@ function renderEspeciales(container){
       const isFoc=FOC&&FOC.tbodyId==='esp-'+e.key&&FOC.row===i;
       return `<tr class="${isFoc?'row-selected':''}">
         <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;">${i+1}</td>
-        <td style="padding:2px 4px;">${dateInputHtml(r.fecha,"state.cobros.especiales['${e.key}'].rows[${i}].fecha=this.value",'130px')}</td>
+        <td style="padding:2px 4px;">${dateInputHtml(r.fecha,"state.cobros.especiales['${e.key}'].rows[${i}].fecha=this.value;autoGuardar()",'130px')}</td>
         <td>${cellHtml('esp-'+e.key,i,0,r.importe,'','0,00')}</td>
-        <td><span class="badge ${r.estado==='Cobrado'?'cobrado':'pend'}" style="cursor:pointer;" onclick="state.cobros.especiales['${e.key}'].rows[${i}].estado=state.cobros.especiales['${e.key}'].rows[${i}].estado==='Pendiente'?'Cobrado':'Pendiente';renderZonas()">${r.estado}</span></td>
+        <td><span class="badge ${r.estado==='Cobrado'?'cobrado':'pend'}" style="cursor:pointer;" onclick="state.cobros.especiales['${e.key}'].rows[${i}].estado=state.cobros.especiales['${e.key}'].rows[${i}].estado==='Pendiente'?'Cobrado':'Pendiente';renderZonas();autoGuardar()">${r.estado}</span></td>
       </tr>`;}).join('');
     html+=`<div style="background:var(--card);border:1px solid rgba(79,142,247,.25);border-radius:12px;padding:16px;">
       <div style="margin-bottom:10px;">
@@ -1743,8 +1748,9 @@ function renderCheques(){
     const tb=document.getElementById(tbodyId); if(!tb) return;
     ensureRows(state.cheques[t],10,{destino:'',fecha:'',nro:'',cliente:'',banco:'',importe:'',entregado:'No entregado'});
 
-    // Ordenar por fecha
     const rows=state.cheques[t];
+
+    // Ordenar por fecha
     rows.sort((a,b)=>{
       if(!a.fecha && !b.fecha) return 0;
       if(!a.fecha) return 1;
@@ -1752,40 +1758,40 @@ function renderCheques(){
       return a.fecha.localeCompare(b.fecha);
     });
 
-    // Separar en pendientes y entregados/rechazados
-    const pendientes = rows.filter(r=>r.entregado==='No entregado'||(r.entregado||'No entregado')==='No entregado');
+    // Separar pendientes de entregados/rechazados
+    const pendientes = rows.filter(r=>(r.entregado||'No entregado')==='No entregado');
     const entregados = rows.filter(r=>r.entregado==='Entregado'||r.entregado==='Rechazado');
 
-    function estadoBadge(est, t, i){
+    function estadoBadge(est, ti, origIdx){
       const e = est||'No entregado';
-      const cls = e==='Entregado'?'cobrado':e==='Rechazado'?'pend':'pend';
+      const cls = e==='Entregado'?'cobrado':'pend';
       const color = e==='Rechazado'?'background:rgba(139,0,139,.3);color:#e040fb;border-color:#e040fb;':'';
-      return `<span class="badge ${cls}" style="cursor:pointer;white-space:nowrap;${color}" 
-        onclick="const opts=['No entregado','Entregado','Rechazado'];const cur=state.cheques['${t}'][${i}].entregado||'No entregado';const idx=opts.indexOf(cur);state.cheques['${t}'][${i}].entregado=opts[(idx+1)%3];renderCheques();autoGuardar()">${e}</span>`;
+      return `<span class="badge ${cls}" style="cursor:pointer;white-space:nowrap;${color}"
+        onclick="const opts=['No entregado','Entregado','Rechazado'];const cur=state.cheques['${ti}'][${origIdx}].entregado||'No entregado';const ix=opts.indexOf(cur);state.cheques['${ti}'][${origIdx}].entregado=opts[(ix+1)%3];renderCheques();autoGuardar()">${e}</span>`;
     }
 
-    function filaHtml(r, i){
-      return `<tr class="${FOC&&FOC.tbodyId===tbodyId&&FOC.row===i?'row-selected':''}">
-        <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;">${i+1}</td>
-        <td>${cellHtml(tbodyId,i,0,r.destino,'','Destino')}</td>
-        <td style="padding:3px 6px;">${dateInputHtml(r.fecha,"state.cheques['"+t+"']["+i+"].fecha=this.value;renderCheques();autoGuardar()",'130px')}</td>
-        <td>${cellHtml(tbodyId,i,2,r.nro,'90px','Nro.')}</td>
-        <td>${cellHtml(tbodyId,i,3,r.cliente,'','Cliente')}</td>
-        <td>${cellHtml(tbodyId,i,4,r.banco,'','Banco')}</td>
-        <td>${cellHtml(tbodyId,i,5,r.importe,'110px','0,00')}</td>
-        <td style="padding:4px 8px;">${estadoBadge(r.entregado,t,i)}</td>
+    // Solo mostrar pendientes en la tabla principal
+    tb.innerHTML = pendientes.map((r)=>{
+      const origIdx = rows.indexOf(r);
+      return `<tr class="${FOC&&FOC.tbodyId===tbodyId&&FOC.row===origIdx?'row-selected':''}">
+        <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;">${origIdx+1}</td>
+        <td>${cellHtml(tbodyId,origIdx,0,r.destino,'','Destino')}</td>
+        <td style="padding:3px 6px;">${dateInputHtml(r.fecha,"state.cheques['"+t+"']["+origIdx+"].fecha=this.value;renderCheques();autoGuardar()",'130px')}</td>
+        <td>${cellHtml(tbodyId,origIdx,2,r.nro,'90px','Nro.')}</td>
+        <td>${cellHtml(tbodyId,origIdx,3,r.cliente,'','Cliente')}</td>
+        <td>${cellHtml(tbodyId,origIdx,4,r.banco,'','Banco')}</td>
+        <td>${cellHtml(tbodyId,origIdx,5,r.importe,'110px','0,00')}</td>
+        <td style="padding:4px 8px;">${estadoBadge(r.entregado,t,origIdx)}</td>
       </tr>`;
-    }
-
-    tb.innerHTML = rows.map((r,i)=>filaHtml(r,i)).join('');
+    }).join('');
 
     bindGridCells(tbodyId,6,()=>rows,()=>{state.cheques[t].push({destino:'',fecha:'',nro:'',cliente:'',banco:'',importe:'',entregado:'No entregado'});renderCheques();},renderCheques,(r,c,v)=>{const ks=['destino',null,'nro','cliente','banco','importe'];if(ks[c])rows[r][ks[c]]=v;autoGuardar();});
 
-    const tot=rows.reduce((s,r)=>s+parseN(r.importe),0);
-    const totEnt=entregados.reduce((s,r)=>s+parseN(r.importe),0);
-    tf.innerHTML=`<td colspan="7" style="color:var(--muted);font-size:11px;padding:8px 10px;">TOTAL</td><td style="color:var(--accent1);padding:8px 10px;">$${fmt(tot)}</td>`;
+    const totPend = pendientes.reduce((s,r)=>s+parseN(r.importe||0),0);
+    const totEnt  = entregados.reduce((s,r)=>s+parseN(r.importe||0),0);
+    tf.innerHTML=`<td colspan="7" style="color:var(--muted);font-size:11px;padding:8px 10px;">TOTAL PENDIENTES</td><td style="color:var(--accent1);padding:8px 10px;">$${fmt(totPend)}</td>`;
 
-    // Sección cheques entregados/rechazados
+    // Sección entregados/rechazados
     const secId='cheques-'+t+'-entregados';
     let sec=document.getElementById(secId);
     if(!sec){
@@ -1800,6 +1806,7 @@ function renderCheques(){
           <thead><tr><th>#</th><th>Destino</th><th>Fecha</th><th>Nro.</th><th>Cliente</th><th>Banco</th><th>Importe</th><th>Estado</th></tr></thead>
           <tbody>${entregados.map((r,i)=>{
             const origIdx=rows.indexOf(r);
+            const imp = parseN(r.importe||0);
             return `<tr style="opacity:.7;">
               <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;">${i+1}</td>
               <td style="padding:6px 10px;font-size:12px;">${r.destino||'—'}</td>
@@ -1807,11 +1814,11 @@ function renderCheques(){
               <td style="padding:6px 10px;font-size:12px;">${r.nro||'—'}</td>
               <td style="padding:6px 10px;font-size:12px;">${r.cliente||'—'}</td>
               <td style="padding:6px 10px;font-size:12px;">${r.banco||'—'}</td>
-              <td style="padding:6px 10px;font-size:12px;">$${fmt(r.importe)}</td>
+              <td style="padding:6px 10px;font-size:12px;">$${fmt(imp)}</td>
               <td style="padding:4px 8px;">${estadoBadge(r.entregado,t,origIdx)}</td>
             </tr>`;
           }).join('')}</tbody>
-          <tfoot><tr><td colspan="7" style="color:var(--muted);font-size:11px;padding:8px 10px;">TOTAL ENTREGADOS/RECHAZADOS</td><td style="color:#6b7194;padding:8px 10px;">$${fmt(totEnt)}</td></tr></tfoot>
+          <tfoot><tr><td colspan="7" style="color:var(--muted);font-size:11px;padding:8px 10px;">TOTAL</td><td style="color:#6b7194;padding:8px 10px;">$${fmt(totEnt)}</td></tr></tfoot>
         </table></div>
       </div>`;
     } else {
@@ -1837,7 +1844,7 @@ function renderCentral(){
   const pend=[...SEM_CLIENTES.flatMap(cl=>(state.cobros.semanales[cl.key]||[]).filter(r=>r.estado==='Pendiente'&&r.periodo).map(r=>({cliente:cl.label,zona:'Semanal',importe:r.importe})))];
   document.getElementById('central-pend').innerHTML=pend.length?pend.map(p=>`<tr><td style="padding:8px 10px;">${p.cliente}</td><td style="padding:8px 10px;">${p.zona}</td><td style="padding:8px 10px;">$${fmt(p.importe)}</td><td style="padding:8px 10px;"><span class="badge pend">Pendiente</span></td></tr>`).join(''):`<tr><td colspan="4" style="color:var(--muted);padding:14px;text-align:center;">Sin pendientes</td></tr>`;
   const chAll=[...state.cheques.z.filter(c=>c.cliente).map(c=>({...c,tipo:'z'})),...state.cheques.a.filter(c=>c.cliente).map(c=>({...c,tipo:'a'}))];
-  document.getElementById('central-cheques').innerHTML=chAll.length?chAll.map(c=>`<tr><td style="padding:8px 10px;"><span class="badge ${c.tipo}">${c.tipo.toUpperCase()}</span></td><td style="padding:8px 10px;">${c.cliente||'—'}</td><td style="padding:8px 10px;">${c.banco||'—'}</td><td style="padding:8px 10px;">$${fmt(c.importe)}</td></tr>`).join(''):`<tr><td colspan="4" style="color:var(--muted);padding:14px;text-align:center;">Sin cheques</td></tr>`;
+  document.getElementById('central-cheques').innerHTML=chAll.length?chAll.map(c=>`<tr><td style="padding:8px 10px;"><span class="badge ${c.tipo}">${c.tipo.toUpperCase()}</span></td><td style="padding:8px 10px;">${c.cliente||'—'}</td><td style="padding:8px 10px;">${c.banco||'—'}</td><td style="padding:8px 10px;">$${fmt(parseN(c.importe||0))}</td></tr>`).join(''):`<tr><td colspan="4" style="color:var(--muted);padding:14px;text-align:center;">Sin cheques</td></tr>`;
 }
 
 
@@ -2136,23 +2143,31 @@ function renderInforme(){
     '<tr class="total-row"><td style="padding:8px 10px;">Total bancos</td><td style="padding:8px 10px;color:var(--accent3);">$'+fmt(totalBancos)+'</td><td></td></tr>') +
     infAddBtn("informeState.bancos.push({label:'',importe:''});renderInforme()");
 
-  // ── 3. CARTERA DE CHEQUES (datos reales del módulo Cheques) ──
-  const chequesEnCartera = [
-    ...state.cheques.z.filter(c=>c.cliente&&c.entregado!=='Entregado'&&c.entregado!=='Rechazado').map(c=>({...c,tipo:'Z'})),
-    ...state.cheques.a.filter(c=>c.cliente&&c.entregado!=='Entregado'&&c.entregado!=='Rechazado').map(c=>({...c,tipo:'A'}))
-  ].sort((a,b)=>a.fecha?a.fecha.localeCompare(b.fecha||''):1);
-  const totalCartera = chequesEnCartera.reduce((s,c)=>s+parseN(c.importe),0);
-  const carteraRows = chequesEnCartera.length
-    ? chequesEnCartera.map((c,i)=>`<tr>
-        <td style="padding:7px 10px;font-size:12px;"><span class="badge ${c.tipo==='Z'?'z':'a'}" style="font-size:10px;">${c.tipo}</span></td>
-        <td style="padding:7px 10px;font-size:12px;">${c.cliente||'—'}</td>
-        <td style="padding:7px 10px;font-size:12px;">${c.banco||'—'}</td>
-        <td style="padding:7px 10px;font-size:12px;">${fmtFechaDisplay(c.fecha)||'—'}</td>
-        <td style="padding:7px 10px;font-size:12px;">$${fmt(c.importe)}</td>
-      </tr>`).join('')
-    : '<tr><td colspan="5" style="color:var(--muted);padding:14px;text-align:center;">Sin cheques en cartera</td></tr>';
-  const carteraContent = infTable(['Tipo','Cliente','Banco','Fecha','Importe $'], carteraRows,
-    `<tr class="total-row"><td colspan="4" style="padding:8px 10px;">Total cartera</td><td style="padding:8px 10px;color:var(--accent3);">$${fmt(totalCartera)}</td></tr>`);
+  // ── 3. CARTERA DE CHEQUES (separado Z y A) ──
+  const chequesZ = state.cheques.z.filter(c=>c.cliente&&(c.entregado||'No entregado')==='No entregado').sort((a,b)=>a.fecha?a.fecha.localeCompare(b.fecha||''):1);
+  const chequesA = state.cheques.a.filter(c=>c.cliente&&(c.entregado||'No entregado')==='No entregado').sort((a,b)=>a.fecha?a.fecha.localeCompare(b.fecha||''):1);
+  const totalZ = chequesZ.reduce((s,c)=>s+parseN(c.importe||0),0);
+  const totalA = chequesA.reduce((s,c)=>s+parseN(c.importe||0),0);
+  const totalCartera = totalZ + totalA;
+
+  function carteraTabla(cheques, tipo, total){
+    const rows = cheques.length
+      ? cheques.map(c=>`<tr>
+          <td style="padding:7px 10px;font-size:12px;">${c.cliente||'—'}</td>
+          <td style="padding:7px 10px;font-size:12px;">${c.banco||'—'}</td>
+          <td style="padding:7px 10px;font-size:12px;">${fmtFechaDisplay(c.fecha)||'—'}</td>
+          <td style="padding:7px 10px;font-size:12px;">$${fmt(parseN(c.importe||0))}</td>
+        </tr>`).join('')
+      : `<tr><td colspan="4" style="color:var(--muted);padding:12px;text-align:center;">Sin cheques ${tipo}</td></tr>`;
+    return `<div style="margin-bottom:14px;">
+      <div style="font-size:11px;font-weight:700;color:var(--accent1);margin-bottom:6px;letter-spacing:.06em;">CHEQUES ${tipo}</div>
+      ${infTable(['Cliente','Banco','Fecha','Importe $'], rows,
+        `<tr class="total-row"><td colspan="3" style="padding:8px 10px;">Total ${tipo}</td><td style="padding:8px 10px;color:var(--accent3);">$${fmt(total)}</td></tr>`)}
+    </div>`;
+  }
+
+  const carteraContent = carteraTabla(chequesZ,'Z',totalZ) + carteraTabla(chequesA,'A',totalA) +
+    `<div style="text-align:right;padding:8px 12px;font-size:13px;font-weight:600;color:var(--accent3);">TOTAL CARTERA: $${fmt(totalCartera)}</div>`;
 
   // ── 4. USD MEP ──
   const totalUsdMep = s.usdMep.reduce((a,b)=>a+parseN(b.usdMep),0);
@@ -2287,7 +2302,24 @@ function prepararParaFirebase(s){
 function restaurarDesdeFirebase(s){
   if(!s) return;
   if(s.cobros){
-    if(s.cobros.zonasJson)      state.cobros.zonas      = JSON.parse(s.cobros.zonasJson);
+    if(s.cobros.zonasJson){
+      state.cobros.zonas = JSON.parse(s.cobros.zonasJson);
+      // Actualizar clientes prefijados con CLIENTES_ZONA actual (por si cambiaron)
+      ZONAS.forEach(zona=>{
+        if(!state.cobros.zonas[zona]) return;
+        const prefActuales = CLIENTES_ZONA[zona]||[];
+        // Reemplazar filas prefijadas con los clientes actuales de CLIENTES_ZONA
+        const noPrefs = state.cobros.zonas[zona].filter(r=>!r.prefijado&&!r.separador&&!r.desdeFecha);
+        const nuevosPrefs = prefActuales.map(c=>({cliente:c,importe:'',estado:'Cobrado',prefijado:true}));
+        // Mantener importes de prefijados si ya tenían datos
+        const oldPrefs = state.cobros.zonas[zona].filter(r=>r.prefijado);
+        nuevosPrefs.forEach(np=>{
+          const old = oldPrefs.find(op=>op.cliente===np.cliente);
+          if(old){ np.importe=old.importe; np.estado=old.estado; }
+        });
+        state.cobros.zonas[zona] = [...nuevosPrefs,...noPrefs];
+      });
+    }
     if(s.cobros.especialesJson) state.cobros.especiales = JSON.parse(s.cobros.especialesJson);
     if(s.cobros.semanales)  Object.assign(state.cobros.semanales,  s.cobros.semanales);
     if(s.cobros.pendientes) state.cobros.pendientes = s.cobros.pendientes;
