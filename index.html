@@ -1374,6 +1374,7 @@ function chicosGetCellClass(val){
   if(v==='AJ') return 'pc pc-ausente-just';
   if(v==='T') return 'pc pc-tarde';
   if(v==='TJ') return 'pc pc-tarde-just';
+  if(v==='F') return 'pc pc-feriado';
   if(v==='1/2'||v==='½') return 'pc pc-medio';
   if(val.trim()!=='') return 'pc pc-valor';
   return 'pc';
@@ -1384,6 +1385,7 @@ function chicosCellStyle(val){
   if(v==='AJ') return 'background:#7b2d8b;';
   if(v==='T') return 'background:#cc6600;';
   if(v==='TJ') return 'background:#2d6b8b;';
+  if(v==='F') return 'background:#1a5c1a;';
   return '';
 }
 
@@ -1435,6 +1437,7 @@ function renderChicos(){
   .pm input.pc.pc-ausente{color:#000;font-weight:800;}
   .pm input.pc.pc-ausente-just{color:#fff;font-weight:800;background:#7b2d8b;}
   .pm input.pc.pc-tarde-just{color:#fff;font-weight:700;background:#2d6b8b;}
+  .pm input.pc.pc-feriado{color:#fff;font-weight:700;background:#1a5c1a;}
   .pm input.pc.pc-tarde{color:#000;font-weight:700;}
   .pm input.pc.pc-valor{color:#4ecdc4;}
   .pm input.pc-nota{display:block;width:100%;padding:2px 5px;font-size:10px;border:none;outline:none;background:transparent;color:#a0a8c0;font-family:'DM Sans',sans-serif;box-sizing:border-box;}
@@ -1542,9 +1545,10 @@ function renderChicos(){
           const isAJ = vUp==='AJ';
           const isT  = vUp==='T';
           const isTJ = vUp==='TJ';
+          const isF  = vUp==='F';
           const isM  = vUp==='1/2'||vUp==='½';
-          const cellBg = isA?'background:#cc0000;':isAJ?'background:#7b2d8b;':isT?'background:#cc6600;':isTJ?'background:#2d6b8b;':isM?'background:#8b6914;':'';
-          const pcCls  = isA?'pc pc-ausente':isAJ?'pc pc-ausente-just':isT?'pc pc-tarde':isTJ?'pc pc-tarde-just':isM?'pc pc-medio':(val.trim()?'pc pc-valor':'pc');
+          const cellBg = isA?'background:#cc0000;':isAJ?'background:#7b2d8b;':isT?'background:#cc6600;':isTJ?'background:#2d6b8b;':isF?'background:#1a5c1a;':isM?'background:#8b6914;':'';
+          const pcCls  = isA?'pc pc-ausente':isAJ?'pc pc-ausente-just':isT?'pc pc-tarde':isTJ?'pc pc-tarde-just':isF?'pc pc-feriado':isM?'pc pc-medio':(val.trim()?'pc pc-valor':'pc');
           const bl = (di===0&&si>0)?'border-left:2px solid #3a4060;':'';
           // Indicador visual de motivo guardado
           const hasMot = motivoVal.trim()!=='';
@@ -1552,8 +1556,8 @@ function renderChicos(){
           tdDias+=`<td class="${baseTdCls}" style="min-width:26px;width:26px;${cellBg}${bl};position:relative;">
             ${motDot}
             <input class="${pcCls}" value="${val.replace(/"/g,'&quot;')}" data-ci="${ci}" data-fi="${fi}" data-date="${key}"
-              oninput="chicosSetVal(${ci},${fi},'${key}',this.value);const vv=this.value.trim().toUpperCase();this.className=vv==='A'?'pc pc-ausente':vv==='AJ'?'pc pc-ausente-just':vv==='T'?'pc pc-tarde':vv==='TJ'?'pc pc-tarde-just':(vv==='1/2'||vv==='½')?'pc pc-medio':(this.value.trim()?'pc pc-valor':'pc');const bg=vv==='A'?'#cc0000':vv==='AJ'?'#7b2d8b':vv==='T'?'#cc6600':vv==='TJ'?'#2d6b8b':(vv==='1/2'||vv==='½')?'#8b6914':'';this.closest('td').style.background=bg;"
-              onclick="const vv=this.value.trim().toUpperCase();if(vv==='A'||vv==='AJ'||vv==='T'||vv==='TJ'||vv==='1/2'||vv==='½')abrirMotivoPopup(event,${ci},${fi},'${key}',this.value.trim())"
+              oninput="chicosSetVal(${ci},${fi},'${key}',this.value);const vv=this.value.trim().toUpperCase();this.className=vv==='A'?'pc pc-ausente':vv==='AJ'?'pc pc-ausente-just':vv==='T'?'pc pc-tarde':vv==='TJ'?'pc pc-tarde-just':vv==='F'?'pc pc-feriado':(vv==='1/2'||vv==='½')?'pc pc-medio':(this.value.trim()?'pc pc-valor':'pc');const bg=vv==='A'?'#cc0000':vv==='AJ'?'#7b2d8b':vv==='T'?'#cc6600':vv==='TJ'?'#2d6b8b':vv==='F'?'#1a5c1a':(vv==='1/2'||vv==='½')?'#8b6914':'';this.closest('td').style.background=bg;"
+              onclick="const vv=this.value.trim().toUpperCase();if(vv==='A'||vv==='AJ'||vv==='T'||vv==='TJ'||vv==='F'||vv==='1/2'||vv==='½')abrirMotivoPopup(event,${ci},${fi},'${key}',this.value.trim())"
               onfocus="this.select()" style="width:26px;height:20px;">
           </td>`;
         });
@@ -1635,7 +1639,7 @@ function abrirMotivoPopup(e, ci, fi, key, valActual){
   const motivoKey = `motivo_${key}_${fi}`;
   const motivoVal = (ch.notas&&ch.notas[motivoKey])||'';
   const vUp = valActual.toUpperCase();
-  const tipoLabel = vUp==='A'?'FALTA':vUp==='AJ'?'FALTA JUSTIFICADA':vUp==='T'?'TARDE':vUp==='TJ'?'TARDE JUSTIFICADA':'MEDIO DÍA';
+  const tipoLabel = vUp==='A'?'FALTA':vUp==='AJ'?'FALTA JUSTIFICADA':vUp==='T'?'TARDE':vUp==='TJ'?'TARDE JUSTIFICADA':vUp==='F'?'FERIADO':'MEDIO DÍA';
   document.getElementById('pm-pop-title').textContent = `${tipoLabel} — ${fila.label||fila.tipo} — ${key}`;
   document.getElementById('pm-pop-input').value = motivoVal;
   const popup = document.getElementById('pm-motivo-popup');
@@ -1941,6 +1945,7 @@ function verChicoInd(idx){
         const v = (val||'').trim().toUpperCase();
         if(v==='A') totalAusentes++;
         else if(v==='AJ') totalAusentes++; // falta justificada igual cuenta como ausente en stats
+        else if(v==='F') {} // feriado no cuenta como ausente
         else if(v==='T') totalTardes++;
         else if(v==='TJ') totalTardes++; // tarde justificada igual cuenta en stats
         else if(v==='1/2'||v==='½') totalMedios++;
@@ -2483,13 +2488,22 @@ const SUELDO_DEFAULTS = {
 };
 
 // state.sueldos = { [nombre]: { sueldo, adicLunes, adicMarVie, lluvia, puntDiaria, asistDiaria, cuil, categoria } }
+const SUELDOS_PREDEF = {
+  'Marcelo':  150000, 'Pablo':    150000, 'Raúl':     150000,
+  'Mauricio': 120000, 'Manuel':   100000, 'Valentín':  95000,
+  'Leandro':   95000, 'Matías':    95000, 'Ariel':     95000,
+  'Coco':      95000, 'Cristian':  95000, 'Lucas':     90000,
+  'Jeremías':  90000, 'Kevin':     90000, 'Bautista':  90000,
+  'Colo':      90000
+};
+
 function sueldosInit(){
   if(!state.sueldos) state.sueldos = {};
   state.chicos.forEach(ch=>{
     const n = ch.nombre;
     if(!state.sueldos[n]){
       state.sueldos[n] = {
-        sueldo:      0,
+        sueldo:      SUELDOS_PREDEF[n]||0,
         adicLunes:   SUELDO_DEFAULTS.adicLunes,
         adicMarVie:  SUELDO_DEFAULTS.adicMarVie,
         lluvia:      SUELDO_DEFAULTS.lluvia,
@@ -2501,6 +2515,7 @@ function sueldosInit(){
     }
     // Migrar campos faltantes
     const s = state.sueldos[n];
+    if((!s.sueldo||s.sueldo===0) && SUELDOS_PREDEF[n]) s.sueldo = SUELDOS_PREDEF[n];
     if(s.adicLunes===undefined)   s.adicLunes   = SUELDO_DEFAULTS.adicLunes;
     if(s.adicMarVie===undefined)  s.adicMarVie  = SUELDO_DEFAULTS.adicMarVie;
     if(s.lluvia===undefined)      s.lluvia      = SUELDO_DEFAULTS.lluvia;
@@ -2597,6 +2612,7 @@ function renderLiqConfig(){
       <span style="background:#7b2d8b;color:#fff;padding:1px 6px;border-radius:4px;margin:0 3px;">AJ</span> Falta justificada (cobra base) &nbsp;
       <span style="background:#cc6600;color:#fff;padding:1px 6px;border-radius:4px;margin:0 3px;">T</span> Tarde &nbsp;
       <span style="background:#2d6b8b;color:#fff;padding:1px 6px;border-radius:4px;margin:0 3px;">TJ</span> Tarde justificada (cobra todo) &nbsp;
+      <span style="background:#1a5c1a;color:#fff;padding:1px 6px;border-radius:4px;margin:0 3px;">F</span> Feriado (base + adicional, sin asist./punt.) &nbsp;
       <span style="background:#8b6914;color:#fff;padding:1px 6px;border-radius:4px;margin:0 3px;">½</span> Medio día
     </div>
     </div>`;
@@ -2610,10 +2626,288 @@ function liqSetSueldo(nombre, campo, valor){
   state.sueldos[nombre][campo] = valor;
 }
 
+// ── HELPERS LIQUIDACIÓN ──
+function liqGetSemanas(){
+  // Devuelve todas las semanas (L-V) del mes actual de Chicos
+  const mesStr = chicosMesActual(); // "YYYY-MM"
+  const [y,m] = mesStr.split('-').map(Number);
+  const dias = [];
+  const d = new Date(y, m-1, 1);
+  while(d.getMonth()===m-1){ dias.push(new Date(d)); d.setDate(d.getDate()+1); }
+  const semanas = [];
+  let semActual = [];
+  dias.forEach(dd=>{
+    const dow = dd.getDay();
+    if(dow===1 && semActual.length>0){ semanas.push(semActual); semActual=[]; }
+    semActual.push(dd);
+  });
+  if(semActual.length>0) semanas.push(semActual);
+  return semanas.map((sem,si)=>({
+    idx: si,
+    labs: sem.filter(dd=>dd.getDay()>=1&&dd.getDay()<=5),
+    label: (()=>{
+      const labs = sem.filter(dd=>dd.getDay()>=1&&dd.getDay()<=5);
+      if(!labs.length) return '';
+      const f = labs[0], l = labs[labs.length-1];
+      return `${f.getDate()}/${f.getMonth()+1} al ${l.getDate()}/${l.getMonth()+1}`;
+    })()
+  })).filter(s=>s.labs.length>0);
+}
+
+function liqCalcEmpleado(ch, semIdx, semLabs, extras){
+  // extras = { lluvia:{key:bool}, adelanto:number, justDias:{key:'AJ'|'TJ'} }
+  sueldosInit();
+  const s = state.sueldos[ch.nombre]||{};
+  const sueldo    = parseN(s.sueldo)||0;
+  const adicLunes = parseN(s.adicLunes)||0;
+  const adicMV    = parseN(s.adicMarVie)||0;
+  const lluviaM   = parseN(s.lluvia)||0;
+  const puntM     = parseN(s.puntDiaria)||0;
+  const asistM    = parseN(s.asistDiaria)||0;
+  const baseDia   = semLabs.length>0 ? sueldo/5 : 0;
+
+  // Primero recolectar todos los estados finales para detectar feriados adyacentes a faltas
+  const estadosDia = {}; // key -> vFinal
+  semLabs.forEach(d=>{
+    const key = chicosDateKey(d);
+    let val = '';
+    ch.filas.forEach(f=>{ const v=(f.dias&&f.dias[key])||''; if(v.trim()) val=v.trim(); });
+    const vUp = val.toUpperCase();
+    const override = (extras.justDias&&extras.justDias[key])||'';
+    estadosDia[key] = override || vUp;
+  });
+
+  // Detectar faltas adyacentes a feriados: si un día es F y el día laboral
+  // inmediatamente anterior o posterior es A, ambos no cobran
+  const keysSem = semLabs.map(d=>chicosDateKey(d));
+  const noCobraFeriado = {}; // key -> true si feriado anulado por falta adyacente
+  keysSem.forEach((key,i)=>{
+    if(estadosDia[key]==='F'){
+      const prevKey = i>0 ? keysSem[i-1] : null;
+      const nextKey = i<keysSem.length-1 ? keysSem[i+1] : null;
+      if((prevKey && estadosDia[prevKey]==='A') || (nextKey && estadosDia[nextKey]==='A')){
+        noCobraFeriado[key] = true;
+      }
+    }
+  });
+
+  let totalBase=0, totalAdic=0, totalLluvia=0, totalPunt=0, totalAsist=0;
+  const detalleDias = [];
+
+  semLabs.forEach((d,i)=>{
+    const key    = chicosDateKey(d);
+    const dow    = d.getDay();
+    const esLunes= dow===1;
+    const vFinal = estadosDia[key]||'';
+    const esLluvia = !!(extras.lluvia&&extras.lluvia[key]);
+
+    const esA     = vFinal==='A';
+    const esAJ    = vFinal==='AJ';
+    const esT     = vFinal==='T';
+    const esTJ    = vFinal==='TJ';
+    const esF     = vFinal==='F';
+    const esMedio = vFinal==='1/2'||vFinal==='½';
+
+    // Falta adyacente a feriado: no cobra nada
+    const esFaltaAdyFeriado = esA && (() => {
+      const prevKey = i>0 ? keysSem[i-1] : null;
+      const nextKey = i<keysSem.length-1 ? keysSem[i+1] : null;
+      return (prevKey&&estadosDia[prevKey]==='F') || (nextKey&&estadosDia[nextKey]==='F');
+    })();
+
+    let base=0, adic=0, lluvia=0, punt=0, asist=0;
+
+    if(esA || esFaltaAdyFeriado){
+      // Falta (o falta adyacente a feriado): no cobra nada
+
+    } else if(esF && noCobraFeriado[key]){
+      // Feriado anulado por falta adyacente: no cobra nada
+
+    } else if(esF){
+      // Feriado normal: cobra base + adicional, sin asistencia ni puntualidad diaria
+      base = baseDia;
+      adic = esLunes ? adicLunes : adicMV;
+      if(esLluvia) lluvia = lluviaM;
+
+    } else if(esAJ){
+      // Falta justificada: cobra base completo, sin adicional/asist/punt
+      base = baseDia;
+      if(esLluvia) lluvia = lluviaM;
+
+    } else if(esMedio){
+      // Medio día: mitad base, sin adicional ni puntualidad, sí asistencia
+      base  = baseDia/2;
+      asist = asistM;
+      if(esLluvia) lluvia = lluviaM;
+
+    } else if(esT){
+      // Tarde: base completo, sin adicional ni puntualidad, sí asistencia
+      base  = baseDia;
+      asist = asistM;
+      if(esLluvia) lluvia = lluviaM;
+
+    } else if(esTJ){
+      // Tarde justificada: cobra todo igual que puntual
+      base  = baseDia;
+      adic  = esLunes ? adicLunes : adicMV;
+      punt  = puntM;
+      asist = asistM;
+      if(esLluvia) lluvia = lluviaM;
+
+    } else {
+      // Puntual / vacío (presente)
+      base  = baseDia;
+      adic  = esLunes ? adicLunes : adicMV;
+      punt  = puntM;
+      asist = asistM;
+      if(esLluvia) lluvia = lluviaM;
+    }
+
+    totalBase   += base;
+    totalAdic   += adic;
+    totalLluvia += lluvia;
+    totalPunt   += punt;
+    totalAsist  += asist;
+
+    detalleDias.push({ key, dow, vFinal, esLluvia, base, adic, lluvia, punt, asist });
+  });
+
+  const adelanto = parseN(extras.adelanto)||0;
+  const totalBruto = totalBase+totalAdic+totalLluvia+totalPunt+totalAsist;
+  return { totalBase, totalAdic, totalLluvia, totalPunt, totalAsist, totalBruto, adelanto, detalleDias };
+}
+
+// Estado de extras por empleado por semana
+// liqExtras[semIdx][nombre] = { lluvia:{key:bool}, adelanto:'', justDias:{key:''} }
+let liqExtras = {};
+let liqSemSelIdx = 0;
+
+function liqExtrasGet(semIdx, nombre){
+  if(!liqExtras[semIdx]) liqExtras[semIdx]={};
+  if(!liqExtras[semIdx][nombre]) liqExtras[semIdx][nombre]={lluvia:{},adelanto:'',justDias:{}};
+  return liqExtras[semIdx][nombre];
+}
+
 function renderLiqPanel(){
+  sueldosInit();
   const cont = document.getElementById('liq-liq-container');
-  if(!cont){ return; }
-  cont.innerHTML = `<div class="card"><div style="color:var(--muted);font-size:13px;">🧮 La generación de liquidación se implementa en la Parte 3.</div></div>`;
+  if(!cont) return;
+
+  const semanas = liqGetSemanas();
+  if(!semanas.length){
+    cont.innerHTML=`<div class="card"><p style="color:var(--muted);">No hay semanas disponibles en el mes actual.</p></div>`;
+    return;
+  }
+
+  // Selector de semana
+  let html = `<div class="card" style="margin-bottom:16px;">
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <span style="font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:.06em;color:var(--accent1);">SEMANA</span>
+      <select id="liq-sem-sel" onchange="liqSemSelIdx=parseInt(this.value);renderLiqTabla()"
+        style="padding:7px 12px;background:#0f1118;border:1px solid var(--border);border-radius:8px;color:#e8eaf2;font-size:13px;font-family:'DM Sans',sans-serif;">
+        ${semanas.map((s,i)=>`<option value="${i}" ${i===liqSemSelIdx?'selected':''}>${s.label}</option>`).join('')}
+      </select>
+      <button onclick="liqImprimir()" style="margin-left:auto;padding:8px 18px;background:var(--accent1);border:none;border-radius:8px;color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">🖨️ Imprimir recibos</button>
+    </div>
+  </div>
+  <div id="liq-tabla-cont"></div>`;
+
+  cont.innerHTML = html;
+  renderLiqTabla();
+}
+
+function renderLiqTabla(){
+  const cont = document.getElementById('liq-tabla-cont');
+  if(!cont) return;
+  sueldosInit();
+  const semanas = liqGetSemanas();
+  const sem = semanas[liqSemSelIdx];
+  if(!sem){ cont.innerHTML=''; return; }
+
+  const DIAS_LABEL = ['','Lun','Mar','Mié','Jue','Vie'];
+
+  let html = '';
+  state.chicos.forEach((ch,ci)=>{
+    const extras = liqExtrasGet(liqSemSelIdx, ch.nombre);
+    const calc   = liqCalcEmpleado(ch, liqSemSelIdx, sem.labs, extras);
+    const s      = state.sueldos[ch.nombre]||{};
+
+    // Cabecera empleado
+    html += `<div class="card" style="margin-bottom:14px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:14px;">
+        <span style="font-family:'Bebas Neue',cursive;font-size:1.1rem;letter-spacing:.06em;color:var(--accent3);">${ch.nombre}</span>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span style="padding:3px 10px;border-radius:20px;font-size:12px;background:rgba(62,207,90,.1);color:#3ecf5a;border:1px solid rgba(62,207,90,.25);">Total: $${fmt(calc.totalBruto)}</span>
+          ${calc.adelanto>0?`<span style="padding:3px 10px;border-radius:20px;font-size:12px;background:rgba(79,142,247,.1);color:#4f8ef7;border:1px solid rgba(79,142,247,.25);">Adelanto: $${fmt(calc.adelanto)}</span>`:''}
+        </div>
+      </div>
+
+      <!-- Días con estado y lluvia -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">`;
+
+    sem.labs.forEach(d=>{
+      const key  = chicosDateKey(d);
+      const dow  = d.getDay();
+      const dLabel = DIAS_LABEL[dow];
+      const dNum   = d.getDate();
+      // Leer estado actual
+      let val = '';
+      ch.filas.forEach(f=>{ const v=(f.dias&&f.dias[key])||''; if(v.trim()) val=v.trim(); });
+      const vUp   = val.toUpperCase();
+      const ovr   = (extras.justDias&&extras.justDias[key])||'';
+      const vShow = ovr||vUp||'P';
+      const llv   = !!(extras.lluvia&&extras.lluvia[key]);
+
+      const colorEstado = vShow==='A'?'#cc0000':vShow==='AJ'?'#7b2d8b':vShow==='T'?'#cc6600':vShow==='TJ'?'#2d6b8b':vShow==='F'?'#1a5c1a':vShow==='1/2'||vShow==='½'?'#8b6914':'#1e4d2b';
+      const textEstado  = vShow==='A'?'FALTA':vShow==='AJ'?'F.JUST':vShow==='T'?'TARDE':vShow==='TJ'?'T.JUST':vShow==='F'?'FERIADO':vShow==='1/2'||vShow==='½'?'½ DÍA':'OK';
+
+      html += `<div style="background:#0f1118;border:1px solid var(--border);border-radius:10px;padding:10px 12px;min-width:80px;text-align:center;">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">${dLabel} ${dNum}</div>
+        <div style="background:${colorEstado};color:#fff;border-radius:5px;padding:2px 6px;font-size:10px;font-weight:700;margin-bottom:8px;">${textEstado}</div>
+        <!-- Override justificado -->
+        <select style="width:100%;padding:2px 3px;background:#181c2a;border:1px solid #3a4060;border-radius:5px;color:#e8eaf2;font-size:10px;font-family:'DM Sans',sans-serif;margin-bottom:6px;"
+          onchange="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').justDias['${key}']=this.value;renderLiqTabla()">
+          <option value="" ${!ovr?'selected':''}>— sin cambio —</option>
+          ${(vUp==='A'||vUp==='T')?`<option value="AJ" ${ovr==='AJ'?'selected':''}>→ F.Just</option>`:''}
+          ${vUp==='T'?`<option value="TJ" ${ovr==='TJ'?'selected':''}>→ T.Just</option>`:''}
+          ${vUp===''||vUp==='P'?`<option value="F" ${ovr==='F'?'selected':''}>→ Feriado</option>`:''}
+        </select>
+        <!-- Lluvia -->
+        <label style="display:flex;align-items:center;justify-content:center;gap:4px;font-size:10px;color:${llv?'#4f8ef7':'var(--muted)'};cursor:pointer;">
+          <input type="checkbox" ${llv?'checked':''} onchange="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').lluvia['${key}']=this.checked;renderLiqTabla()" style="cursor:pointer;">
+          ☔ Lluvia
+        </label>
+      </div>`;
+    });
+
+    html += `</div>
+
+      <!-- Adelanto -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+        <span style="font-size:12px;color:var(--muted);">💵 Adelanto semana:</span>
+        <input value="${extras.adelanto||''}" placeholder="0" 
+          style="width:130px;padding:6px 10px;background:#0f1118;border:1px solid var(--border);border-radius:7px;color:#e8eaf2;font-size:13px;font-family:'DM Sans',sans-serif;text-align:right;"
+          onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').adelanto=parseN(this.value);this.value=this.value?fmtInput(parseN(this.value)):'';"
+          onfocus="this.select()">
+      </div>
+
+      <!-- Resumen de cálculo -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px;">
+        <span style="padding:3px 9px;border-radius:6px;background:rgba(62,207,90,.08);color:#3ecf5a;border:1px solid rgba(62,207,90,.2);">Base: $${fmt(calc.totalBase)}</span>
+        ${calc.totalAdic>0?`<span style="padding:3px 9px;border-radius:6px;background:rgba(79,142,247,.08);color:#4f8ef7;border:1px solid rgba(79,142,247,.2);">Adicionales: $${fmt(calc.totalAdic)}</span>`:''}
+        ${calc.totalPunt>0?`<span style="padding:3px 9px;border-radius:6px;background:rgba(245,166,35,.08);color:#f5a623;border:1px solid rgba(245,166,35,.2);">Puntualidad: $${fmt(calc.totalPunt)}</span>`:''}
+        ${calc.totalAsist>0?`<span style="padding:3px 9px;border-radius:6px;background:rgba(99,179,113,.08);color:#63b371;border:1px solid rgba(99,179,113,.2);">Asistencia: $${fmt(calc.totalAsist)}</span>`:''}
+        ${calc.totalLluvia>0?`<span style="padding:3px 9px;border-radius:6px;background:rgba(79,142,247,.15);color:#7eb8f7;border:1px solid rgba(79,142,247,.3);">Lluvia: $${fmt(calc.totalLluvia)}</span>`:''}
+        ${calc.adelanto>0?`<span style="padding:3px 9px;border-radius:6px;background:rgba(204,0,0,.08);color:#ff6666;border:1px solid rgba(204,0,0,.2);">Adelanto: -$${fmt(calc.adelanto)}</span>`:''}
+      </div>
+    </div>`;
+  });
+
+  cont.innerHTML = html;
+}
+
+function liqImprimir(){
+  alert('La impresión de recibos se implementa en la Parte 4.');
 }
 
 </script>
