@@ -2906,8 +2906,262 @@ function renderLiqTabla(){
   cont.innerHTML = html;
 }
 
+// ── HELPERS ESTADÍSTICAS ──
+function liqGetEstadisticas(ch, soloMes){
+  // soloMes=true → mes actual | soloMes=false → desde ingreso
+  let ausentes=0, tardes=0;
+  const mesStr = chicosMesActual(); // "YYYY-MM"
+
+  ch.filas.forEach(fila=>{
+    Object.entries(fila.dias||{}).forEach(([key,val])=>{
+      const v = (val||'').trim().toUpperCase();
+      if(soloMes && !key.startsWith(mesStr)) return;
+      if(v==='A'||v==='AJ') ausentes++;
+      else if(v==='T'||v==='TJ') tardes++;
+    });
+  });
+  return { ausentes, tardes };
+}
+
+function liqFechaRecibo(semLabs){
+  // Último día laborable de la semana
+  const ultimo = semLabs[semLabs.length-1];
+  const d = ultimo.getDate();
+  const m = ultimo.getMonth()+1;
+  const y = String(ultimo.getFullYear()).slice(2);
+  return `${d}-${m}-${y}`;
+}
+
+function liqFmtPesos(n){
+  return '$ ' + Math.round(n).toLocaleString('es-AR');
+}
+
+function liqGenerarHtmlRecibo(ch, calc, semLabs, semLabel){
+  sueldosInit();
+  const s   = state.sueldos[ch.nombre]||{};
+  const dp  = ch.datosPersonales||{};
+  const fechaRecibo = liqFechaRecibo(semLabs);
+  const nombreCompleto = dp.nombreCompleto || ch.nombre.toUpperCase();
+  const cuil     = s.cuil || '';
+  const categoria= s.categoria || 'AYUDANTE DE CHOFER';
+  const fechaIng = ch.fechaIngreso || '';
+
+  // Estadísticas
+  const statsMes   = liqGetEstadisticas(ch, true);
+  const statsTotal = liqGetEstadisticas(ch, false);
+
+  // Construir conceptos del recibo
+  const conceptos = [];
+
+  // SEMANA (sueldo base)
+  if(calc.totalBase>0)
+    conceptos.push({ label:'SEMANA', detalle:'', monto: calc.totalBase });
+
+  // PUNTUALIDAD DIARIA (adicionales lunes + mar-vie)
+  if(calc.totalAdic>0)
+    conceptos.push({ label:'PUNTUALIDAD DIARIA -B', detalle:'', monto: calc.totalAdic });
+
+  // Desglose puntualidad diaria y tolerancia
+  const puntDiaria = parseN(s.puntDiaria)||0;
+  const asistDiaria= parseN(s.asistDiaria)||0;
+
+  // TOLERANCIA A PUNTUALIDAD (puntualidad diaria x días)
+  if(calc.totalPunt>0)
+    conceptos.push({ label:'TOLERANCIA A PUNT.-B', detalle: liqFmtPesos(puntDiaria)+' DIARIO', monto: calc.totalPunt });
+
+  // PUNT ABSOLUTA SEMANA — solo si no hubo tardanzas en toda la semana
+  const huboTarde = calc.detalleDias.some(d=>{
+    const v=d.vFinal; return v==='T'; // TJ no descuenta
+  });
+  const puntAbsoluta = parseN(s.puntDiaria)*5||0; // $2000 x 5 días = $10.000
+  if(!huboTarde && puntAbsoluta>0)
+    conceptos.push({ label:'PUNT ABSOLUTA SEMANA', detalle: liqFmtPesos(puntAbsoluta), monto: puntAbsoluta });
+
+  // ASIST PERF SEMANA — solo si no hubo faltas (A) en toda la semana
+  const huboFalta = calc.detalleDias.some(d=>{
+    const v=d.vFinal; return v==='A'; // AJ, F, F-anulado no cuentan
+  });
+  const asistSemana = asistDiaria*5||0; // $4000 x 5 días = $20.000
+  if(!huboFalta && asistSemana>0)
+    conceptos.push({ label:'ASIST PERF SEMANA', detalle: liqFmtPesos(asistSemana), monto: asistSemana });
+
+  // LLUVIA
+  if(calc.totalLluvia>0)
+    conceptos.push({ label:'LLUVIA', detalle:'', monto: calc.totalLluvia });
+
+  // ADELANTOS (negativo)
+  if(calc.adelanto>0)
+    conceptos.push({ label:'ADELANTOS', detalle:'', monto: -calc.adelanto, esAdelanto: true });
+
+  // Totales
+  const totalHaberes    = conceptos.filter(c=>c.monto>0).reduce((s,c)=>s+c.monto,0);
+  const totalAdelantos  = Math.abs(conceptos.filter(c=>c.esAdelanto).reduce((s,c)=>s+c.monto,0));
+  const neto = totalHaberes - totalAdelantos;
+
+  // Contar ausentes/tardes del mes y desde ingreso para nota al pie
+  const notaMes   = `Aus./Tardes del mes: ${statsMes.ausentes} aus. / ${statsMes.tardes} tardes`;
+  const notaTotal = `Aus./Tardes desde ingreso: ${statsTotal.ausentes} aus. / ${statsTotal.tardes} tardes`;
+
+  // Filas de conceptos HTML
+  let filasHtml = '';
+  conceptos.forEach(c=>{
+    const montoStr = c.esAdelanto
+      ? `<td style="text-align:right;padding:2px 6px;color:#cc4444;">(${liqFmtPesos(Math.abs(c.monto))})</td><td></td>`
+      : `<td style="text-align:right;padding:2px 6px;">${liqFmtPesos(c.monto)}</td><td></td>`;
+    filasHtml += `<tr>
+      <td style="padding:2px 4px;font-size:9px;width:18px;"></td>
+      <td style="padding:2px 6px;font-size:9px;" colspan="2">${c.label}${c.detalle?'&nbsp;&nbsp;<span style=\'font-size:8px;color:#666;\'>('+c.detalle+')</span>':''}</td>
+      ${montoStr}
+    </tr>`;
+  });
+
+  // Padding para completar renglones (mínimo 8 filas de conceptos)
+  const minFilas = 8;
+  for(let i=conceptos.length; i<minFilas; i++){
+    filasHtml += `<tr><td colspan="4" style="height:14px;"></td></tr>`;
+  }
+
+  return `
+  <div class="recibo-bloque">
+    <div style="font-size:8px;font-weight:700;text-align:center;border-bottom:1px solid #000;padding-bottom:2px;margin-bottom:4px;">
+      Replica Recibo de Haberes - Ley 20744
+    </div>
+    <table style="width:100%;font-size:9px;border-collapse:collapse;">
+      <tr>
+        <td style="width:50%;padding:1px 4px;"><strong>Empleador:</strong> YA VAMOS S.R.L.</td>
+        <td style="width:50%;padding:1px 4px;text-align:right;font-size:8px;">SARMIENTO 2864 L.10 CABA</td>
+      </tr>
+      <tr>
+        <td style="padding:1px 4px;"><strong>Beneficiario:</strong> ${nombreCompleto}</td>
+        <td style="padding:1px 4px;text-align:right;"><strong>CUIL:</strong> ${cuil}</td>
+      </tr>
+      <tr>
+        <td style="padding:1px 4px;font-size:8px;">${categoria}</td>
+        <td style="padding:1px 4px;text-align:right;font-size:8px;">Ingreso: ${fechaIng}</td>
+      </tr>
+      <tr>
+        <td colspan="2" style="padding:2px 4px;background:#f0f0f0;font-weight:700;font-size:9px;">
+          Remuneración correspondiente a: SEMANA ${fechaRecibo}
+        </td>
+      </tr>
+    </table>
+    <table style="width:100%;font-size:9px;border-collapse:collapse;margin-top:2px;">
+      <thead>
+        <tr style="border-bottom:1px solid #000;">
+          <th style="width:18px;padding:2px 4px;text-align:left;">Cód</th>
+          <th style="padding:2px 6px;text-align:left;">Concepto</th>
+          <th style="padding:2px 6px;text-align:left;font-size:8px;"></th>
+          <th style="padding:2px 6px;text-align:right;">Haberes</th>
+          <th style="padding:2px 6px;text-align:right;">Adelantos</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${filasHtml}
+        <tr><td colspan="5" style="padding:1px 4px;font-size:7.5px;color:#444;">${notaMes}</td></tr>
+        <tr><td colspan="5" style="padding:1px 4px;font-size:7.5px;color:#444;">${notaTotal}</td></tr>
+        <tr style="border-top:1px solid #000;">
+          <td colspan="2" style="padding:3px 4px;font-size:8px;">COBERTURA POR SEGURO DE VIDA - CIA. SUDAMERIS Póliza Nro.12 002457383</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="font-size:7.5px;border-top:1px solid #aaa;margin-top:2px;padding-top:2px;">
+      Recibi conforme el importe total más abajo detallado como Neto a Cobrar<br>
+      correspondiente al periodo y concepto indicado
+    </div>
+    <table style="width:100%;font-size:9px;border-collapse:collapse;margin-top:3px;">
+      <tr>
+        <td style="width:50%;padding:2px 4px;"><strong>Totales:</strong></td>
+        <td style="text-align:right;padding:2px 4px;"><strong>${liqFmtPesos(totalHaberes)}</strong></td>
+        <td style="text-align:right;padding:2px 4px;color:#cc4444;">${totalAdelantos>0?'('+liqFmtPesos(totalAdelantos)+')':''}</td>
+      </tr>
+      <tr style="background:#f5f5f5;">
+        <td colspan="2" style="padding:3px 4px;font-weight:700;font-size:10px;">
+          Neto a Cobrar: <span style="font-size:11px;">${liqFmtPesos(neto)}</span>
+        </td>
+        <td></td>
+      </tr>
+    </table>
+    <div style="display:flex;justify-content:space-between;margin-top:12px;font-size:9px;border-top:1px solid #aaa;padding-top:4px;">
+      <div>Firma: ____________________</div>
+      <div>Aclaración: ____________________</div>
+    </div>
+  </div>`;
+}
+
 function liqImprimir(){
-  alert('La impresión de recibos se implementa en la Parte 4.');
+  sueldosInit();
+  const semanas = liqGetSemanas();
+  const sem = semanas[liqSemSelIdx];
+  if(!sem){ alert('Seleccioná una semana primero.'); return; }
+
+  // Filtrar chicos activos (que tienen sueldo > 0 o tienen datos en la semana)
+  const chicosActivos = state.chicos.filter(ch=>{
+    const s = state.sueldos[ch.nombre]||{};
+    return parseN(s.sueldo)>0;
+  });
+
+  if(!chicosActivos.length){ alert('No hay empleados con sueldo configurado.'); return; }
+
+  // Generar recibos de a 2 por hoja
+  let paginasHtml = '';
+  for(let i=0; i<chicosActivos.length; i+=2){
+    const ch1 = chicosActivos[i];
+    const ch2 = chicosActivos[i+1]||null;
+    const extras1 = liqExtrasGet(liqSemSelIdx, ch1.nombre);
+    const calc1   = liqCalcEmpleado(ch1, liqSemSelIdx, sem.labs, extras1);
+    const rec1    = liqGenerarHtmlRecibo(ch1, calc1, sem.labs, sem.label);
+
+    let rec2 = '';
+    if(ch2){
+      const extras2 = liqExtrasGet(liqSemSelIdx, ch2.nombre);
+      const calc2   = liqCalcEmpleado(ch2, liqSemSelIdx, sem.labs, extras2);
+      rec2 = liqGenerarHtmlRecibo(ch2, calc2, sem.labs, sem.label);
+    }
+
+    paginasHtml += `
+    <div class="pagina">
+      <div class="columna">${rec1}</div>
+      <div class="separador"></div>
+      <div class="columna">${rec2}</div>
+    </div>`;
+  }
+
+  const ventana = window.open('','_blank');
+  ventana.document.write(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Recibos - Semana ${liqFechaRecibo(sem.labs)}</title>
+  <style>
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family: Arial, sans-serif; font-size:9px; color:#000; background:#fff; }
+    .pagina {
+      display:flex; flex-direction:row;
+      width:210mm; min-height:148mm;
+      padding:6mm 8mm;
+      page-break-after: always;
+      border-bottom: 1px dashed #ccc;
+    }
+    .columna { width:calc(50% - 5mm); }
+    .separador { width:10mm; border-left:1px dashed #aaa; margin:0 5mm; }
+    .recibo-bloque { width:100%; }
+    @media print {
+      body { margin:0; }
+      .pagina { border-bottom:none; page-break-after:always; }
+      .separador { border-left:1px dashed #aaa; }
+    }
+  </style>
+</head>
+<body>
+  ${paginasHtml}
+  <div style="text-align:center;margin:10px;font-size:10px;">
+    <button onclick="window.print()" style="padding:8px 24px;font-size:13px;cursor:pointer;background:#333;color:#fff;border:none;border-radius:6px;">🖨️ Imprimir</button>
+    <button onclick="window.close()" style="padding:8px 24px;font-size:13px;cursor:pointer;background:#999;color:#fff;border:none;border-radius:6px;margin-left:8px;">✕ Cerrar</button>
+  </div>
+</body>
+</html>`);
+  ventana.document.close();
 }
 
 </script>
