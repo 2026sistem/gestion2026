@@ -230,6 +230,7 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
   <div class="logo"><div class="logo-dot"></div>SISTEMA DE GESTIÓN</div>
   <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
     <span id="sg-indicator" style="font-size:11px;color:#6b7194;font-family:'DM Sans',sans-serif;"></span>
+    <button id="btn-undo" onclick="undoRestore()" disabled style="opacity:.4;background:rgba(245,166,35,.15);border:1px solid #f5a623;border-radius:7px;padding:5px 11px;font-size:11px;color:#f5a623;cursor:pointer;font-family:'DM Sans',sans-serif;">↩ Deshacer</button>
     <button onclick="guardarEnFirebase()" style="background:rgba(79,142,247,.15);border:1px solid var(--accent1);border-radius:7px;padding:5px 11px;font-size:11px;color:var(--accent1);cursor:pointer;font-family:'DM Sans',sans-serif;">💾 Guardar</button>
     <button onclick="exportarBackup()" style="background:transparent;border:1px solid var(--border);border-radius:7px;padding:5px 11px;font-size:11px;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;" onmouseover="this.style.color='var(--accent3)';this.style.borderColor='var(--accent3)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">⬇ Backup</button>
     <button onclick="importarBackup()" style="background:transparent;border:1px solid var(--border);border-radius:7px;padding:5px 11px;font-size:11px;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;" onmouseover="this.style.color='var(--accent1)';this.style.borderColor='var(--accent1)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">⬆ Restaurar</button>
@@ -248,65 +249,52 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
     <div class="menu-card c1" onclick="goTo('screen-cobros-menu')">
       <span class="card-icon">💰</span>
       <div class="card-title">COBROS</div>
-      <div class="card-desc">Cobros diarios por zona, semanales y quincenales. Pendientes de cobro.</div>
-      <div class="pill-count"><span class="dot"></span>3 secciones</div>
-      <div class="card-arrow">→</div>
-    </div>
-    <div class="menu-card c2" onclick="goTo('screen-creditos')">
-      <span class="card-icon">📈</span>
-      <div class="card-title">CRÉDITOS POR VENTAS</div>
-      <div class="card-desc">Jonas, Casa Paso, Banana, Nahuel, Almacén Home, Futuros.</div>
-      <div class="pill-count"><span class="dot"></span>6 clientes</div>
-      <div class="card-arrow">→</div>
-    </div>
-    <div class="menu-card c3" onclick="goTo('screen-retiros')">
-      <span class="card-icon">💸</span>
-      <div class="card-title">RETIROS</div>
-      <div class="card-desc">Retiros en pesos y dólares. Nito, Johnny, Fede y Diego.</div>
-      <div class="pill-count"><span class="dot"></span>$ y USD</div>
-      <div class="card-arrow">→</div>
-    </div>
-    <div class="menu-card c2" onclick="goTo('screen-chicos')">
-      <span class="card-icon">👥</span>
-      <div class="card-title">CHICOS GRALES</div>
-      <div class="card-desc">20 empleados. Registro semanal: móvil, asistencia, cobrado y adelanto.</div>
-      <div class="pill-count"><span class="dot"></span>20 empleados</div>
-      <div class="card-arrow">→</div>
-    </div>
-    <div class="menu-card c2" onclick="goTo('screen-chicos-ind')">
-      <span class="card-icon">👤</span>
-      <div class="card-title">CHICOS INDIVIDUALES</div>
-      <div class="card-desc">Resumen por empleado: ausentes, tardanzas, adelantos y motivos.</div>
-      <div class="pill-count"><span class="dot"></span>Por empleado</div>
+      <div class="card-desc">Cobros diarios por zona, semanales, quincenales y créditos por ventas.</div>
       <div class="card-arrow">→</div>
     </div>
     <div class="menu-card c1" onclick="goTo('screen-cheques')">
       <span class="card-icon">🧾</span>
       <div class="card-title">CHEQUES</div>
       <div class="card-desc">Cheques Z y A. Destino, número, cliente, banco e importe.</div>
-      <div class="pill-count"><span class="dot"></span>Cheques Z y A</div>
       <div class="card-arrow">→</div>
     </div>
-    <div class="menu-card c3" onclick="goTo('screen-central')">
-      <span class="card-icon">📊</span>
-      <div class="card-title">CENTRAL</div>
-      <div class="card-desc">Resumen general: caja, cheques, pendientes en $ y USD.</div>
-      <div class="pill-count"><span class="dot"></span>Resumen total</div>
+    <div class="menu-card c1" onclick="goTo('screen-retiros')">
+      <span class="card-icon">💸</span>
+      <div class="card-title">RETIROS</div>
+      <div class="card-desc">Retiros en pesos y dólares.</div>
       <div class="card-arrow">→</div>
     </div>
-    <div class="menu-card c1" onclick="goTo('screen-informe')">
-      <span class="card-icon">📋</span>
-      <div class="card-title">INFORME</div>
-      <div class="card-desc">Planes, bancos, cartera de cheques, USD MEP, acciones, compra USD.</div>
-      <div class="pill-count"><span class="dot"></span>7 cuadros</div>
+    <div class="menu-card c2" onclick="goTo('screen-chicos')">
+      <span class="card-icon">👥</span>
+      <div class="card-title">CHICOS DIARIOS</div>
+      <div class="card-desc">Registro diario: móvil, asistencia, cobrado y adelanto.</div>
       <div class="card-arrow">→</div>
     </div>
-    <div class="menu-card c3" onclick="goTo('screen-liquidacion')">
+    <div class="menu-card c2" onclick="goTo('screen-chicos-ind')">
+      <span class="card-icon">👤</span>
+      <div class="card-title">CHICOS INDIVIDUALES</div>
+      <div class="card-desc">Resumen por empleado: ausentes, tardanzas, adelantos y motivos.</div>
+      <div class="card-arrow">→</div>
+    </div>
+    <div class="menu-card c2" onclick="goTo('screen-liquidacion')">
       <span class="card-icon">🧮</span>
       <div class="card-title">LIQUIDACIÓN</div>
       <div class="card-desc">Liquidación semanal de empleados y configuración de sueldos.</div>
       <div class="card-arrow">→</div>
     </div>
+    <div class="menu-card c3" onclick="goTo('screen-central')">
+      <span class="card-icon">📊</span>
+      <div class="card-title">INFORME DE CAJA</div>
+      <div class="card-desc">Resumen general: caja, cheques efectivizados, pendientes en $ y USD.</div>
+      <div class="card-arrow">→</div>
+    </div>
+    <div class="menu-card c3" onclick="goTo('screen-informe')">
+      <span class="card-icon">📈</span>
+      <div class="card-title">INVERSIONES</div>
+      <div class="card-desc">Planes, bancos, cartera de cheques, USD MEP, acciones, compra USD.</div>
+      <div class="card-arrow">→</div>
+    </div>
+    <div class="menu-card c3" onclick="goTo('screen-liquidacion')" style="display:none;"></div>
   </div>
   <div class="bottom-info">
     <div class="info-chip"><span class="dot"></span>Sistema en línea</div>
@@ -324,6 +312,12 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
     <div class="sub-btn" onclick="goTo('screen-cobros-diarios')"><div class="sub-icon">💰</div><div class="sub-label">COBROS DIARIOS</div></div>
     <div class="sub-btn" onclick="goTo('screen-cobros-semanales')"><div class="sub-icon">📅</div><div class="sub-label">COBROS SEM / QUINCENALES</div></div>
     <div class="sub-btn" onclick="goTo('screen-cobros-pendientes')"><div class="sub-icon">⏳</div><div class="sub-label">PENDIENTES DE COBRO</div></div>
+    <div class="sub-btn" onclick="goTo('screen-cred-jonas')"><div class="sub-icon">📦</div><div class="sub-label">JONAS<br><span style="font-size:10px;color:var(--muted);">$6.529,94/bulto</span></div></div>
+    <div class="sub-btn" onclick="goTo('screen-cred-casapaso')"><div class="sub-icon">🏠</div><div class="sub-label">CASA PASO<br><span style="font-size:10px;color:var(--muted);">$4.388,10/bulto</span></div></div>
+    <div class="sub-btn" onclick="goTo('screen-cred-banana')"><div class="sub-icon">🍌</div><div class="sub-label">BANANA<br><span style="font-size:10px;color:var(--muted);">$4.919/bulto</span></div></div>
+    <div class="sub-btn" onclick="goTo('screen-cred-nahuel')"><div class="sub-icon">👤</div><div class="sub-label">NAHUEL<br><span style="font-size:10px;color:var(--muted);">$4.919/bulto</span></div></div>
+    <div class="sub-btn" onclick="goTo('screen-cred-home')"><div class="sub-icon">🏪</div><div class="sub-label">ALMACÉN HOME<br><span style="font-size:10px;color:var(--muted);">$5.526/bulto</span></div></div>
+    <div class="sub-btn" onclick="goTo('screen-cred-futuros')"><div class="sub-icon">🔮</div><div class="sub-label">FUTUROS<br><span style="font-size:10px;color:var(--muted);">$4.936,23 + dist.</span></div></div>
   </div>
 </div>
 
@@ -519,7 +513,7 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
   <button class="btn-back" onclick="goTo('screen-home')">← Volver al menú</button>
   <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="active">Chicos</span></div>
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
-    <p class="section-title" style="margin:0;">CHICOS GRALES</p>
+    <p class="section-title" style="margin:0;">CHICOS DIARIOS</p>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
       <input type="month" id="chicos-mes" onchange="renderChicos()" style="padding:8px 12px;font-size:13px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);">
       <button class="btn add" onclick="addChicoNuevo()">+ Agregar empleado</button>
@@ -562,8 +556,8 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
 <!-- ═══════════════ CENTRAL ═══════════════ -->
 <div id="screen-central" class="screen">
   <button class="btn-back" onclick="goTo('screen-home')">← Volver al menú</button>
-  <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="active">Central</span></div>
-  <p class="section-title">CENTRAL</p>
+  <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="active">Informe de Caja</span></div>
+  <p class="section-title">INFORME DE CAJA</p>
   <p class="section-sub">Resumen general del sistema</p>
   <div class="stats-grid" id="central-stats"></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;flex-wrap:wrap;">
@@ -582,14 +576,16 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
       </table></div>
     </div>
   </div>
+  <!-- Cheques a efectivizar -->
+  <div class="content-area" style="margin-top:16px;" id="central-efectivizar-cont"></div>
 </div>
 
 
 <!-- ═══════════════ INFORME ═══════════════ -->
 <div id="screen-informe" class="screen">
   <button class="btn-back" onclick="goTo('screen-home')">← Volver al menú</button>
-  <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="active">Informe</span></div>
-  <p class="section-title">INFORME</p>
+  <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="active">Inversiones</span></div>
+  <p class="section-title">INVERSIONES</p>
   <div id="informe-resumen" class="stats-grid" style="margin-bottom:28px;"></div>
   <div id="informe-container"></div>
 </div>
@@ -713,7 +709,8 @@ let state = {
   })),
   cheques: { z:[], a:[] },
   sueldos: {},
-  casaAri: { cheques:[], cobros:[] }
+  casaAri: { cheques:[], cobros:[] },
+  efectivizados: []
 };
 ZONAS.forEach(z => state.cobros.zonas[z] = initZona(z));
 
@@ -1950,48 +1947,51 @@ function renderCheques(){
 
     const rows=state.cheques[t];
 
-    // Ordenar por fecha
-    rows.sort((a,b)=>{
-      if(!a.fecha && !b.fecha) return 0;
-      if(!a.fecha) return 1;
-      if(!b.fecha) return -1;
-      return a.fecha.localeCompare(b.fecha);
+    // Asignar IDs estables si no tienen
+    rows.forEach((r,i)=>{ if(!r._id) r._id = Date.now()+'_'+i; });
+
+    // Ordenar por fecha pero mantener referencia al índice original
+    const indexed = rows.map((r,i)=>({r,i}));
+    indexed.sort((a,b)=>{
+      if(!a.r.fecha && !b.r.fecha) return 0;
+      if(!a.r.fecha) return 1;
+      if(!b.r.fecha) return -1;
+      return a.r.fecha.localeCompare(b.r.fecha);
     });
 
-    // Separar pendientes de entregados/rechazados
-    const pendientes = rows.filter(r=>(r.entregado||'No entregado')==='No entregado');
-    const entregados = rows.filter(r=>r.entregado==='Entregado'||r.entregado==='Rechazado');
+    const pendientes = indexed.filter(({r})=>(r.entregado||'No entregado')==='No entregado');
+    const entregados = indexed.filter(({r})=>r.entregado==='Entregado'||r.entregado==='Rechazado'||r.entregado==='A efectivizar');
 
     function estadoBadge(est, ti, origIdx){
       const e = est||'No entregado';
-      const cls = e==='Entregado'?'cobrado':'pend';
-      const color = e==='Rechazado'?'background:rgba(139,0,139,.3);color:#e040fb;border-color:#e040fb;':'';
+      const cls = e==='Entregado'?'cobrado':e==='A efectivizar'?'cobrado':'pend';
+      const color = e==='Rechazado'?'background:rgba(139,0,139,.3);color:#e040fb;border-color:#e040fb;'
+                  : e==='A efectivizar'?'background:rgba(245,166,35,.2);color:#f5a623;border-color:#f5a623;':'';
       return `<span class="badge ${cls}" style="cursor:pointer;white-space:nowrap;${color}"
-        onclick="const opts=['No entregado','Entregado','Rechazado'];const cur=state.cheques['${ti}'][${origIdx}].entregado||'No entregado';const ix=opts.indexOf(cur);state.cheques['${ti}'][${origIdx}].entregado=opts[(ix+1)%3];renderCheques();autoGuardar()">${e}</span>`;
+        onclick="undoSave();const opts=['No entregado','Entregado','A efectivizar','Rechazado'];const cur=state.cheques['${ti}'][${origIdx}].entregado||'No entregado';const ix=opts.indexOf(cur);state.cheques['${ti}'][${origIdx}].entregado=opts[(ix+1)%4];renderCheques();autoGuardar()">${e}</span>`;
     }
 
-    // Solo mostrar pendientes en la tabla principal
-    tb.innerHTML = pendientes.map((r)=>{
-      const origIdx = rows.indexOf(r);
-      return `<tr class="${FOC&&FOC.tbodyId===tbodyId&&FOC.row===origIdx?'row-selected':''}">
-        <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;">${origIdx+1}</td>
-        <td>${cellHtml(tbodyId,origIdx,0,r.destino,'','Destino')}</td>
-        <td style="padding:3px 6px;">${dateInputHtml(r.fecha,"state.cheques['"+t+"']["+origIdx+"].fecha=this.value;renderCheques();autoGuardar()",'130px')}</td>
-        <td>${cellHtml(tbodyId,origIdx,2,r.nro,'90px','Nro.')}</td>
-        <td>${cellHtml(tbodyId,origIdx,3,r.cliente,'','Cliente')}</td>
-        <td>${cellHtml(tbodyId,origIdx,4,r.banco,'','Banco')}</td>
-        <td>${cellHtml(tbodyId,origIdx,5,r.importe,'110px','0,00')}</td>
-        <td style="padding:4px 8px;">${estadoBadge(r.entregado,t,origIdx)}</td>
+    // Mostrar pendientes
+    tb.innerHTML = pendientes.map(({r, i})=>{
+      return `<tr class="${FOC&&FOC.tbodyId===tbodyId&&FOC.row===i?'row-selected':''}">
+        <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;">${i+1}</td>
+        <td>${cellHtml(tbodyId,i,0,r.destino,'','Destino')}</td>
+        <td style="padding:3px 6px;">${dateInputHtml(r.fecha,"state.cheques['"+t+"']["+i+"].fecha=this.value;renderCheques();autoGuardar()",'130px')}</td>
+        <td>${cellHtml(tbodyId,i,2,r.nro,'90px','Nro.')}</td>
+        <td>${cellHtml(tbodyId,i,3,r.cliente,'','Cliente')}</td>
+        <td>${cellHtml(tbodyId,i,4,r.banco,'','Banco')}</td>
+        <td>${cellHtml(tbodyId,i,5,r.importe,'110px','0,00')}</td>
+        <td style="padding:4px 8px;">${estadoBadge(r.entregado,t,i)}</td>
       </tr>`;
-    }).join('');
+    }).join('') || `<tr><td colspan="8" style="color:var(--muted);padding:12px;text-align:center;font-size:12px;">Sin cheques pendientes</td></tr>`;
 
     bindGridCells(tbodyId,6,()=>rows,()=>{state.cheques[t].push({destino:'',fecha:'',nro:'',cliente:'',banco:'',importe:'',entregado:'No entregado'});renderCheques();},renderCheques,(r,c,v)=>{const ks=['destino',null,'nro','cliente','banco','importe'];if(ks[c])rows[r][ks[c]]=v;autoGuardar();});
 
-    const totPend = pendientes.reduce((s,r)=>s+parseN(r.importe||0),0);
-    const totEnt  = entregados.reduce((s,r)=>s+parseN(r.importe||0),0);
+    const totPend = pendientes.reduce((s,{r})=>s+parseN(r.importe||0),0);
+    const totEnt  = entregados.reduce((s,{r})=>s+parseN(r.importe||0),0);
     tf.innerHTML=`<td colspan="7" style="color:var(--muted);font-size:11px;padding:8px 10px;">TOTAL PENDIENTES</td><td style="color:var(--accent1);padding:8px 10px;">$${fmt(totPend)}</td>`;
 
-    // Sección entregados/rechazados
+    // Sección entregados/rechazados/a efectivizar
     const secId='cheques-'+t+'-entregados';
     let sec=document.getElementById(secId);
     if(!sec){
@@ -2004,18 +2004,17 @@ function renderCheques(){
         <div style="font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:.08em;color:#6b7194;margin-bottom:10px;">CHEQUES ENTREGADOS / RECHAZADOS</div>
         <div class="tbl-wrap"><table>
           <thead><tr><th>#</th><th>Destino</th><th>Fecha</th><th>Nro.</th><th>Cliente</th><th>Banco</th><th>Importe</th><th>Estado</th></tr></thead>
-          <tbody>${entregados.map((r,i)=>{
-            const origIdx=rows.indexOf(r);
+          <tbody>${entregados.map(({r,i},n)=>{
             const imp = parseN(r.importe||0);
             return `<tr style="opacity:.7;">
-              <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;">${i+1}</td>
+              <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;">${n+1}</td>
               <td style="padding:6px 10px;font-size:12px;">${r.destino||'—'}</td>
               <td style="padding:6px 10px;font-size:12px;">${fmtFechaDisplay(r.fecha)||'—'}</td>
               <td style="padding:6px 10px;font-size:12px;">${r.nro||'—'}</td>
               <td style="padding:6px 10px;font-size:12px;">${r.cliente||'—'}</td>
               <td style="padding:6px 10px;font-size:12px;">${r.banco||'—'}</td>
               <td style="padding:6px 10px;font-size:12px;">$${fmt(imp)}</td>
-              <td style="padding:4px 8px;">${estadoBadge(r.entregado,t,origIdx)}</td>
+              <td style="padding:4px 8px;">${estadoBadge(r.entregado,t,i)}</td>
             </tr>`;
           }).join('')}</tbody>
           <tfoot><tr><td colspan="7" style="color:var(--muted);font-size:11px;padding:8px 10px;">TOTAL</td><td style="color:#6b7194;padding:8px 10px;">$${fmt(totEnt)}</td></tr></tfoot>
@@ -2035,16 +2034,94 @@ function renderCentral(){
   const totalZ=state.cheques.z.reduce((s,c)=>s+parseN(c.importe),0);
   const totalA=state.cheques.a.reduce((s,c)=>s+parseN(c.importe),0);
   const pendTotal=[...SEM_CLIENTES.flatMap(cl=>(state.cobros.semanales[cl.key]||[]).filter(r=>r.estado==='Pendiente'&&r.importe)),...(state.cobros.especiales?ESPECIALES.flatMap(e=>(state.cobros.especiales[e.key]?.rows||[]).filter(r=>r.estado==='Pendiente'&&r.importe)):[])].reduce((s,r)=>s+parseN(r.importe),0);
+
+  // Cheques a efectivizar
+  if(!state.efectivizados) state.efectivizados = [];
+  const aEfectivizar = [
+    ...state.cheques.z.filter(c=>c.cliente&&c.entregado==='A efectivizar').map(c=>({...c,tipo:'z'})),
+    ...state.cheques.a.filter(c=>c.cliente&&c.entregado==='A efectivizar').map(c=>({...c,tipo:'a'}))
+  ];
+  const totalEfectivizados = state.efectivizados.reduce((s,e)=>s+parseN(e.neto),0);
+
   document.getElementById('central-stats').innerHTML=`
     <div class="stat-card"><div class="stat-label">Retiros $</div><div class="stat-val" style="color:var(--accent1);">$${fmt(totalARS)}</div></div>
     <div class="stat-card"><div class="stat-label">Retiros USD</div><div class="stat-val" style="color:var(--accent3);">U$S${fmt(totalUSD)}</div></div>
     <div class="stat-card"><div class="stat-label">Cheques Z</div><div class="stat-val">$${fmt(totalZ)}</div></div>
     <div class="stat-card"><div class="stat-label">Cheques A</div><div class="stat-val">$${fmt(totalA)}</div></div>
-    <div class="stat-card"><div class="stat-label">Pendientes cobro</div><div class="stat-val" style="color:var(--accent2);">$${fmt(pendTotal)}</div></div>`;
+    <div class="stat-card"><div class="stat-label">Pendientes cobro</div><div class="stat-val" style="color:var(--accent2);">$${fmt(pendTotal)}</div></div>
+    <div class="stat-card"><div class="stat-label">Efectivizado caja</div><div class="stat-val" style="color:#3ecf5a;">$${fmt(totalEfectivizados)}</div></div>`;
+
   const pend=[...SEM_CLIENTES.flatMap(cl=>(state.cobros.semanales[cl.key]||[]).filter(r=>r.estado==='Pendiente'&&r.periodo).map(r=>({cliente:cl.label,zona:'Semanal',importe:r.importe})))];
   document.getElementById('central-pend').innerHTML=pend.length?pend.map(p=>`<tr><td style="padding:8px 10px;">${p.cliente}</td><td style="padding:8px 10px;">${p.zona}</td><td style="padding:8px 10px;">$${fmt(p.importe)}</td><td style="padding:8px 10px;"><span class="badge pend">Pendiente</span></td></tr>`).join(''):`<tr><td colspan="4" style="color:var(--muted);padding:14px;text-align:center;">Sin pendientes</td></tr>`;
   const chAll=[...state.cheques.z.filter(c=>c.cliente).map(c=>({...c,tipo:'z'})),...state.cheques.a.filter(c=>c.cliente).map(c=>({...c,tipo:'a'}))];
   document.getElementById('central-cheques').innerHTML=chAll.length?chAll.map(c=>`<tr><td style="padding:8px 10px;"><span class="badge ${c.tipo}">${c.tipo.toUpperCase()}</span></td><td style="padding:8px 10px;">${c.cliente||'—'}</td><td style="padding:8px 10px;">${c.banco||'—'}</td><td style="padding:8px 10px;">$${fmt(parseN(c.importe||0))}</td></tr>`).join(''):`<tr><td colspan="4" style="color:var(--muted);padding:14px;text-align:center;">Sin cheques</td></tr>`;
+
+  // Panel de efectivización
+  const ec = document.getElementById('central-efectivizar-cont');
+  if(!ec) return;
+
+  const pendEfRows = aEfectivizar.map((c,i)=>{
+    const key = c.tipo + '_' + (c.nro||i);
+    return `<tr>
+      <td style="padding:6px 8px;"><span class="badge ${c.tipo}">${c.tipo.toUpperCase()}</span></td>
+      <td style="padding:6px 8px;font-size:12px;">${c.cliente||'—'}</td>
+      <td style="padding:6px 8px;font-size:12px;">${c.banco||'—'}</td>
+      <td style="padding:6px 8px;font-size:12px;text-align:right;">$${fmt(parseN(c.importe))}</td>
+      <td style="padding:6px 8px;">
+        <input id="comision-${key}" placeholder="Comisión $" style="width:110px;padding:4px 7px;background:#0f1118;border:1px solid var(--border);border-radius:6px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;" onfocus="this.select()">
+      </td>
+      <td style="padding:6px 8px;">
+        <button onclick="efectivizarCheque('${c.tipo}','${c.nro||''}','${c.cliente||''}',${parseN(c.importe)},'comision-${key}')" style="padding:5px 12px;background:rgba(62,207,90,.15);border:1px solid rgba(62,207,90,.3);border-radius:6px;color:#3ecf5a;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">✓ Efectivizar</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const efectivizadosRows = state.efectivizados.map((e,i)=>`
+    <tr>
+      <td style="padding:5px 8px;font-size:11px;color:var(--muted);">${e.fecha||'—'}</td>
+      <td style="padding:5px 8px;font-size:12px;">${e.cliente||'—'}</td>
+      <td style="padding:5px 8px;font-size:12px;text-align:right;">$${fmt(parseN(e.bruto))}</td>
+      <td style="padding:5px 8px;font-size:12px;text-align:right;color:#e05c5c;">-$${fmt(parseN(e.comision))}</td>
+      <td style="padding:5px 8px;font-size:12px;text-align:right;color:#3ecf5a;font-weight:600;">$${fmt(parseN(e.neto))}</td>
+      <td style="padding:5px 8px;">
+        <button onclick="state.efectivizados.splice(${i},1);autoGuardar();renderCentral()" style="background:transparent;border:none;color:#4a5070;cursor:pointer;font-size:11px;" onmouseover="this.style.color='#e05c5c'" onmouseout="this.style.color='#4a5070'">✕</button>
+      </td>
+    </tr>`).join('');
+
+  ec.innerHTML = `
+    <div style="margin-bottom:16px;">
+      <div class="zone-title" style="margin-bottom:10px;color:#f5a623;">🏦 Cheques a Efectivizar</div>
+      ${aEfectivizar.length ? `
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Tipo</th><th>Cliente</th><th>Banco</th><th style="text-align:right;">Importe</th><th>Comisión</th><th></th></tr></thead>
+        <tbody>${pendEfRows}</tbody>
+      </table></div>` : `<p style="color:var(--muted);font-size:13px;">No hay cheques marcados como "A efectivizar".</p>`}
+    </div>
+    <div>
+      <div class="zone-title" style="margin-bottom:10px;color:#3ecf5a;">✅ Efectivizados en Caja</div>
+      ${state.efectivizados.length ? `
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Fecha</th><th>Cliente</th><th style="text-align:right;">Bruto</th><th style="text-align:right;">Comisión</th><th style="text-align:right;">Neto</th><th></th></tr></thead>
+        <tbody>${efectivizadosRows}</tbody>
+        <tfoot><tr class="total-row"><td colspan="4">Total efectivizado</td><td style="text-align:right;">$${fmt(totalEfectivizados)}</td><td></td></tr></tfoot>
+      </table></div>` : `<p style="color:var(--muted);font-size:13px;">Sin cheques efectivizados aún.</p>`}
+    </div>`;
+}
+
+function efectivizarCheque(tipo, nro, cliente, bruto, comisionInputId){
+  const comisionInput = document.getElementById(comisionInputId);
+  const comision = parseN(comisionInput ? comisionInput.value : '0');
+  const neto = bruto - comision;
+  const fecha = new Date().toLocaleDateString('es-AR');
+  if(!state.efectivizados) state.efectivizados = [];
+  state.efectivizados.push({ fecha, cliente, bruto, comision, neto });
+  // Marcar el cheque como Entregado (ya efectivizado)
+  const rows = state.cheques[tipo];
+  const idx = rows.findIndex(c=>c.nro===nro&&c.cliente===cliente);
+  if(idx>=0) rows[idx].entregado = 'Entregado';
+  autoGuardar();
+  renderCentral();
+  renderCheques();
 }
 
 
@@ -2504,7 +2581,8 @@ function prepararParaFirebase(s){
     chicosJson: JSON.stringify(s.chicos||[]),
     cheques:    s.cheques,
     sueldos:    s.sueldos||{},
-    casaAri:    s.casaAri||{cheques:[],cobros:[]}
+    casaAri:       s.casaAri||{cheques:[],cobros:[]},
+    efectivizados: s.efectivizados||[]
   };
 }
 
@@ -2540,6 +2618,7 @@ function restaurarDesdeFirebase(s){
   else if(s.chicos && Array.isArray(s.chicos)) state.chicos = s.chicos;
   if(s.sueldos) state.sueldos = s.sueldos;
   if(s.casaAri) state.casaAri = s.casaAri;
+  if(s.efectivizados) state.efectivizados = s.efectivizados;
 }
 
 function guardarEnFirebase(){
@@ -2561,6 +2640,7 @@ function guardarEnFirebase(){
 
 function autoGuardar(){
   if(!_listo) return;
+  undoSave();
   clearTimeout(_timer);
   _timer = setTimeout(guardarEnFirebase, 2000);
 }
@@ -3317,6 +3397,32 @@ function liqImprimir(){
 </body>
 </html>`);
   ventana.document.close();
+}
+
+// ── HISTORIAL DE DESHACER (10 pasos) ──
+const _undoStack = [];
+const _UNDO_MAX  = 10;
+function undoSave(){
+  try {
+    _undoStack.push(JSON.stringify(state));
+    if(_undoStack.length > _UNDO_MAX) _undoStack.shift();
+    document.getElementById('btn-undo').style.opacity = '1';
+    document.getElementById('btn-undo').disabled = false;
+  } catch(e){}
+}
+function undoRestore(){
+  if(!_undoStack.length) return;
+  const prev = _undoStack.pop();
+  try {
+    Object.assign(state, JSON.parse(prev));
+    if(!_undoStack.length){
+      document.getElementById('btn-undo').style.opacity = '.4';
+      document.getElementById('btn-undo').disabled = true;
+    }
+    renderZonas();
+    autoGuardar();
+    ind('↩ Deshecho','#f5a623');
+  } catch(e){}
 }
 
 </script>
