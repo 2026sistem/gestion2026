@@ -242,7 +242,7 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
 
 <!-- HOME -->
 <div id="screen-home" class="screen active">
-  <p class="section-title">PANEL PRINCIPAL</p>
+  
   <p class="section-sub">Seleccioná un módulo para continuar</p>
   <div class="menu-grid">
     <div class="menu-card c1" onclick="goTo('screen-cobros-menu')">
@@ -381,9 +381,9 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
   <p class="section-sub">Seleccioná un cliente para ver y editar su tabla</p>
   <div class="submenu-grid principal-sub" style="margin-bottom:24px;">
     <div class="sub-btn" onclick="goTo('screen-cred-jonas')"><div class="sub-icon">📦</div><div class="sub-label">JONAS<br><span style="font-size:10px;color:var(--muted);">$6.529,94/bulto</span></div></div>
-    <div class="sub-btn" onclick="goTo('screen-cred-casapaso')"><div class="sub-icon">🏠</div><div class="sub-label">CASA PASO<br><span style="font-size:10px;color:var(--muted);">$4.101,03/bulto</span></div></div>
-    <div class="sub-btn" onclick="goTo('screen-cred-banana')"><div class="sub-icon">🍌</div><div class="sub-label">BANANA<br><span style="font-size:10px;color:var(--muted);">$4.597/bulto</span></div></div>
-    <div class="sub-btn" onclick="goTo('screen-cred-nahuel')"><div class="sub-icon">👤</div><div class="sub-label">NAHUEL<br><span style="font-size:10px;color:var(--muted);">$4.597/bulto</span></div></div>
+    <div class="sub-btn" onclick="goTo('screen-cred-casapaso')"><div class="sub-icon">🏠</div><div class="sub-label">CASA PASO<br><span style="font-size:10px;color:var(--muted);">$4.388,10/bulto</span></div></div>
+    <div class="sub-btn" onclick="goTo('screen-cred-banana')"><div class="sub-icon">🍌</div><div class="sub-label">BANANA<br><span style="font-size:10px;color:var(--muted);">$4.919/bulto</span></div></div>
+    <div class="sub-btn" onclick="goTo('screen-cred-nahuel')"><div class="sub-icon">👤</div><div class="sub-label">NAHUEL<br><span style="font-size:10px;color:var(--muted);">$4.919/bulto</span></div></div>
     <div class="sub-btn" onclick="goTo('screen-cred-home')"><div class="sub-icon">🏪</div><div class="sub-label">ALMACÉN HOME<br><span style="font-size:10px;color:var(--muted);">$5.526/bulto</span></div></div>
     <div class="sub-btn" onclick="goTo('screen-cred-futuros')"><div class="sub-icon">🔮</div><div class="sub-label">FUTUROS<br><span style="font-size:10px;color:var(--muted);">$4.936,23 + dist.</span></div></div>
   </div>
@@ -622,7 +622,7 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
 const ZONAS = ['Pasteur','Paso 100/200','Paso 300','Castelli','Sarmiento','Ctes / V.Gómez / Larrea'];
 const PERSONAS = ['Nito','Johnny','Fede','Diego'];
 const CLIENTES_FIJOS = ['JONAS','CASA PASO','BANANA','NAHUEL','ALMACEN HOME','FUTUROS'];
-const PRECIO_BULTO = {JONAS:6529.94,'CASA PASO':4101.03,BANANA:4597,NAHUEL:4597,'ALMACEN HOME':5526,FUTUROS:4936.23};
+const PRECIO_BULTO = {JONAS:6529.94,'CASA PASO':4388.10,BANANA:4919,NAHUEL:4919,'ALMACEN HOME':5526,FUTUROS:4936.23};
 const CHICOS_INIT = ['Marcelo','Raúl','César','Pablo','Manuel','Valentín','Leandro','Ariel','Matías','Damián','Agustín','Coco','Gastón','Kevin','Bautista','Lucas','Cristian','Colo','Esteban','Mosqui'];
 const EMPTY = 12;
 
@@ -636,9 +636,9 @@ const CLIENTES_ZONA = {
 };
 
 const ESPECIALES = [
-  {key:'reydavid',  label:'REY DAVID',  renglones:4},
-  {key:'casaedu',   label:'CASA EDU',   renglones:4},
-  {key:'enchulate', label:'ENCHULATE',  renglones:4},
+  {key:'reydavid',  label:'REY DAVID  $7.079.-',  renglones:4},
+  {key:'casaedu',   label:'CASA EDU  $6.800.-',   renglones:4},
+  {key:'enchulate', label:'ENCHULATE  $7.000.-',  renglones:4},
 ];
 
 // Casa Ari es especial — tiene cheques a cuenta + cobros diarios
@@ -647,9 +647,9 @@ const ESPECIALES = [
 const SEM_RENGLONES = {jonas:2, nahuel:2, banana:2, casapaso:8, futuros:8, home:4};
 const SEM_CLIENTES = [
   {key:'jonas',    label:'JONAS',        precio:'$6.529,94/bulto'},
-  {key:'banana',   label:'BANANA',       precio:'$4.597/bulto'},
-  {key:'nahuel',   label:'NAHUEL',       precio:'$4.597/bulto'},
-  {key:'casapaso', label:'CASA PASO',    precio:'$4.101,03/bulto'},
+  {key:'banana',   label:'BANANA',       precio:'$4.919/bulto'},
+  {key:'nahuel',   label:'NAHUEL',       precio:'$4.919/bulto'},
+  {key:'casapaso', label:'CASA PASO',    precio:'$4.388,10/bulto'},
   {key:'home',     label:'ALMACÉN HOME', precio:'$5.526/bulto'},
   {key:'futuros',  label:'FUTUROS',      precio:'Bulto $4.936,23 · Dist. $992.557'},
 ];
@@ -919,7 +919,7 @@ function renderEspeciales(container){
       return `<tr class="${isFoc?'row-selected':''}">
         <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;">${i+1}</td>
         <td style="padding:2px 4px;"><input type="date" value="${(r.fecha||'').includes('/')?((f=>f.length===3?f[2]+'-'+f[1]+'-'+f[0]:r.fecha)(r.fecha.split('/'))):r.fecha||''}" onchange="espSetFecha('${e.key}',${i},this.value)" style="padding:3px 5px;font-size:12px;border:1px solid var(--border);border-radius:5px;background:var(--card);color:var(--text);font-family:'DM Sans',sans-serif;width:130px;cursor:pointer;"></td>
-        <td>${cellHtml('esp-'+e.key,i,0,r.importe,'','0,00')}</td>
+        <td>${cellHtml('esp-'+e.key,i,0,r.importe,'width:75px','0,00')}</td>
         <td><span class="badge ${r.estado==='Cobrado'?'cobrado':'pend'}" style="cursor:pointer;" onclick="state.cobros.especiales['${e.key}'].rows[${i}].estado=state.cobros.especiales['${e.key}'].rows[${i}].estado==='Pendiente'?'Cobrado':'Pendiente';renderZonas();autoGuardar()">${r.estado}</span></td>
       </tr>`;}).join('');
     html+=`<div style="background:var(--card);border:1px solid rgba(79,142,247,.25);border-radius:12px;padding:16px;">
@@ -979,13 +979,22 @@ function renderCasaAri(container){
       </td>
     </tr>`).join('');
 
-  const cobrosHtml = ca.cobros.length ? ca.cobros.map((c,i)=>`
+  const cobrosHtml = ca.cobros.length ? ca.cobros.map((c,i)=>{
+    const acumulado = ca.cobros.slice(0,i+1).reduce((s,x)=>s+parseN(x.importe),0);
+    const saldoAcum = totalCheques - acumulado;
+    return `
     <tr>
-      <td style="padding:4px 8px;font-size:12px;">${c.fecha||'—'}</td>
-      <td style="padding:4px 8px;font-size:12px;text-align:right;">$${fmt(parseN(c.importe))}</td>
-      <td style="padding:4px 8px;font-size:12px;text-align:right;color:#f5a623;">-$${fmt(totalCobros - ca.cobros.slice(i+1).reduce((s,x)=>s+parseN(x.importe),0))}</td>
-    </tr>`).join('') :
-    `<tr><td colspan="3" style="color:var(--muted);padding:10px;text-align:center;font-size:12px;">Sin remitos registrados</td></tr>`;
+      <td style="padding:3px 6px;font-size:12px;">${c.fecha||'—'}</td>
+      <td style="padding:3px 6px;">
+        <input value="${c.importe||''}" style="width:110px;padding:3px 6px;background:#0f1118;border:1px solid var(--border);border-radius:5px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+          onblur="state.casaAri.cobros[${i}].importe=this.value;autoGuardar();renderZonas()" onfocus="this.select()">
+      </td>
+      <td style="padding:3px 6px;font-size:12px;text-align:right;color:#f5a623;">$${fmt(saldoAcum)}</td>
+      <td style="padding:3px 6px;">
+        <button onclick="state.casaAri.cobros.splice(${i},1);autoGuardar();renderZonas()" style="background:transparent;border:none;color:#4a5070;cursor:pointer;font-size:11px;" onmouseover="this.style.color='#e05c5c'" onmouseout="this.style.color='#4a5070'">✕</button>
+      </td>
+    </tr>`;}).join('') :
+    `<tr><td colspan="4" style="color:var(--muted);padding:10px;text-align:center;font-size:12px;">Sin remitos registrados</td></tr>`;
 
   const html = `
   <div style="margin-top:16px;margin-bottom:28px;">
@@ -1017,7 +1026,7 @@ function renderCasaAri(container){
         <div style="font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:.08em;color:var(--accent1);margin-bottom:10px;">Remitos entregados</div>
         <div class="tbl-wrap">
           <table>
-            <thead><tr><th>Fecha</th><th style="text-align:right;">Cobrado</th><th style="text-align:right;">Acumulado</th></tr></thead>
+            <thead><tr><th>Fecha</th><th style="text-align:right;">Remito</th><th style="text-align:right;">Saldo</th><th></th></tr></thead>
             <tbody>${cobrosHtml}</tbody>
             <tfoot><tr class="total-row"><td>Total remitos</td><td style="text-align:right;">$${fmt(totalCobros)}</td><td></td></tr></tfoot>
           </table>
@@ -2684,6 +2693,8 @@ function sueldosInit(){
     if(s.lluvia===undefined)      s.lluvia      = SUELDO_DEFAULTS.lluvia;
     if(s.puntDiaria===undefined)  s.puntDiaria  = SUELDO_DEFAULTS.puntDiaria;
     if(s.asistDiaria===undefined) s.asistDiaria = SUELDO_DEFAULTS.asistDiaria;
+    if(!s.cuil && ch.datosPersonales && ch.datosPersonales.dni)
+      s.cuil = ch.datosPersonales.dni;
     if(!s.cuil)      s.cuil = '';
     if(!s.categoria) s.categoria = 'AYUDANTE DE CHOFER';
   });
@@ -2818,7 +2829,6 @@ function liqGetSemanas(){
 }
 
 function liqCalcEmpleado(ch, semIdx, semLabs, extras){
-  // extras = { lluvia:{key:bool}, adelanto:number, justDias:{key:'AJ'|'TJ'} }
   sueldosInit();
   const s = state.sueldos[ch.nombre]||{};
   const sueldo    = parseN(s.sueldo)||0;
@@ -2829,8 +2839,8 @@ function liqCalcEmpleado(ch, semIdx, semLabs, extras){
   const asistM    = parseN(s.asistDiaria)||0;
   const baseDia   = semLabs.length>0 ? sueldo/5 : 0;
 
-  // Primero recolectar todos los estados finales para detectar feriados adyacentes a faltas
-  const estadosDia = {}; // key -> vFinal
+  // Recolectar estados finales por día
+  const estadosDia = {};
   semLabs.forEach(d=>{
     const key = chicosDateKey(d);
     let val = '';
@@ -2840,22 +2850,22 @@ function liqCalcEmpleado(ch, semIdx, semLabs, extras){
     estadosDia[key] = override || vUp;
   });
 
-  // Detectar faltas adyacentes a feriados: si un día es F y el día laboral
-  // inmediatamente anterior o posterior es A, ambos no cobran
+  // Detectar feriados anulados por falta adyacente
   const keysSem = semLabs.map(d=>chicosDateKey(d));
-  const noCobraFeriado = {}; // key -> true si feriado anulado por falta adyacente
+  const noCobraFeriado = {};
   keysSem.forEach((key,i)=>{
     if(estadosDia[key]==='F'){
       const prevKey = i>0 ? keysSem[i-1] : null;
       const nextKey = i<keysSem.length-1 ? keysSem[i+1] : null;
-      if((prevKey && estadosDia[prevKey]==='A') || (nextKey && estadosDia[nextKey]==='A')){
-        noCobraFeriado[key] = true;
+      if((prevKey&&estadosDia[prevKey]==='A')||(nextKey&&estadosDia[nextKey]==='A')){
+        noCobraFeriado[key]=true;
       }
     }
   });
 
-  let totalBase=0, totalAdic=0, totalLluvia=0, totalPunt=0, totalAsist=0;
-  const detalleDias = [];
+  let totalAdic=0, totalLluvia=0, totalPunt=0, totalAsist=0;
+  let diasSinBase=0, diasMedio=0;
+  const detalleDias=[];
 
   semLabs.forEach((d,i)=>{
     const key    = chicosDateKey(d);
@@ -2871,73 +2881,55 @@ function liqCalcEmpleado(ch, semIdx, semLabs, extras){
     const esF     = vFinal==='F';
     const esMedio = vFinal==='1/2'||vFinal==='½';
 
-    // Falta adyacente a feriado: no cobra nada
-    const esFaltaAdyFeriado = esA && (() => {
+    const esFaltaAdyFeriado = esA && (()=>{
       const prevKey = i>0 ? keysSem[i-1] : null;
       const nextKey = i<keysSem.length-1 ? keysSem[i+1] : null;
-      return (prevKey&&estadosDia[prevKey]==='F') || (nextKey&&estadosDia[nextKey]==='F');
+      return (prevKey&&estadosDia[prevKey]==='F')||(nextKey&&estadosDia[nextKey]==='F');
     })();
 
-    let base=0, adic=0, lluvia=0, punt=0, asist=0;
+    let adic=0, lluvia=0, punt=0, asist=0;
+    let cobrasBase=true;
 
-    if(esA || esFaltaAdyFeriado){
-      // Falta (o falta adyacente a feriado): no cobra nada
-
-    } else if(esF && noCobraFeriado[key]){
-      // Feriado anulado por falta adyacente: no cobra nada
-
+    if(esA||esFaltaAdyFeriado){
+      cobrasBase=false;
+    } else if(esF&&noCobraFeriado[key]){
+      cobrasBase=false;
     } else if(esF){
-      // Feriado normal: cobra base + adicional, sin asistencia ni puntualidad diaria
-      base = baseDia;
       adic = esLunes ? adicLunes : adicMV;
-      if(esLluvia) lluvia = lluviaM;
-
+      if(esLluvia) lluvia=lluviaM;
     } else if(esAJ){
-      // Falta justificada: cobra base completo, sin adicional/asist/punt
-      base = baseDia;
-      if(esLluvia) lluvia = lluviaM;
-
+      if(esLluvia) lluvia=lluviaM;
     } else if(esMedio){
-      // Medio día: mitad base, sin adicional ni puntualidad, sí asistencia
-      base  = baseDia/2;
-      asist = asistM;
-      if(esLluvia) lluvia = lluviaM;
-
+      diasMedio++;
+      asist=asistM;
+      if(esLluvia) lluvia=lluviaM;
     } else if(esT){
-      // Tarde: base completo, sin adicional ni puntualidad, sí asistencia
-      base  = baseDia;
-      asist = asistM;
-      if(esLluvia) lluvia = lluviaM;
-
+      asist=asistM;
+      if(esLluvia) lluvia=lluviaM;
     } else if(esTJ){
-      // Tarde justificada: cobra todo igual que puntual
-      base  = baseDia;
-      adic  = esLunes ? adicLunes : adicMV;
-      punt  = puntM;
-      asist = asistM;
-      if(esLluvia) lluvia = lluviaM;
-
+      adic=esLunes?adicLunes:adicMV;
+      punt=puntM; asist=asistM;
+      if(esLluvia) lluvia=lluviaM;
     } else {
-      // Puntual / vacío (presente)
-      base  = baseDia;
-      adic  = esLunes ? adicLunes : adicMV;
-      punt  = puntM;
-      asist = asistM;
-      if(esLluvia) lluvia = lluviaM;
+      adic=esLunes?adicLunes:adicMV;
+      punt=puntM; asist=asistM;
+      if(esLluvia) lluvia=lluviaM;
     }
 
-    totalBase   += base;
-    totalAdic   += adic;
-    totalLluvia += lluvia;
-    totalPunt   += punt;
-    totalAsist  += asist;
+    if(!cobrasBase) diasSinBase++;
 
-    detalleDias.push({ key, dow, vFinal, esLluvia, base, adic, lluvia, punt, asist });
+    totalAdic+=adic; totalLluvia+=lluvia; totalPunt+=punt; totalAsist+=asist;
+    const baseDiaria = !cobrasBase ? 0 : esMedio ? baseDia/2 : baseDia;
+    detalleDias.push({key,dow,vFinal,esLluvia,base:baseDiaria,adic,lluvia,punt,asist});
   });
+
+  // Sueldo base SIEMPRE fijo, solo se descuenta por faltas reales
+  let totalBase = sueldo - (diasSinBase * baseDia) - (diasMedio * baseDia/2);
+  if(totalBase < 0) totalBase = 0;
 
   const adelanto = parseN(extras.adelanto)||0;
   const totalBruto = totalBase+totalAdic+totalLluvia+totalPunt+totalAsist;
-  return { totalBase, totalAdic, totalLluvia, totalPunt, totalAsist, totalBruto, adelanto, detalleDias };
+  return {totalBase,totalAdic,totalLluvia,totalPunt,totalAsist,totalBruto,adelanto,detalleDias};
 }
 
 // Estado de extras por empleado por semana
@@ -3113,27 +3105,39 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs){
   const statsMes   = liqGetEstadisticas(ch, true);
   const statsTotal = liqGetEstadisticas(ch, false);
 
+  // Feriado NO afecta bonos semanales
   const huboTarde = calc.detalleDias.some(d=>d.vFinal==='T');
   const huboFalta = calc.detalleDias.some(d=>d.vFinal==='A');
 
   // Fila: cod | concepto + importe_referencia_inline | haberes | adelantos
   const fila = (concepto, refInline, haberes, deducciones) => `
     <tr>
-      <td style="padding:3px 4px;font-size:9px;color:#888;width:20px;"></td>
-      <td style="padding:3px 6px;font-size:10px;">
-        ${concepto}${refInline ? `<span style="font-size:10px;color:#222;"> &nbsp; ${refInline}</span>` : ''}
+      <td style="padding:3px 4px;font-size:10px;color:#888;width:20px;"></td>
+      <td style="padding:3px 2px;font-size:12px;">
+        ${concepto}${refInline ? `<span style="font-size:12px;color:#222;"> &nbsp; ${refInline}</span>` : ''}
       </td>
-      <td style="padding:3px 6px;font-size:10px;text-align:right;font-weight:600;width:18%;">${haberes?liqFmtPesos(haberes):''}</td>
-      <td style="padding:3px 6px;font-size:10px;text-align:right;color:#c00;width:18%;">${deducciones?liqFmtPesos(deducciones):''}</td>
+      <td style="padding:3px 2px;font-size:12px;text-align:right;font-weight:600;width:16%;">${haberes?liqFmtPesos(haberes):''}</td>
+      <td style="padding:3px 2px;font-size:12px;text-align:right;color:#c00;width:16%;">${deducciones?liqFmtPesos(deducciones):''}</td>
     </tr>`;
 
   const filaTexto = (texto) => `
-    <tr><td></td><td colspan="3" style="font-size:8.5px;color:#666;padding:1px 6px;">${texto}</td></tr>`;
+    <tr><td></td><td colspan="3" style="font-size:10px;color:#666;padding:1px 2px;">${texto}</td></tr>`;
 
-  const filaVacia = () => `<tr><td colspan="4" style="height:12px;"></td></tr>`;
+  const filaVacia = () => `<tr><td colspan="4" style="height:13px;"></td></tr>`;
 
   let conceptosHtml = '';
-  conceptosHtml += fila('SEMANA', '', calc.totalBase, '');
+  const ausReales    = calc.detalleDias.filter(d=>d.vFinal==='A').length;
+  const tardesReales = calc.detalleDias.filter(d=>d.vFinal==='T').length;
+  const mediosReales = calc.detalleDias.filter(d=>d.vFinal==='1/2'||d.vFinal==='½').length;
+  const feriadosN    = calc.detalleDias.filter(d=>d.vFinal==='F').length;
+  const novedadesSem = [
+    ausReales>0    ? ausReales+(ausReales===1?' AUSENTE':' AUSENTES')          : '',
+    tardesReales>0 ? tardesReales+(tardesReales===1?' TARDE':' TARDES')        : '',
+    mediosReales>0 ? mediosReales+(mediosReales===1?' 1/2 DIA':' 1/2 DIAS')   : '',
+    feriadosN>0    ? feriadosN+(feriadosN===1?' FERIADO':' FERIADOS')          : '',
+  ].filter(Boolean).join('   ');
+  const semanaLabel = novedadesSem ? 'SEMANA   '+novedadesSem : 'SEMANA';
+  conceptosHtml += fila(semanaLabel, '', calc.totalBase, '');
   conceptosHtml += filaTexto('Cumpliendo jornada laboral de Lu a Vi de 7 a 16Hs.,');
   conceptosHtml += filaTexto('Sin horas Extras');
   if(calc.totalAdic > 0)
@@ -3164,75 +3168,71 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs){
 
   return `
   <div class="recibo-bloque">
-    <div style="font-size:9px;font-weight:700;text-align:center;padding-bottom:4px;letter-spacing:.05em;">
+    <div style="font-size:11px;font-weight:700;text-align:center;padding-bottom:4px;letter-spacing:.05em;">
       Replica Recibo de Haberes - Ley 20744
     </div>
-    <div style="height:5px;"></div>
-    <table style="width:100%;font-size:10px;border-collapse:collapse;">
+    <div style="height:6px;"></div>
+    <table style="width:100%;font-size:12px;border-collapse:collapse;">
       <tr>
         <td colspan="2" style="padding:1px 4px;"><strong>Empleador:</strong> YA VAMOS S.R.L.</td>
       </tr>
       <tr>
-        <td colspan="2" style="padding:1px 4px;font-size:9px;">DOMICILIO: SARMIENTO 2864 L.10 CABA</td>
+        <td colspan="2" style="padding:1px 4px;font-size:11px;">DOMICILIO: SARMIENTO 2864 L.10 CABA</td>
       </tr>
-      <tr><td colspan="2" style="height:6px;"></td></tr>
+      <tr><td colspan="2" style="height:7px;"></td></tr>
       <tr>
         <td style="padding:1px 4px;width:65%;"><strong>Beneficiario:</strong> ${nombreCompleto}</td>
-        <td style="padding:1px 4px;text-align:right;font-size:9px;"><strong>CUIL:</strong> ${cuil}</td>
+        <td style="padding:1px 4px;text-align:right;font-size:11px;"><strong>CUIL:</strong> ${cuil}</td>
       </tr>
       <tr>
-        <td style="padding:1px 4px;font-size:9px;">Fecha de ingreso: <strong>${fechaIng}</strong></td>
-        <td style="padding:1px 4px;text-align:right;font-size:9px;">Calif. Profesional: <strong>${categoria}</strong></td>
+        <td style="padding:1px 4px;font-size:11px;">Fecha de ingreso: <strong>${fechaIng}</strong></td>
+        <td style="padding:1px 4px;text-align:right;font-size:11px;">Calif. Profesional: <strong>${categoria}</strong></td>
       </tr>
-      <tr><td colspan="2" style="height:8px;border-bottom:1px solid #ccc;"></td></tr>
-      <tr><td colspan="2" style="height:8px;"></td></tr>
+      <tr><td colspan="2" style="height:9px;border-bottom:1px solid #ccc;"></td></tr>
+      <tr><td colspan="2" style="height:9px;"></td></tr>
       <tr>
-        <td colspan="2" style="padding:2px 4px;font-size:9px;">
+        <td colspan="2" style="padding:2px 4px;font-size:11px;">
           Remuneración correspondiente a: <strong>SEMANA ${fechaRecibo}</strong>
         </td>
       </tr>
     </table>
-    <table style="width:100%;font-size:10px;border-collapse:collapse;border:1px solid #ccc;margin-top:4px;">
+    <table style="width:100%;font-size:12px;border-collapse:collapse;border:1px solid #ccc;margin-top:4px;">
       <thead>
         <tr style="border-bottom:1.5px solid #000;">
-          <th style="padding:3px 4px;font-size:9px;text-align:left;width:20px;">Cód</th>
-          <th style="padding:3px 6px;font-size:9px;text-align:left;">Concepto</th>
-          <th style="padding:3px 6px;font-size:9px;text-align:right;width:18%;">Haberes</th>
-          <th style="padding:3px 6px;font-size:9px;text-align:right;width:18%;">Adelantos</th>
+          <th style="padding:3px 4px;font-size:11px;text-align:left;width:20px;">Cód</th>
+          <th style="padding:3px 2px;font-size:11px;text-align:left;">Concepto</th>
+          <th style="padding:3px 2px;font-size:11px;text-align:right;width:16%;">Haberes</th>
+          <th style="padding:3px 2px;font-size:11px;text-align:right;width:16%;">Adelantos</th>
         </tr>
       </thead>
       <tbody>
         ${conceptosHtml}
+        <tr style="border-top:1.5px solid #000;font-weight:700;">
+          <td colspan="2" style="padding:3px 2px;font-size:11px;text-align:left;">TOTAL &nbsp; ${fechaCaba}</td>
+          <td style="padding:3px 2px;font-size:12px;text-align:right;font-weight:700;">${liqFmtPesos(totalHaberes)}</td>
+          <td style="padding:3px 2px;font-size:12px;text-align:right;color:#c00;">${totalDeduc?liqFmtPesos(totalDeduc):''}</td>
+        </tr>
         <tr style="border-top:1px solid #bbb;">
-          <td colspan="4" style="padding:2px 6px;font-size:8px;color:#555;">
+          <td colspan="4" style="padding:2px 2px;font-size:10px;color:#555;">
             Aus./Tardes del mes: <strong>${statsMes.ausentes}</strong> aus. / <strong>${statsMes.tardes}</strong> tardes &nbsp;&nbsp;
             Desde ingreso: <strong>${statsTotal.ausentes}</strong> aus. / <strong>${statsTotal.tardes}</strong> tardes
           </td>
         </tr>
       </tbody>
     </table>
-    <div style="font-size:8px;margin-top:3px;padding:2px 0;color:#333;">
+    <div style="font-size:10px;margin-top:3px;padding:2px 0;color:#333;">
       Recibi conforme el importe total más abajo detallado como Neto a Cobrar,
       correspondiente al periodo y concepto indicado.
     </div>
-    <table style="width:100%;font-size:10px;border-collapse:collapse;margin-top:3px;">
-      <tr>
-        <td style="padding:2px 4px;font-size:9px;width:38%;">${fechaCaba}</td>
-        <td style="padding:2px 4px;font-size:9px;text-align:right;"><strong>Totales:</strong></td>
-        <td style="padding:2px 4px;font-size:10px;text-align:right;font-weight:700;">${liqFmtPesos(totalHaberes)}</td>
-        <td style="padding:2px 4px;font-size:10px;text-align:right;color:#c00;">${totalDeduc?liqFmtPesos(totalDeduc):''}</td>
-      </tr>
-      <tr>
-        <td colspan="4" style="padding:3px 4px;font-size:9px;">
-          Neto a Cobrar $: ___________________________
-        </td>
-      </tr>
-    </table>
+    <div style="height:14px;"></div>
+    <div style="height:14px;"></div>
+    <div style="font-size:12px;padding:3px 0;">
+      Neto a Cobrar $: ___________________________
+    </div>
     <div style="height:16px;"></div>
-    <div style="height:16px;"></div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;border-top:1px solid #999;padding-top:5px;">
-      <div>Firma: _______________________</div>
-      <div>Aclaración: _______________________</div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;padding-top:6px;">
+      <div>Firma: ________________________</div>
+      <div>Aclaración: ________________________________________________</div>
     </div>
   </div>`;
 }
