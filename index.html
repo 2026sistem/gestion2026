@@ -252,16 +252,16 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
       <div class="card-desc">Cobros diarios por zona, semanales, quincenales y créditos por ventas.</div>
       <div class="card-arrow">→</div>
     </div>
+    <div class="menu-card c1" onclick="goTo('screen-gastos')">
+      <span class="card-icon">📋</span>
+      <div class="card-title">GASTOS</div>
+      <div class="card-desc">Registro de gastos: ciudad, retiros, alquileres, patentes y más.</div>
+      <div class="card-arrow">→</div>
+    </div>
     <div class="menu-card c1" onclick="goTo('screen-cheques')">
       <span class="card-icon">🧾</span>
       <div class="card-title">CHEQUES</div>
       <div class="card-desc">Cheques Z y A. Destino, número, cliente, banco e importe.</div>
-      <div class="card-arrow">→</div>
-    </div>
-    <div class="menu-card c1" onclick="goTo('screen-retiros')">
-      <span class="card-icon">💸</span>
-      <div class="card-title">RETIROS</div>
-      <div class="card-desc">Retiros en pesos y dólares.</div>
       <div class="card-arrow">→</div>
     </div>
     <div class="menu-card c2" onclick="goTo('screen-chicos')">
@@ -272,7 +272,7 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
     </div>
     <div class="menu-card c2" onclick="goTo('screen-chicos-ind')">
       <span class="card-icon">👤</span>
-      <div class="card-title">CHICOS INDIVIDUALES</div>
+      <div class="card-title">CHICOS INFO</div>
       <div class="card-desc">Resumen por empleado: ausentes, tardanzas, adelantos y motivos.</div>
       <div class="card-arrow">→</div>
     </div>
@@ -280,6 +280,12 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
       <span class="card-icon">🧮</span>
       <div class="card-title">LIQUIDACIÓN</div>
       <div class="card-desc">Liquidación semanal de empleados y configuración de sueldos.</div>
+      <div class="card-arrow">→</div>
+    </div>
+    <div class="menu-card c3" onclick="goTo('screen-retiros')">
+      <span class="card-icon">💸</span>
+      <div class="card-title">RETIROS</div>
+      <div class="card-desc">Retiros en pesos y dólares.</div>
       <div class="card-arrow">→</div>
     </div>
     <div class="menu-card c3" onclick="goTo('screen-central')">
@@ -294,7 +300,6 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
       <div class="card-desc">Planes, bancos, cartera de cheques, USD MEP, acciones, compra USD.</div>
       <div class="card-arrow">→</div>
     </div>
-    <div class="menu-card c3" onclick="goTo('screen-liquidacion')" style="display:none;"></div>
   </div>
   <div class="bottom-info">
     <div class="info-chip"><span class="dot"></span>Sistema en línea</div>
@@ -308,25 +313,28 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
   <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="active">Cobros</span></div>
   <p class="section-title">COBROS</p>
   <p class="section-sub">Gestión diaria, semanal y pendientes</p>
-  <div class="submenu-grid principal-sub">
-    <div class="sub-btn" onclick="goTo('screen-cobros-diarios')"><div class="sub-icon">💰</div><div class="sub-label">COBROS DIARIOS</div></div>
-    <div class="sub-btn" onclick="goTo('screen-cobros-semanales')"><div class="sub-icon">📅</div><div class="sub-label">COBROS SEM / QUINCENALES</div></div>
-    <div class="sub-btn" onclick="goTo('screen-cobros-pendientes')"><div class="sub-icon">⏳</div><div class="sub-label">PENDIENTES DE COBRO</div></div>
-    <div class="sub-btn" onclick="goTo('screen-cred-jonas')"><div class="sub-icon">📦</div><div class="sub-label">JONAS<br><span style="font-size:10px;color:var(--muted);">$6.529,94/bulto</span></div></div>
-    <div class="sub-btn" onclick="goTo('screen-cred-casapaso')"><div class="sub-icon">🏠</div><div class="sub-label">CASA PASO<br><span style="font-size:10px;color:var(--muted);">$4.388,10/bulto</span></div></div>
-    <div class="sub-btn" onclick="goTo('screen-cred-banana')"><div class="sub-icon">🍌</div><div class="sub-label">BANANA<br><span style="font-size:10px;color:var(--muted);">$4.919/bulto</span></div></div>
-    <div class="sub-btn" onclick="goTo('screen-cred-nahuel')"><div class="sub-icon">👤</div><div class="sub-label">NAHUEL<br><span style="font-size:10px;color:var(--muted);">$4.919/bulto</span></div></div>
-    <div class="sub-btn" onclick="goTo('screen-cred-home')"><div class="sub-icon">🏪</div><div class="sub-label">ALMACÉN HOME<br><span style="font-size:10px;color:var(--muted);">$5.526/bulto</span></div></div>
-    <div class="sub-btn" onclick="goTo('screen-cred-futuros')"><div class="sub-icon">🔮</div><div class="sub-label">FUTUROS<br><span style="font-size:10px;color:var(--muted);">$4.936,23 + dist.</span></div></div>
+  <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:20px;">
+    <div class="submenu-grid principal-sub" style="flex:1;min-width:280px;margin-bottom:0;">
+      <div class="sub-btn" onclick="goTo('screen-cobros-diarios')"><div class="sub-icon">💰</div><div class="sub-label">COBROS Y GASTOS DIARIOS</div></div>
+      <div class="sub-btn" onclick="goTo('screen-cobros-pendientes')"><div class="sub-icon">⏳</div><div class="sub-label">PENDIENTES DE COBRO</div></div>
+      <div class="sub-btn" onclick="goTo('screen-cred-jonas')"><div class="sub-icon">📦</div><div class="sub-label">JONAS<br><span style="font-size:10px;color:var(--muted);">$6.529,94/bulto</span></div></div>
+      <div class="sub-btn" onclick="goTo('screen-cred-casapaso')"><div class="sub-icon">🏠</div><div class="sub-label">CASA PASO<br><span style="font-size:10px;color:var(--muted);">$4.388,10/bulto</span></div></div>
+      <div class="sub-btn" onclick="goTo('screen-cred-banana')"><div class="sub-icon">🍌</div><div class="sub-label">BANANA<br><span style="font-size:10px;color:var(--muted);">$4.919/bulto</span></div></div>
+      <div class="sub-btn" onclick="goTo('screen-cred-nahuel')"><div class="sub-icon">👤</div><div class="sub-label">NAHUEL<br><span style="font-size:10px;color:var(--muted);">$4.919/bulto</span></div></div>
+      <div class="sub-btn" onclick="goTo('screen-cred-home')"><div class="sub-icon">🏪</div><div class="sub-label">ALMACÉN HOME<br><span style="font-size:10px;color:var(--muted);">$5.526/bulto</span></div></div>
+      <div class="sub-btn" onclick="goTo('screen-cred-futuros')"><div class="sub-icon">🔮</div><div class="sub-label">FUTUROS<br><span style="font-size:10px;color:var(--muted);">$4.936,23 + dist.</span></div></div>
+    </div>
+    <!-- Resumen de totales -->
+    <div id="cobros-menu-resumen" style="min-width:320px;max-width:420px;"></div>
   </div>
 </div>
 
-<!-- ═══════════════ COBROS DIARIOS ═══════════════ -->
+<!-- ═══════════════ COBROS Y GASTOS DIARIOS ═══════════════ -->
 <div id="screen-cobros-diarios" class="screen">
   <button class="btn-back" onclick="goTo('screen-cobros-menu')">← Volver a Cobros</button>
   <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="crumb" onclick="goTo('screen-cobros-menu')">Cobros</span><span class="sep">/</span><span class="active">Diarios</span></div>
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
-    <p class="section-title" style="margin:0;">COBROS DIARIOS</p>
+    <p class="section-title" style="margin:0;">COBROS Y GASTOS DIARIOS</p>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
       <div style="display:flex;background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden;">
         <button id="cobros-tab-dia" onclick="cobrosSetVista('dia')" style="padding:7px 16px;font-size:12px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;background:rgba(79,142,247,.2);color:var(--accent1);border-right:1px solid var(--border);">Día</button>
@@ -385,8 +393,8 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
 
 <!-- JONAS -->
 <div id="screen-cred-jonas" class="screen">
-  <button class="btn-back" onclick="goTo('screen-creditos')">← Volver a Créditos</button>
-  <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="crumb" onclick="goTo('screen-creditos')">Créditos</span><span class="sep">/</span><span class="active">Jonas</span></div>
+  <button class="btn-back" onclick="goTo('screen-cobros-menu')">← Volver a Cobros</button>
+  <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="crumb" onclick="goTo('screen-cobros-menu')">Cobros</span><span class="sep">/</span><span class="active">Jonas</span></div>
   <div class="client-header"><span class="client-name">JONAS</span><span class="client-price">$6.529,94 / bulto</span></div>
   <div class="content-area">
     <div class="tbl-wrap">
@@ -401,8 +409,8 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
 
 <!-- CASA PASO -->
 <div id="screen-cred-casapaso" class="screen">
-  <button class="btn-back" onclick="goTo('screen-creditos')">← Volver a Créditos</button>
-  <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="crumb" onclick="goTo('screen-creditos')">Créditos</span><span class="sep">/</span><span class="active">Casa Paso</span></div>
+  <button class="btn-back" onclick="goTo('screen-cobros-menu')">← Volver a Cobros</button>
+  <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="crumb" onclick="goTo('screen-cobros-menu')">Cobros</span><span class="sep">/</span><span class="active">Casa Paso</span></div>
   <div class="client-header"><span class="client-name">CASA PASO</span><span class="client-price">$4.101,03 / bulto</span></div>
   <div class="content-area">
     <div class="tbl-wrap">
@@ -417,8 +425,8 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
 
 <!-- BANANA -->
 <div id="screen-cred-banana" class="screen">
-  <button class="btn-back" onclick="goTo('screen-creditos')">← Volver a Créditos</button>
-  <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="crumb" onclick="goTo('screen-creditos')">Créditos</span><span class="sep">/</span><span class="active">Banana</span></div>
+  <button class="btn-back" onclick="goTo('screen-cobros-menu')">← Volver a Cobros</button>
+  <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="crumb" onclick="goTo('screen-cobros-menu')">Cobros</span><span class="sep">/</span><span class="active">Banana</span></div>
   <div class="client-header"><span class="client-name">BANANA</span><span class="client-price">$4.597 / bulto</span></div>
   <div class="content-area">
     <div class="tbl-wrap">
@@ -433,8 +441,8 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
 
 <!-- NAHUEL -->
 <div id="screen-cred-nahuel" class="screen">
-  <button class="btn-back" onclick="goTo('screen-creditos')">← Volver a Créditos</button>
-  <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="crumb" onclick="goTo('screen-creditos')">Créditos</span><span class="sep">/</span><span class="active">Nahuel</span></div>
+  <button class="btn-back" onclick="goTo('screen-cobros-menu')">← Volver a Cobros</button>
+  <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="crumb" onclick="goTo('screen-cobros-menu')">Cobros</span><span class="sep">/</span><span class="active">Nahuel</span></div>
   <div class="client-header"><span class="client-name">NAHUEL</span><span class="client-price">$4.597 / bulto</span></div>
   <div class="content-area">
     <div class="tbl-wrap">
@@ -449,8 +457,8 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
 
 <!-- ALMACEN HOME -->
 <div id="screen-cred-home" class="screen">
-  <button class="btn-back" onclick="goTo('screen-creditos')">← Volver a Créditos</button>
-  <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="crumb" onclick="goTo('screen-creditos')">Créditos</span><span class="sep">/</span><span class="active">Almacén Home</span></div>
+  <button class="btn-back" onclick="goTo('screen-cobros-menu')">← Volver a Cobros</button>
+  <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="crumb" onclick="goTo('screen-cobros-menu')">Cobros</span><span class="sep">/</span><span class="active">Almacén Home</span></div>
   <div class="client-header"><span class="client-name">ALMACÉN HOME</span><span class="client-price">$5.526 / bulto</span></div>
   <div class="content-area">
     <div class="tbl-wrap">
@@ -465,8 +473,8 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
 
 <!-- FUTUROS -->
 <div id="screen-cred-futuros" class="screen">
-  <button class="btn-back" onclick="goTo('screen-creditos')">← Volver a Créditos</button>
-  <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="crumb" onclick="goTo('screen-creditos')">Créditos</span><span class="sep">/</span><span class="active">Futuros</span></div>
+  <button class="btn-back" onclick="goTo('screen-cobros-menu')">← Volver a Cobros</button>
+  <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="crumb" onclick="goTo('screen-cobros-menu')">Cobros</span><span class="sep">/</span><span class="active">Futuros</span></div>
   <div class="client-header"><span class="client-name">FUTUROS</span><span class="client-price">Bulto $4.936,23 · Distribución $992.557</span></div>
   <div class="content-area">
     <div class="tbl-wrap">
@@ -477,6 +485,14 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
     </div>
     <button class="btn add" onclick="addCredito('futuros')">+ Agregar registro</button>
   </div>
+</div>
+
+<!-- ═══════════════ GASTOS ═══════════════ -->
+<div id="screen-gastos" class="screen">
+  <button class="btn-back" onclick="goTo('screen-home')">← Volver al menú</button>
+  <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="active">Gastos</span></div>
+  <p class="section-title">GASTOS</p>
+  <div id="gastos-container" class="content-area"></div>
 </div>
 
 <!-- ═══════════════ RETIROS ═══════════════ -->
@@ -559,12 +575,19 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
   <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="active">Informe de Caja</span></div>
   <p class="section-title">INFORME DE CAJA</p>
   <p class="section-sub">Resumen general del sistema</p>
-  <div class="stats-grid" id="central-stats"></div>
+  <!-- Fila 1: Cobros -->
+  <div class="stats-grid" id="central-stats-row1" style="margin-bottom:8px;"></div>
+  <!-- Caja por persona -->
+  <div id="central-caja-personas" style="margin-bottom:16px;"></div>
+  <!-- Fila 2: Resto -->
+  <div class="stats-grid" id="central-stats-row2" style="margin-bottom:20px;"></div>
+  <!-- Detalle completo -->
+  <div id="central-detalle" style="margin-bottom:20px;"></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;flex-wrap:wrap;">
     <div class="content-area">
-      <div class="zone-title" style="margin-bottom:12px;">Pendientes de cobro</div>
+      <div class="zone-title" style="margin-bottom:12px;">Detalle por cliente</div>
       <div class="tbl-wrap"><table>
-        <thead><tr><th>Cliente</th><th>Zona</th><th>Importe</th><th>Estado</th></tr></thead>
+        <thead><tr><th>Cliente</th><th style="text-align:right;">Cobrado</th><th style="text-align:right;">Pendiente</th></tr></thead>
         <tbody id="central-pend"></tbody>
       </table></div>
     </div>
@@ -607,7 +630,7 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
 <div id="screen-chicos-ind" class="screen">
   <button class="btn-back" onclick="goTo('screen-home')">← Volver al menú</button>
   <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="active">Chicos Individuales</span></div>
-  <p class="section-title">CHICOS INDIVIDUALES</p>
+  <p class="section-title">CHICOS INFO</p>
   <p class="section-sub">Seleccioná un empleado para ver su resumen</p>
   <div id="chicos-ind-botones" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:28px;"></div>
   <div id="chicos-ind-detalle"></div>
@@ -682,13 +705,13 @@ function ensureRows(arr, n, tpl){ while(arr.length < n) arr.push({...tpl}); }
 
 // ── ESTADO ──
 function initZona(zona){
-  const pref = CLIENTES_ZONA[zona].map(c=>({cliente:c,importe:'',estado:'Cobrado',prefijado:true}));
-  const vacios = [{cliente:'',importe:'',estado:'Cobrado'},{cliente:'',importe:'',estado:'Cobrado'},{cliente:'',importe:'',estado:'Cobrado'}];
+  const pref = CLIENTES_ZONA[zona].map(c=>({cliente:c,importe:'',estado:'Fede',prefijado:true}));
+  const vacios = [{cliente:'',importe:'',estado:'Pendiente'},{cliente:'',importe:'',estado:'Pendiente'},{cliente:'',importe:'',estado:'Pendiente'}];
   return [...pref,...vacios];
 }
 function initEspeciales(){
   const esp = {};
-  ESPECIALES.forEach(e=>{ esp[e.key]={rows:Array.from({length:e.renglones},()=>({fecha:'',importe:'',estado:'Cobrado'}))}; });
+  ESPECIALES.forEach(e=>{ esp[e.key]={rows:Array.from({length:e.renglones},()=>({fecha:'',importe:'',estado:'Pendiente'}))}; });
   return esp;
 }
 
@@ -696,7 +719,7 @@ function initEspeciales(){
 const archiveMeses = {}; // {'2025-03': {zonas, especiales, semanales}}
 
 let state = {
-  cobros: { zonas:{}, semanales:{}, pendientes:[], especiales:null },
+  cobros: { zonas:{}, semanales:{}, pendientes:[], especiales:null, gastosDiarios:[] },
   creditos: { jonas:[], casapaso:[], banana:[], nahuel:[], home:[], futuros:[] },
   retiros: { ars:[], usd:[] },
   chicos: CHICOS_INIT.map(n=>({nombre:n, apodo:'', fechaIngreso:'', notas:{},
@@ -710,7 +733,8 @@ let state = {
   cheques: { z:[], a:[] },
   sueldos: {},
   casaAri: { cheques:[], cobros:[] },
-  efectivizados: []
+  efectivizados: [],
+  gastos: []
 };
 ZONAS.forEach(z => state.cobros.zonas[z] = initZona(z));
 
@@ -767,10 +791,12 @@ function goTo(id){
   window.scrollTo({top:0,behavior:'smooth'});
   FOC=null;
   if(id==='screen-cobros-diarios') renderZonas();
+  if(id==='screen-cobros-menu') renderCobrosMenuResumen();
   if(id==='screen-cobros-semanales') renderSemanal();
   if(id==='screen-cobros-pendientes') renderPendientes();
   if(id.startsWith('screen-cred-')) renderCredito(id.replace('screen-cred-',''));
   if(id==='screen-retiros') renderRetiros();
+  if(id==='screen-gastos') renderGastos();
   if(id==='screen-chicos') renderChicos();
   if(id==='screen-cheques') renderCheques();
   if(id==='screen-central') renderCentral();
@@ -790,10 +816,11 @@ function guardarDiaActual(){
   if(!fecha) return;
   historialDiarios[fecha]={};
   ZONAS.forEach(zona=>{ historialDiarios[fecha][zona]=state.cobros.zonas[zona].map(r=>({...r})); });
-  // Guardar especiales del día (excepto Casa Ari que es independiente)
+  // Guardar especiales y gastos del día
   if(state.cobros.especiales){
     historialDiarios[fecha]._especiales = JSON.parse(JSON.stringify(state.cobros.especiales));
   }
+  historialDiarios[fecha]._gastosDiarios = JSON.parse(JSON.stringify(state.cobros.gastosDiarios||[]));
   autoGuardar();
 }
 function cerrarMes(){
@@ -833,12 +860,13 @@ function cargarFecha(nuevaFecha){
         ? historialDiarios[nuevaFecha][zona].map(r=>({...r}))
         : initZona(zona);
     });
-    // Cargar especiales del día si existen
+    // Cargar especiales y gastos del día si existen
     if(historialDiarios[nuevaFecha]._especiales){
       state.cobros.especiales = JSON.parse(JSON.stringify(historialDiarios[nuevaFecha]._especiales));
     } else {
       state.cobros.especiales = initEspeciales();
     }
+    state.cobros.gastosDiarios = historialDiarios[nuevaFecha]._gastosDiarios ? JSON.parse(JSON.stringify(historialDiarios[nuevaFecha]._gastosDiarios)) : [];
   } else if(nuevaFecha === hoyStr){
     // Hoy sin historial — armar con pendientes del día anterior
     const dias = Object.keys(historialDiarios).filter(k=>k!=='_fechaActual').sort().reverse();
@@ -859,8 +887,9 @@ function cargarFecha(nuevaFecha){
         } else { state.cobros.zonas[zona] = nuevaLista; }
       } else { state.cobros.zonas[zona] = nuevaLista; }
     });
-    // Especiales: día nuevo arranca vacío
+    // Especiales y gastos: día nuevo arranca vacío
     state.cobros.especiales = initEspeciales();
+    state.cobros.gastosDiarios = [];
   } else {
     // Fecha pasada sin datos o futura — mostrar vacío
     ZONAS.forEach(zona=>{ state.cobros.zonas[zona] = initZona(zona); });
@@ -896,10 +925,10 @@ function renderEspeciales(container){
   const esp=state.cobros.especiales;
   // Asegurar que todos los keys existan (por si se agregó uno nuevo)
   ESPECIALES.forEach(e=>{
-    if(!esp[e.key]) esp[e.key]={rows:Array.from({length:e.renglones},()=>({fecha:'',importe:'',estado:'Cobrado'}))};
+    if(!esp[e.key]) esp[e.key]={rows:Array.from({length:e.renglones},()=>({fecha:'',importe:'',estado:'Pendiente'}))};
   });
   let tc=0,tp=0;
-  ESPECIALES.forEach(e=>{ esp[e.key].rows.forEach(r=>{ const imp=parseN(r.importe); if(r.estado==='Cobrado') tc+=imp; else tp+=imp; }); });
+  ESPECIALES.forEach(e=>{ esp[e.key].rows.forEach(r=>{ const imp=parseN(r.importe); if(['Nito','Johnny','Fede','Diego'].includes(r.estado)) tc+=imp; else tp+=imp; }); });
 
   let html=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
     <div class="stat-card"><div class="stat-label">Especiales cobrado</div><div class="stat-val" style="color:#3ecf5a;">$${fmt(tc)}</div></div>
@@ -917,7 +946,9 @@ function renderEspeciales(container){
         <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;">${i+1}</td>
         <td style="padding:2px 4px;"><input type="date" value="${(r.fecha||'').includes('/')?((f=>f.length===3?f[2]+'-'+f[1]+'-'+f[0]:r.fecha)(r.fecha.split('/'))):r.fecha||''}" onchange="espSetFecha('${e.key}',${i},this.value)" style="padding:3px 5px;font-size:12px;border:1px solid var(--border);border-radius:5px;background:var(--card);color:var(--text);font-family:'DM Sans',sans-serif;width:130px;cursor:pointer;"></td>
         <td>${cellHtml('esp-'+e.key,i,0,r.importe,'width:75px','0,00')}</td>
-        <td><span class="badge ${r.estado==='Cobrado'?'cobrado':'pend'}" style="cursor:pointer;" onclick="state.cobros.especiales['${e.key}'].rows[${i}].estado=state.cobros.especiales['${e.key}'].rows[${i}].estado==='Pendiente'?'Cobrado':'Pendiente';renderZonas();autoGuardar()">${r.estado}</span></td>
+        <td><span class="badge ${['Nito','Johnny','Fede','Diego'].includes(r.estado)?'cobrado':'pend'}"
+          style="cursor:pointer;${r.estado==='Nito'?'background:rgba(79,142,247,.2);color:#4f8ef7;border-color:#4f8ef7;':r.estado==='Johnny'?'background:rgba(78,205,196,.2);color:#4ecdc4;border-color:#4ecdc4;':r.estado==='Fede'?'background:rgba(62,207,90,.2);color:#3ecf5a;border-color:#3ecf5a;':r.estado==='Diego'?'background:rgba(245,166,35,.2);color:#f5a623;border-color:#f5a623;':''}"
+          onclick="(()=>{const opts=['Pendiente','Nito','Johnny','Fede','Diego'];const cur=state.cobros.especiales['${e.key}'].rows[${i}].estado||'Pendiente';const ix=opts.indexOf(cur);state.cobros.especiales['${e.key}'].rows[${i}].estado=opts[(ix+1)%5];renderZonas();autoGuardar();})()">${r.estado||'Pendiente'}</span></td>
       </tr>`;}).join('');
     html+=`<div style="background:var(--card);border:1px solid rgba(79,142,247,.25);border-radius:12px;padding:16px;">
       <div style="margin-bottom:10px;">
@@ -1039,7 +1070,7 @@ function renderCasaAri(container){
   container.insertAdjacentHTML('beforeend', html);
 }
 
-// ── COBROS DIARIOS ──
+// ── COBROS Y GASTOS DIARIOS ──
 function renderZonas(){
   const zc=document.getElementById('zonas-container');
   zc.innerHTML='';
@@ -1061,22 +1092,35 @@ function renderZonas(){
 
   renderEspeciales(zc);
 
-  let tc=0,tp=0;
-  ZONAS.forEach(zona=>{ (state.cobros.zonas[zona]||[]).forEach(r=>{ if(r.separador) return; const imp=parseN(r.importe); if(r.estado==='Cobrado') tc+=imp; else tp+=imp; }); });
+  const PERSONAS_COBRO = ['Nito','Johnny','Fede','Diego'];
+  const PERSONAS_COLORS = {Nito:'#4f8ef7',Johnny:'#4ecdc4',Fede:'#3ecf5a',Diego:'#f5a623'};
+  const totPorPersona = {Nito:0,Johnny:0,Fede:0,Diego:0};
+  let tp=0;
+  ZONAS.forEach(zona=>{ (state.cobros.zonas[zona]||[]).forEach(r=>{ 
+    if(r.separador) return; 
+    const imp=parseN(r.importe); 
+    if(PERSONAS_COBRO.includes(r.estado)) totPorPersona[r.estado]+=imp;
+    else if(!r.estado||r.estado==='Pendiente') tp+=imp;
+  }); });
+  const tc = Object.values(totPorPersona).reduce((s,v)=>s+v,0);
 
-  let html=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">
-    <div class="stat-card"><div class="stat-label">Total cobrado (zonas)</div><div class="stat-val" style="color:#3ecf5a;">$${fmt(tc)}</div></div>
-    <div class="stat-card"><div class="stat-label">Total pendiente (zonas)</div><div class="stat-val" style="color:var(--accent2);">$${fmt(tp)}</div></div>
+  let html=`<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px;">
+    ${PERSONAS_COBRO.map(p=>`<div class="stat-card"><div class="stat-label">${p}</div><div class="stat-val" style="color:${PERSONAS_COLORS[p]};">$${fmt(totPorPersona[p])}</div></div>`).join('')}
+    <div class="stat-card"><div class="stat-label">Pendiente</div><div class="stat-val" style="color:var(--accent2);">$${fmt(tp)}</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
+    <div class="stat-card"><div class="stat-label">Total cobrado</div><div class="stat-val" style="color:#3ecf5a;">$${fmt(tc)}</div></div>
+    <div class="stat-card"><div class="stat-label">Total pendiente</div><div class="stat-val" style="color:var(--accent2);">$${fmt(tp)}</div></div>
   </div>`;
 
   ZONAS.forEach(zona=>{
     const zkey=zona.replace(/[/ ]/g,'-').replace(/[^a-zA-Z0-9-]/g,'_');
-    ensureRows(state.cobros.zonas[zona],EMPTY,{cliente:'',importe:'',estado:'Cobrado'});
+    ensureRows(state.cobros.zonas[zona],EMPTY,{cliente:'',importe:'',estado:'Pendiente'});
     const rows=state.cobros.zonas[zona];
     const tot=rows.reduce((s,r)=>s+parseN(r.importe),0);
     html+=`<div class="zone-header"><span class="zone-title">${zona}</span></div>
     <div class="tbl-wrap" style="margin-bottom:20px;">
-      <table><thead><tr><th>#</th><th>Cliente</th><th>Importe $</th><th>Estado</th></tr></thead>
+      <table><thead><tr><th>#</th><th>Cliente</th><th>Importe $</th><th>Nota</th><th>Cobrador</th></tr></thead>
       <tbody id="zona-${zkey}"></tbody>
       <tfoot><tr class="total-row"><td colspan="2">Total ${zona}</td><td>$${fmt(tot)}</td><td></td></tr></tfoot>
     </table></div>`;
@@ -1098,10 +1142,72 @@ function renderZonas(){
         <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;padding:6px 4px;">${i+1}</td>
         ${nc}
         <td>${cellHtml(tbodyId,i,(r.prefijado||esAyer)?0:1,r.importe,'110px','0,00')}</td>
-        <td><span class="badge ${r.estado==='Cobrado'?'cobrado':'pend'}" style="cursor:pointer;" onclick="state.cobros.zonas['${zona}'][${i}].estado=state.cobros.zonas['${zona}'][${i}].estado==='Pendiente'?'Cobrado':'Pendiente';renderZonas()">${r.estado}</span></td>
+        <td><input value="${r.nota||''}" placeholder="nota..." style="width:120px;padding:3px 6px;background:#0f1118;border:1px solid var(--border);border-radius:5px;color:#e8eaf2;font-size:11px;font-family:'DM Sans',sans-serif;"
+          onblur="state.cobros.zonas['${zona}'][${i}].nota=this.value;autoGuardar()" onfocus="this.select()"></td>
+        <td><span class="badge ${['Nito','Johnny','Fede','Diego'].includes(r.estado)?'cobrado':'pend'}" 
+          style="cursor:pointer;${r.estado==='Nito'?'background:rgba(79,142,247,.2);color:#4f8ef7;border-color:#4f8ef7;':r.estado==='Johnny'?'background:rgba(78,205,196,.2);color:#4ecdc4;border-color:#4ecdc4;':r.estado==='Fede'?'background:rgba(62,207,90,.2);color:#3ecf5a;border-color:#3ecf5a;':r.estado==='Diego'?'background:rgba(245,166,35,.2);color:#f5a623;border-color:#f5a623;':''}" 
+          onclick="(()=>{const opts=['Pendiente','Nito','Johnny','Fede','Diego'];const cur=state.cobros.zonas['${zona}'][${i}].estado||'Pendiente';const ix=opts.indexOf(cur);state.cobros.zonas['${zona}'][${i}].estado=opts[(ix+1)%5];renderZonas();autoGuardar();})()">${r.estado||'Pendiente'}</span></td>
       </tr>`;}).join('');
     bindGridCells(tbodyId,2,()=>state.cobros.zonas[zona],()=>{state.cobros.zonas[zona].push({cliente:'',importe:'',estado:'Cobrado'});renderZonas();},renderZonas,(r,c,v)=>{ const row=state.cobros.zonas[zona][r]; if(row.separador) return; if(row.prefijado||row.desdeFecha){row.importe=v;} else{if(c===0)row.cliente=v; else row.importe=v;} });
   });
+
+  // ── GASTOS DEL DÍA ──
+  renderGastosDiarios(zc);
+}
+
+function renderGastosDiarios(container){
+  if(!state.cobros.gastosDiarios) state.cobros.gastosDiarios = [];
+  const fecha = historialDiarios._fechaActual || new Date().toISOString().slice(0,10);
+  // Filtrar gastos de hoy
+  if(!state.cobros.gastosDiarios.find) state.cobros.gastosDiarios = [];
+
+  const PERS_COLORS = {Nito:'#4f8ef7',Johnny:'#4ecdc4',Fede:'#3ecf5a',Diego:'#f5a623'};
+  const GASTOS_PERSONAS = ['Nito','Johnny','Fede','Diego'];
+
+  const totalGastosDia = state.cobros.gastosDiarios.reduce((s,g)=>s+parseN(g.importe),0);
+
+  const rowsHtml = state.cobros.gastosDiarios.map((g,i)=>`
+    <tr>
+      <td style="padding:4px 6px;font-size:12px;">
+        <select style="padding:3px 6px;background:#0f1118;border:1px solid var(--border);border-radius:5px;color:#e8eaf2;font-size:11px;font-family:'DM Sans',sans-serif;"
+          onchange="state.cobros.gastosDiarios[${i}].concepto=this.value;autoGuardar()">
+          ${GASTOS_ITEMS.map(c=>`<option value="${c}" ${g.concepto===c?'selected':''}>${c}</option>`).join('')}
+        </select>
+      </td>
+      <td style="padding:4px 6px;">
+        <input value="${g.importe||''}" placeholder="0,00" style="width:100px;padding:3px 6px;background:#0f1118;border:1px solid var(--border);border-radius:5px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+          onblur="state.cobros.gastosDiarios[${i}].importe=this.value;autoGuardar();renderZonas()" onfocus="this.select()">
+      </td>
+      <td style="padding:4px 6px;">
+        <input value="${g.nota||''}" placeholder="nota..." style="width:120px;padding:3px 6px;background:#0f1118;border:1px solid var(--border);border-radius:5px;color:#e8eaf2;font-size:11px;font-family:'DM Sans',sans-serif;"
+          onblur="state.cobros.gastosDiarios[${i}].nota=this.value;autoGuardar()" onfocus="this.select()">
+      </td>
+      <td style="padding:4px 6px;">
+        <span class="badge ${GASTOS_PERSONAS.includes(g.quien)?'cobrado':'pend'}"
+          style="cursor:pointer;${g.quien==='Nito'?'background:rgba(79,142,247,.2);color:#4f8ef7;border-color:#4f8ef7;':g.quien==='Johnny'?'background:rgba(78,205,196,.2);color:#4ecdc4;border-color:#4ecdc4;':g.quien==='Fede'?'background:rgba(62,207,90,.2);color:#3ecf5a;border-color:#3ecf5a;':g.quien==='Diego'?'background:rgba(245,166,35,.2);color:#f5a623;border-color:#f5a623;':''}"
+          onclick="(()=>{const opts=['—','Nito','Johnny','Fede','Diego'];const cur=state.cobros.gastosDiarios[${i}].quien||'—';const ix=opts.indexOf(cur);state.cobros.gastosDiarios[${i}].quien=opts[(ix+1)%5];autoGuardar();renderZonas();})()">${g.quien||'—'}</span>
+      </td>
+      <td style="padding:4px 6px;">
+        <button onclick="state.cobros.gastosDiarios.splice(${i},1);autoGuardar();renderZonas()" style="background:transparent;border:none;color:#4a5070;cursor:pointer;font-size:11px;" onmouseover="this.style.color='#e05c5c'" onmouseout="this.style.color='#4a5070'">✕</button>
+      </td>
+    </tr>`).join('');
+
+  const div = document.createElement('div');
+  div.style.marginTop = '28px';
+  div.innerHTML = `
+    <div class="zone-header" style="margin-bottom:12px;">
+      <span class="zone-title" style="color:var(--accent2);">💸 GASTOS DEL DÍA</span>
+      <span style="font-size:12px;color:var(--muted);margin-left:12px;">Total: <strong style="color:var(--accent2);">$${fmt(totalGastosDia)}</strong></span>
+    </div>
+    <div class="tbl-wrap" style="margin-bottom:12px;">
+      <table>
+        <thead><tr><th>Concepto</th><th>Importe $</th><th>Nota</th><th>Quién</th><th></th></tr></thead>
+        <tbody>${rowsHtml||'<tr><td colspan="5" style="color:var(--muted);padding:12px;text-align:center;font-size:12px;">Sin gastos cargados hoy</td></tr>'}</tbody>
+        <tfoot><tr class="total-row"><td colspan="1">Total gastos</td><td>$${fmt(totalGastosDia)}</td><td colspan="3"></td></tr></tfoot>
+      </table>
+    </div>
+    <button class="btn" onclick="state.cobros.gastosDiarios.push({concepto:'CIUDAD',importe:'',nota:'',quien:'',fecha:'${fecha}'});autoGuardar();renderZonas()" style="font-size:12px;">+ Agregar gasto</button>`;
+  container.appendChild(div);
 }
 
 // ── COBROS VISTA MENSUAL ──
@@ -1282,46 +1388,64 @@ function renderPendientes(){
   const tbodyId='pendientes-tbody';
   const tb=document.getElementById(tbodyId);
   if(!tb) return;
-  // Pendientes = semanales/quincenales + especiales con estado Pendiente
+
+  // Leer pendientes directamente de state.creditos (la fuente real de datos)
   const pendientes=[];
   SEM_CLIENTES.forEach(cl=>{
-    (state.cobros.semanales[cl.key]||[]).forEach((r,i)=>{
-      if(r.estado==='Pendiente'&&r.periodo) pendientes.push({cliente:cl.label,tipo:'Semanal/Quincenal',periodo:r.periodo,importe:r.importe,estado:r.estado});
+    (state.creditos[cl.key]||[]).forEach((r,i)=>{
+      const est = r.estado||'Pendiente';
+      const imp = parseN(r.importe||r.total||0);
+      if(est==='Pendiente' && imp>0){
+        pendientes.push({
+          cliente: cl.label,
+          periodo: r.periodoDesde ? (r.periodoDesde+(r.periodoHasta?(' al '+r.periodoHasta):'')) : (r.fentrega||'—'),
+          importe: imp
+        });
+      }
     });
   });
+
+  // Especiales con estado Pendiente del día actual
   if(state.cobros.especiales){
     ESPECIALES.forEach(e=>{
       (state.cobros.especiales[e.key]?.rows||[]).forEach(r=>{
-        if(r.estado==='Pendiente'&&r.importe) pendientes.push({cliente:e.label,tipo:'Especial',periodo:r.fecha||'—',importe:r.importe,estado:r.estado});
+        if(r.estado==='Pendiente'&&parseN(r.importe)>0)
+          pendientes.push({cliente:e.label.split('  ')[0], periodo:r.fecha||'—', importe:parseN(r.importe)});
       });
     });
   }
+
   // También manuales
   ensureRows(state.cobros.pendientes,6,{fecha:'',cliente:'',importe:'',estado:'Pendiente',manual:true});
-  
-  if(pendientes.length===0&&state.cobros.pendientes.filter(r=>r.cliente).length===0){
-    tb.innerHTML=`<tr><td colspan="5" style="color:var(--muted);padding:16px;text-align:center;">Sin pendientes</td></tr>`;
+
+  const manuales = state.cobros.pendientes.filter(r=>r.manual&&r.cliente);
+
+  if(pendientes.length===0 && manuales.length===0){
+    tb.innerHTML=`<tr><td colspan="5" style="color:var(--muted);padding:16px;text-align:center;">Sin pendientes de cobro</td></tr>`;
     return;
   }
+
+  const totalPend = pendientes.reduce((s,p)=>s+parseN(p.importe),0);
 
   tb.innerHTML=[
     ...pendientes.map((p,i)=>`<tr>
       <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;">${i+1}</td>
-      <td style="padding:8px 10px;font-size:12px;">${p.periodo}</td>
-      <td style="padding:8px 10px;font-size:12px;font-weight:500;">${p.cliente} <span style="font-size:10px;color:var(--muted);">(${p.tipo})</span></td>
-      <td style="padding:8px 10px;font-size:12px;">$${fmt(p.importe)}</td>
-      <td style="padding:8px 10px;"><span class="badge pend">Pendiente</span></td>
+      <td style="padding:6px 10px;font-size:12px;">${p.periodo}</td>
+      <td style="padding:6px 10px;font-size:12px;font-weight:500;">${p.cliente}</td>
+      <td style="padding:6px 10px;font-size:12px;text-align:right;">$${fmt(p.importe)}</td>
+      <td style="padding:6px 10px;"><span class="badge pend">Pendiente</span></td>
     </tr>`),
-    ...state.cobros.pendientes.filter(r=>r.manual).map((r,i)=>{
-      const tbodyId2='pendientes-tbody'; const ri=pendientes.length+i;
-      const isFoc=FOC&&FOC.tbodyId===tbodyId2&&FOC.row===ri;
-      return `<tr class="${isFoc?'row-selected':''}">
+    ...manuales.map((r,i)=>{
+      const ri=pendientes.length+i;
+      return `<tr>
         <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;">${ri+1}</td>
-        <td>${cellHtml(tbodyId2,ri,0,r.fecha,'','dd/mm')}</td>
-        <td>${cellHtml(tbodyId2,ri,1,r.cliente,'','Cliente')}</td>
-        <td>${cellHtml(tbodyId2,ri,2,r.importe,'110px','0,00')}</td>
-        <td><span class="badge ${r.estado==='Cobrado'?'cobrado':'pend'}" style="cursor:pointer;" onclick="state.cobros.pendientes[${i}].estado=state.cobros.pendientes[${i}].estado==='Pendiente'?'Cobrado':'Pendiente';renderPendientes()">${r.estado}</span></td>
-      </tr>`;})
+        <td style="padding:6px 10px;font-size:12px;">${r.fecha||'—'}</td>
+        <td style="padding:6px 10px;font-size:12px;">${r.cliente}</td>
+        <td style="padding:6px 10px;font-size:12px;text-align:right;">$${fmt(r.importe)}</td>
+        <td><span class="badge pend">Manual</span></td>
+      </tr>`;
+    }),
+    `<tr class="total-row"><td colspan="3">TOTAL PENDIENTE</td><td style="text-align:right;">$${fmt(totalPend)}</td><td></td></tr>`
   ].join('');
 }
 function addPendiente(){ state.cobros.pendientes.push({fecha:'',cliente:'',importe:'',estado:'Pendiente',manual:true}); renderPendientes(); autoGuardar(); }
@@ -2029,39 +2153,203 @@ function addCheque(t){ state.cheques[t].push({destino:'',fecha:'',nro:'',cliente
 
 // ── CENTRAL ──
 function renderCentral(){
-  const totalARS=state.retiros.ars.reduce((s,r)=>s+PERSONAS.reduce((a,p)=>a+parseN(r[p]),0),0);
-  const totalUSD=state.retiros.usd.reduce((s,r)=>s+PERSONAS.reduce((a,p)=>a+parseN(r[p]),0),0);
-  const totalZ=state.cheques.z.reduce((s,c)=>s+parseN(c.importe),0);
-  const totalA=state.cheques.a.reduce((s,c)=>s+parseN(c.importe),0);
-  const pendTotal=[...SEM_CLIENTES.flatMap(cl=>(state.cobros.semanales[cl.key]||[]).filter(r=>r.estado==='Pendiente'&&r.importe)),...(state.cobros.especiales?ESPECIALES.flatMap(e=>(state.cobros.especiales[e.key]?.rows||[]).filter(r=>r.estado==='Pendiente'&&r.importe)):[])].reduce((s,r)=>s+parseN(r.importe),0);
-
-  // Cheques a efectivizar
   if(!state.efectivizados) state.efectivizados = [];
-  const aEfectivizar = [
+
+  // ── COBROS Y GASTOS DIARIOS ──
+  let diarCobrado=0, diarPendiente=0;
+  ZONAS.forEach(zona=>{
+    (state.cobros.zonas[zona]||[]).forEach(r=>{
+      if(r.separador||!r.cliente) return;
+      const imp=parseN(r.importe);
+      if(r.estado==='Cobrado') diarCobrado+=imp; else diarPendiente+=imp;
+    });
+  });
+  if(state.cobros.especiales){
+    ESPECIALES.forEach(e=>{
+      (state.cobros.especiales[e.key]?.rows||[]).forEach(r=>{
+        const imp=parseN(r.importe);
+        if(r.estado==='Cobrado') diarCobrado+=imp; else if(r.estado==='Pendiente') diarPendiente+=imp;
+      });
+    });
+  }
+
+  // ── CRÉDITOS POR VENTAS ──
+  const credData = SEM_CLIENTES.map(cl=>{
+    let cobrado=0, pendiente=0;
+    (state.creditos[cl.key]||[]).forEach(r=>{
+      const imp=parseN(r.importe||r.total||0);
+      if(r.estado==='Cobrado') cobrado+=imp; else pendiente+=imp;
+    });
+    return {label:cl.label, cobrado, pendiente};
+  });
+  const credCobrado   = credData.reduce((s,r)=>s+r.cobrado,0);
+  const credPendiente = credData.reduce((s,r)=>s+r.pendiente,0);
+
+  // ── CHEQUES ──
+  const totalZ=state.cheques.z.filter(c=>c.cliente).reduce((s,c)=>s+parseN(c.importe),0);
+  const totalA=state.cheques.a.filter(c=>c.cliente).reduce((s,c)=>s+parseN(c.importe),0);
+  const totalEfectivizados=state.efectivizados.reduce((s,e)=>s+parseN(e.neto),0);
+
+  // ── LIQUIDACIÓN ──
+  const semanas=liqGetSemanas();
+  let totalLiq=0, totalAdelantos=0;
+  sueldosInit();
+  state.chicos.forEach(ch=>{
+    const s=state.sueldos[ch.nombre]||{};
+    if(!parseN(s.sueldo)) return;
+    semanas.forEach((sem,si)=>{
+      const extras=liqExtrasGet(si,ch.nombre);
+      const calc=liqCalcEmpleado(ch,si,sem.labs,extras);
+      const puntAbsol=(parseN(s.puntDiaria)||2000)*5;
+      const asistPerf=(parseN(s.asistDiaria)||4000)*5;
+      const huboT=calc.detalleDias.some(d=>d.vFinal==="T");
+      const huboA=calc.detalleDias.some(d=>d.vFinal==="A");
+      totalLiq+=calc.totalBase+calc.totalAdic+calc.totalPunt+(!huboT?puntAbsol:0)+(!huboA?asistPerf:0)+calc.totalLluvia;
+      totalAdelantos+=parseN(calc.adelanto);
+    });
+  });
+
+  // ── GASTOS ──
+  gastosInit();
+  const totalGastos=state.gastos.reduce((s,g)=>s+g.cols.reduce((ss,c)=>ss+parseN(c.importe),0),0);
+
+  // ── RETIROS ──
+  const totalRetARS=state.retiros.ars.reduce((s,r)=>s+PERSONAS.reduce((a,p)=>a+parseN(r[p]),0),0);
+  const totalRetUSD=state.retiros.usd.reduce((s,r)=>s+PERSONAS.reduce((a,p)=>a+parseN(r[p]),0),0);
+
+  const totalCobrado=diarCobrado+credCobrado+totalEfectivizados;
+  const totalPendiente=diarPendiente+credPendiente;
+
+  // ── CAJA POR PERSONA ──
+  // Acumular cobros de todos los días del historial por persona
+  const PERS_COBRO = ['Nito','Johnny','Fede','Diego'];
+  const PERS_COLORS = {Nito:'#4f8ef7',Johnny:'#4ecdc4',Fede:'#3ecf5a',Diego:'#f5a623'};
+  const cajaPers = {Nito:0,Johnny:0,Fede:0,Diego:0};
+  Object.entries(historialDiarios).forEach(([fecha,dayData])=>{
+    if(fecha==='_fechaActual') return;
+    ZONAS.forEach(zona=>{
+      if(dayData[zona]) dayData[zona].forEach(r=>{
+        if(r.separador||!r.cliente) return;
+        if(PERS_COBRO.includes(r.estado)) cajaPers[r.estado]+=parseN(r.importe);
+      });
+    });
+  });
+  // También el día actual
+  ZONAS.forEach(zona=>{
+    (state.cobros.zonas[zona]||[]).forEach(r=>{
+      if(r.separador||!r.cliente) return;
+      if(PERS_COBRO.includes(r.estado)) cajaPers[r.estado]+=parseN(r.importe);
+    });
+  });
+
+  const cpEl = document.getElementById('central-caja-personas');
+  if(cpEl) cpEl.innerHTML=`
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;">
+      <div style="font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:.06em;color:var(--accent1);margin-bottom:12px;">💼 CAJA POR COBRADOR</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
+        ${PERS_COBRO.map(p=>`<div style="text-align:center;padding:12px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid rgba(255,255,255,.06);">
+          <div style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:${PERS_COLORS[p]};">${p}</div>
+          <div style="font-size:1.2rem;font-weight:700;color:${PERS_COLORS[p]};margin-top:4px;">$${fmt(cajaPers[p])}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+
+  // ── STATS FILA 1: Cobros ──
+  document.getElementById('central-stats-row1').innerHTML=`
+    <div class="stat-card"><div class="stat-label">Cobros diarios</div><div class="stat-val" style="color:#3ecf5a;">$${fmt(diarCobrado)}</div></div>
+    <div class="stat-card"><div class="stat-label">Cobros Sem/Quincenal</div><div class="stat-val" style="color:#3ecf5a;">$${fmt(credCobrado)}</div></div>
+    <div class="stat-card"><div class="stat-label">Sem/Quincenal pendiente</div><div class="stat-val" style="color:var(--accent2);">$${fmt(credPendiente)}</div></div>
+    <div class="stat-card"><div class="stat-label">Cheques Z</div><div class="stat-val">$${fmt(totalZ)}</div></div>
+    <div class="stat-card"><div class="stat-label">Cheques A</div><div class="stat-val">$${fmt(totalA)}</div></div>`;
+
+  // ── STATS FILA 2: Resto ──
+  document.getElementById('central-stats-row2').innerHTML=`
+    <div class="stat-card"><div class="stat-label">Efectivizado</div><div class="stat-val" style="color:#3ecf5a;">$${fmt(totalEfectivizados)}</div></div>
+    <div class="stat-card"><div class="stat-label">Liquidaciones</div><div class="stat-val" style="color:var(--accent1);">$${fmt(totalLiq)}</div></div>
+    <div class="stat-card"><div class="stat-label">Adelantos chicos</div><div class="stat-val" style="color:#f5a623;">$${fmt(totalAdelantos)}</div></div>
+    <div class="stat-card"><div class="stat-label">Gastos</div><div class="stat-val" style="color:var(--accent2);">$${fmt(totalGastos)}</div></div>
+    <div class="stat-card"><div class="stat-label">Retiros $</div><div class="stat-val" style="color:var(--accent1);">$${fmt(totalRetARS)}</div></div>
+    <div class="stat-card"><div class="stat-label">Retiros USD</div><div class="stat-val" style="color:var(--accent3);">U$S${fmt(totalRetUSD)}</div></div>`;
+
+  // ── DETALLE COMPLETO ──
+  const ingresoTotal = diarCobrado + credCobrado + totalEfectivizados;
+  const egresoTotal  = totalLiq + totalAdelantos + totalGastos + totalRetARS;
+  const saldo        = ingresoTotal - egresoTotal;
+
+  const detRow = (label, imp, color='', bold=false, negativo=false) => `
+    <tr style="${bold?'font-weight:700;border-top:1.5px solid var(--border);':''}">
+      <td style="padding:6px 10px;font-size:13px;">${label}</td>
+      <td style="padding:6px 10px;font-size:13px;text-align:right;${color?'color:'+color+';':''}">${negativo?'-':''}$${fmt(Math.abs(imp))}</td>
+    </tr>`;
+
+  document.getElementById('central-detalle').innerHTML = `
+  <div class="content-area">
+    <div class="zone-title" style="margin-bottom:12px;">📊 Resumen financiero</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div style="font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.05em;margin-bottom:6px;">INGRESOS</div>
+        <table style="width:100%;border-collapse:collapse;">
+          ${detRow('Cobros diarios', diarCobrado, '#3ecf5a')}
+          ${credData.map(r=>detRow(r.label, r.cobrado, '#3ecf5a')).join('')}
+          ${detRow('Cheques efectivizados', totalEfectivizados, '#3ecf5a')}
+          ${detRow('TOTAL INGRESOS', ingresoTotal, '#3ecf5a', true)}
+        </table>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.05em;margin-bottom:6px;">EGRESOS</div>
+        <table style="width:100%;border-collapse:collapse;">
+          ${detRow('Liquidaciones chicos', totalLiq, '#e05c5c', false, true)}
+          ${detRow('Adelantos chicos', totalAdelantos, '#f5a623', false, true)}
+          ${detRow('Gastos', totalGastos, '#e05c5c', false, true)}
+          ${detRow('Retiros $', totalRetARS, '#e05c5c', false, true)}
+          ${detRow('TOTAL EGRESOS', egresoTotal, '#e05c5c', true, true)}
+        </table>
+      </div>
+    </div>
+    <div style="margin-top:16px;padding:14px;background:${saldo>=0?'rgba(62,207,90,.1)':'rgba(224,92,92,.1)'};border:1px solid ${saldo>=0?'rgba(62,207,90,.3)':'rgba(224,92,92,.3)'};border-radius:10px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:.06em;">SALDO NETO</span>
+      <span style="font-size:1.4rem;font-weight:700;color:${saldo>=0?'#3ecf5a':'#e05c5c'};">${saldo>=0?'':'- '}$${fmt(Math.abs(saldo))}</span>
+    </div>
+  </div>`;
+
+  // ── DETALLE POR CLIENTE ──
+  const pend=[...credData.map(r=>({cliente:r.label,cobrado:r.cobrado,pendiente:r.pendiente}))];
+  document.getElementById('central-pend').innerHTML=`
+    <tr style="font-weight:700;border-bottom:1px solid var(--border);">
+      <th style="padding:6px 10px;text-align:left;">Cliente</th>
+      <th style="padding:6px 10px;text-align:right;color:#3ecf5a;">Cobrado</th>
+      <th style="padding:6px 10px;text-align:right;color:#f5a623;">Pendiente</th>
+    </tr>
+    ${pend.map(p=>`<tr>
+      <td style="padding:6px 10px;font-size:12px;">${p.cliente}</td>
+      <td style="padding:6px 10px;font-size:12px;text-align:right;color:#3ecf5a;">${p.cobrado>0?'$'+fmt(p.cobrado):'—'}</td>
+      <td style="padding:6px 10px;font-size:12px;text-align:right;color:#f5a623;">${p.pendiente>0?'$'+fmt(p.pendiente):'—'}</td>
+    </tr>`).join('')}
+    <tr style="font-weight:700;border-top:1px solid var(--border);">
+      <td style="padding:6px 10px;">TOTAL</td>
+      <td style="padding:6px 10px;text-align:right;color:#3ecf5a;">$${fmt(credCobrado)}</td>
+      <td style="padding:6px 10px;text-align:right;color:#f5a623;">$${fmt(credPendiente)}</td>
+    </tr>`;
+
+  // ── CHEQUES ACTIVOS ──
+  const chAll=[...state.cheques.z.filter(c=>c.cliente&&c.entregado!=='Entregado').map(c=>({...c,tipo:'z'})),
+               ...state.cheques.a.filter(c=>c.cliente&&c.entregado!=='Entregado').map(c=>({...c,tipo:'a'}))];
+  document.getElementById('central-cheques').innerHTML=chAll.length?chAll.map(c=>`<tr>
+    <td style="padding:6px 10px;"><span class="badge ${c.tipo}">${c.tipo.toUpperCase()}</span></td>
+    <td style="padding:6px 10px;font-size:12px;">${c.cliente||'—'}</td>
+    <td style="padding:6px 10px;font-size:12px;">${c.banco||'—'}</td>
+    <td style="padding:6px 10px;font-size:12px;text-align:right;">$${fmt(parseN(c.importe||0))}</td>
+  </tr>`).join(''):`<tr><td colspan="4" style="color:var(--muted);padding:14px;text-align:center;">Sin cheques activos</td></tr>`;
+
+  // ── EFECTIVIZACIÓN ──
+  const aEfectivizar=[
     ...state.cheques.z.filter(c=>c.cliente&&c.entregado==='A efectivizar').map(c=>({...c,tipo:'z'})),
     ...state.cheques.a.filter(c=>c.cliente&&c.entregado==='A efectivizar').map(c=>({...c,tipo:'a'}))
   ];
-  const totalEfectivizados = state.efectivizados.reduce((s,e)=>s+parseN(e.neto),0);
-
-  document.getElementById('central-stats').innerHTML=`
-    <div class="stat-card"><div class="stat-label">Retiros $</div><div class="stat-val" style="color:var(--accent1);">$${fmt(totalARS)}</div></div>
-    <div class="stat-card"><div class="stat-label">Retiros USD</div><div class="stat-val" style="color:var(--accent3);">U$S${fmt(totalUSD)}</div></div>
-    <div class="stat-card"><div class="stat-label">Cheques Z</div><div class="stat-val">$${fmt(totalZ)}</div></div>
-    <div class="stat-card"><div class="stat-label">Cheques A</div><div class="stat-val">$${fmt(totalA)}</div></div>
-    <div class="stat-card"><div class="stat-label">Pendientes cobro</div><div class="stat-val" style="color:var(--accent2);">$${fmt(pendTotal)}</div></div>
-    <div class="stat-card"><div class="stat-label">Efectivizado caja</div><div class="stat-val" style="color:#3ecf5a;">$${fmt(totalEfectivizados)}</div></div>`;
-
-  const pend=[...SEM_CLIENTES.flatMap(cl=>(state.cobros.semanales[cl.key]||[]).filter(r=>r.estado==='Pendiente'&&r.periodo).map(r=>({cliente:cl.label,zona:'Semanal',importe:r.importe})))];
-  document.getElementById('central-pend').innerHTML=pend.length?pend.map(p=>`<tr><td style="padding:8px 10px;">${p.cliente}</td><td style="padding:8px 10px;">${p.zona}</td><td style="padding:8px 10px;">$${fmt(p.importe)}</td><td style="padding:8px 10px;"><span class="badge pend">Pendiente</span></td></tr>`).join(''):`<tr><td colspan="4" style="color:var(--muted);padding:14px;text-align:center;">Sin pendientes</td></tr>`;
-  const chAll=[...state.cheques.z.filter(c=>c.cliente).map(c=>({...c,tipo:'z'})),...state.cheques.a.filter(c=>c.cliente).map(c=>({...c,tipo:'a'}))];
-  document.getElementById('central-cheques').innerHTML=chAll.length?chAll.map(c=>`<tr><td style="padding:8px 10px;"><span class="badge ${c.tipo}">${c.tipo.toUpperCase()}</span></td><td style="padding:8px 10px;">${c.cliente||'—'}</td><td style="padding:8px 10px;">${c.banco||'—'}</td><td style="padding:8px 10px;">$${fmt(parseN(c.importe||0))}</td></tr>`).join(''):`<tr><td colspan="4" style="color:var(--muted);padding:14px;text-align:center;">Sin cheques</td></tr>`;
-
-  // Panel de efectivización
-  const ec = document.getElementById('central-efectivizar-cont');
+  const ec=document.getElementById('central-efectivizar-cont');
   if(!ec) return;
-
-  const pendEfRows = aEfectivizar.map((c,i)=>{
-    const key = c.tipo + '_' + (c.nro||i);
+  const pendEfRows=aEfectivizar.map((c,i)=>{
+    const key=c.tipo+'_'+(c.nro||i);
     return `<tr>
       <td style="padding:6px 8px;"><span class="badge ${c.tipo}">${c.tipo.toUpperCase()}</span></td>
       <td style="padding:6px 8px;font-size:12px;">${c.cliente||'—'}</td>
@@ -2075,8 +2363,7 @@ function renderCentral(){
       </td>
     </tr>`;
   }).join('');
-
-  const efectivizadosRows = state.efectivizados.map((e,i)=>`
+  const efectivizadosRows=state.efectivizados.map((e,i)=>`
     <tr>
       <td style="padding:5px 8px;font-size:11px;color:var(--muted);">${e.fecha||'—'}</td>
       <td style="padding:5px 8px;font-size:12px;">${e.cliente||'—'}</td>
@@ -2087,24 +2374,20 @@ function renderCentral(){
         <button onclick="state.efectivizados.splice(${i},1);autoGuardar();renderCentral()" style="background:transparent;border:none;color:#4a5070;cursor:pointer;font-size:11px;" onmouseover="this.style.color='#e05c5c'" onmouseout="this.style.color='#4a5070'">✕</button>
       </td>
     </tr>`).join('');
-
-  ec.innerHTML = `
+  ec.innerHTML=`
     <div style="margin-bottom:16px;">
       <div class="zone-title" style="margin-bottom:10px;color:#f5a623;">🏦 Cheques a Efectivizar</div>
-      ${aEfectivizar.length ? `
-      <div class="tbl-wrap"><table>
+      ${aEfectivizar.length?`<div class="tbl-wrap"><table>
         <thead><tr><th>Tipo</th><th>Cliente</th><th>Banco</th><th style="text-align:right;">Importe</th><th>Comisión</th><th></th></tr></thead>
-        <tbody>${pendEfRows}</tbody>
-      </table></div>` : `<p style="color:var(--muted);font-size:13px;">No hay cheques marcados como "A efectivizar".</p>`}
+        <tbody>${pendEfRows}</tbody></table></div>`:`<p style="color:var(--muted);font-size:13px;">No hay cheques "A efectivizar".</p>`}
     </div>
     <div>
       <div class="zone-title" style="margin-bottom:10px;color:#3ecf5a;">✅ Efectivizados en Caja</div>
-      ${state.efectivizados.length ? `
-      <div class="tbl-wrap"><table>
+      ${state.efectivizados.length?`<div class="tbl-wrap"><table>
         <thead><tr><th>Fecha</th><th>Cliente</th><th style="text-align:right;">Bruto</th><th style="text-align:right;">Comisión</th><th style="text-align:right;">Neto</th><th></th></tr></thead>
         <tbody>${efectivizadosRows}</tbody>
         <tfoot><tr class="total-row"><td colspan="4">Total efectivizado</td><td style="text-align:right;">$${fmt(totalEfectivizados)}</td><td></td></tr></tfoot>
-      </table></div>` : `<p style="color:var(--muted);font-size:13px;">Sin cheques efectivizados aún.</p>`}
+      </table></div>`:`<p style="color:var(--muted);font-size:13px;">Sin cheques efectivizados.</p>`}
     </div>`;
 }
 
@@ -2582,7 +2865,8 @@ function prepararParaFirebase(s){
     cheques:    s.cheques,
     sueldos:    s.sueldos||{},
     casaAri:       s.casaAri||{cheques:[],cobros:[]},
-    efectivizados: s.efectivizados||[]
+    efectivizados: s.efectivizados||[],
+    gastos:        s.gastos||[]
   };
 }
 
@@ -2619,6 +2903,7 @@ function restaurarDesdeFirebase(s){
   if(s.sueldos) state.sueldos = s.sueldos;
   if(s.casaAri) state.casaAri = s.casaAri;
   if(s.efectivizados) state.efectivizados = s.efectivizados;
+  if(s.gastos) state.gastos = s.gastos;
 }
 
 function guardarEnFirebase(){
@@ -2770,6 +3055,8 @@ function sueldosInit(){
     if((!s.sueldo||s.sueldo===0) && SUELDOS_PREDEF[n]) s.sueldo = SUELDOS_PREDEF[n];
     if(s.adicLunes===undefined)   s.adicLunes   = SUELDO_DEFAULTS.adicLunes;
     if(s.adicMarVie===undefined)  s.adicMarVie  = SUELDO_DEFAULTS.adicMarVie;
+    // Corregir valor incorrecto 15000 → 14000
+    if(parseN(s.adicMarVie)===15000) s.adicMarVie = 14000;
     if(s.lluvia===undefined)      s.lluvia      = SUELDO_DEFAULTS.lluvia;
     if(s.puntDiaria===undefined)  s.puntDiaria  = SUELDO_DEFAULTS.puntDiaria;
     if(s.asistDiaria===undefined) s.asistDiaria = SUELDO_DEFAULTS.asistDiaria;
@@ -3034,14 +3321,47 @@ function renderLiqPanel(){
     return;
   }
 
-  // Selector de semana
+  // Calcular total de todos los chicos en la semana seleccionada
+  function calcTotalSemana(semIdx){
+    const sem = semanas[semIdx];
+    if(!sem) return {bruto:0, adelantos:0};
+    let bruto=0, adelantos=0;
+    state.chicos.forEach(ch=>{
+      const s=state.sueldos[ch.nombre]||{};
+      if(!parseN(s.sueldo)) return;
+      const extras=liqExtrasGet(semIdx,ch.nombre);
+      const calc=liqCalcEmpleado(ch,semIdx,sem.labs,extras);
+      const puntAbsol=(parseN(s.puntDiaria)||2000)*5;
+      const asistPerf=(parseN(s.asistDiaria)||4000)*5;
+      const huboT=calc.detalleDias.some(d=>d.vFinal==='T');
+      const huboA=calc.detalleDias.some(d=>d.vFinal==='A');
+      bruto+=calc.totalBase+calc.totalAdic+calc.totalPunt+(!huboT?puntAbsol:0)+(!huboA?asistPerf:0)+calc.totalLluvia;
+      adelantos+=parseN(calc.adelanto);
+    });
+    return {bruto, adelantos};
+  }
+
+  const totSem = calcTotalSemana(liqSemSelIdx);
+
+  // Selector de semana + total
   let html = `<div class="card" style="margin-bottom:16px;">
     <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
       <span style="font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:.06em;color:var(--accent1);">SEMANA</span>
-      <select id="liq-sem-sel" onchange="liqSemSelIdx=parseInt(this.value);renderLiqTabla()"
+      <select id="liq-sem-sel" onchange="liqSemSelIdx=parseInt(this.value);renderLiqPanel()"
         style="padding:7px 12px;background:#0f1118;border:1px solid var(--border);border-radius:8px;color:#e8eaf2;font-size:13px;font-family:'DM Sans',sans-serif;">
         ${semanas.map((s,i)=>`<option value="${i}" ${i===liqSemSelIdx?'selected':''}>${s.label}</option>`).join('')}
       </select>
+      <div style="display:flex;gap:8px;margin-left:8px;">
+        <span style="padding:6px 14px;border-radius:8px;background:rgba(62,207,90,.12);border:1px solid rgba(62,207,90,.25);font-size:13px;color:#3ecf5a;font-weight:600;">
+          Total bruto: $${fmt(totSem.bruto)}
+        </span>
+        ${totSem.adelantos>0?`<span style="padding:6px 14px;border-radius:8px;background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.25);font-size:13px;color:#f5a623;font-weight:600;">
+          Adelantos: $${fmt(totSem.adelantos)}
+        </span>`:''}
+        <span style="padding:6px 14px;border-radius:8px;background:rgba(79,142,247,.12);border:1px solid rgba(79,142,247,.25);font-size:13px;color:#4f8ef7;font-weight:600;">
+          Neto: $${fmt(totSem.bruto-totSem.adelantos)}
+        </span>
+      </div>
       <button onclick="liqImprimir()" style="margin-left:auto;padding:8px 18px;background:var(--accent1);border:none;border-radius:8px;color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;">🖨️ Imprimir recibos</button>
     </div>
   </div>
@@ -3117,12 +3437,17 @@ function renderLiqTabla(){
 
     html += `</div>
 
-      <!-- Adelanto -->
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+      <!-- Adelanto y Nota -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
         <span style="font-size:12px;color:var(--muted);">💵 Adelanto semana:</span>
         <input value="${extras.adelanto||''}" placeholder="0" 
           style="width:130px;padding:6px 10px;background:#0f1118;border:1px solid var(--border);border-radius:7px;color:#e8eaf2;font-size:13px;font-family:'DM Sans',sans-serif;text-align:right;"
           onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').adelanto=parseN(this.value);this.value=this.value?fmtInput(parseN(this.value)):'';"
+          onfocus="this.select()">
+        <span style="font-size:12px;color:var(--muted);">📝 Nota:</span>
+        <input value="${extras.nota||''}" placeholder="Nota para el recibo..." 
+          style="flex:1;min-width:200px;padding:6px 10px;background:#0f1118;border:1px solid var(--border);border-radius:7px;color:#e8eaf2;font-size:13px;font-family:'DM Sans',sans-serif;"
+          onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').nota=this.value;autoGuardar()"
           onfocus="this.select()">
       </div>
 
@@ -3165,7 +3490,8 @@ function liqGetEstadisticas(ch, soloMes){
   return { ausentes, tardes };
 }
 
-function liqGenerarHtmlRecibo(ch, calc, semLabs){
+function liqGenerarHtmlRecibo(ch, calc, semLabs, extras){
+  extras = extras || {};
   sueldosInit();
   const s   = state.sueldos[ch.nombre]||{};
   const dp  = ch.datosPersonales||{};
@@ -3221,7 +3547,7 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs){
   conceptosHtml += filaTexto('Cumpliendo jornada laboral de Lu a Vi de 7 a 16Hs.,');
   conceptosHtml += filaTexto('Sin horas Extras');
   if(calc.totalAdic > 0)
-    conceptosHtml += fila('PUNTUALIDAD DIARIA -B', liqFmtPesos(adicLunes)+' DIARIO', calc.totalAdic, '');
+    conceptosHtml += fila('PUNTUALIDAD DIARIA -B', 'L:'+liqFmtPesos(adicLunes)+' / M-V:'+liqFmtPesos(adicMarVie), calc.totalAdic, '');
   if(calc.totalPunt > 0)
     conceptosHtml += fila('TOLERANCIA A PUNT.-B', liqFmtPesos(puntDiaria), calc.totalPunt, '');
   if(!huboTarde && puntAbsol > 0)
@@ -3254,19 +3580,24 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs){
     <div style="height:6px;"></div>
     <table style="width:100%;font-size:12px;border-collapse:collapse;">
       <tr>
-        <td colspan="2" style="padding:1px 4px;"><strong>Empleador:</strong> YA VAMOS S.R.L.</td>
+        <td style="padding:1px 4px;width:60%;"><strong>Empleador:</strong> YA VAMOS S.R.L.</td>
+        <td rowspan="5" style="vertical-align:top;text-align:right;padding:2px 4px;width:40%;">
+          <!-- espacio para logo -->
+        </td>
       </tr>
       <tr>
-        <td colspan="2" style="padding:1px 4px;font-size:11px;">DOMICILIO: SARMIENTO 2864 L.10 CABA</td>
-      </tr>
-      <tr><td colspan="2" style="height:7px;"></td></tr>
-      <tr>
-        <td style="padding:1px 4px;width:65%;"><strong>Beneficiario:</strong> ${nombreCompleto}</td>
-        <td style="padding:1px 4px;text-align:right;font-size:11px;"><strong>CUIL:</strong> ${cuil}</td>
+        <td style="padding:1px 4px;font-size:11px;">DOMICILIO: SARMIENTO 2864 L.10 CABA</td>
       </tr>
       <tr>
-        <td style="padding:1px 4px;font-size:11px;">Fecha de ingreso: <strong>${fechaIng}</strong></td>
-        <td style="padding:1px 4px;text-align:right;font-size:11px;">Calif. Profesional: <strong>${categoria}</strong></td>
+        <td style="padding:1px 4px;font-size:11px;">CUIT: 30-71545606-7</td>
+      </tr>
+      <tr><td style="height:7px;"></td></tr>
+      <tr>
+        <td style="padding:1px 4px;"><strong>Beneficiario:</strong> ${nombreCompleto} &nbsp;&nbsp; <strong>CUIL:</strong> ${cuil}</td>
+      </tr>
+      <tr>
+        <td style="padding:1px 4px;font-size:11px;">Fecha de ingreso: <strong>${fechaIng}</strong> &nbsp;&nbsp;&nbsp;&nbsp; Calif. Profesional: <strong>${categoria}</strong></td>
+        <td></td>
       </tr>
       <tr><td colspan="2" style="height:9px;border-bottom:1px solid #ccc;"></td></tr>
       <tr><td colspan="2" style="height:9px;"></td></tr>
@@ -3314,6 +3645,11 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs){
       <div>Firma: ________________________</div>
       <div>Aclaración: ________________________________________________</div>
     </div>
+    <div style="height:10px;"></div>
+    <div style="font-size:12px;padding-top:4px;display:flex;align-items:baseline;gap:4px;">
+      <span style="white-space:nowrap;">Nota:</span>
+      <span style="flex:1;border-bottom:1px solid #999;min-width:0;">&nbsp;${extras.nota ? extras.nota : ''}</span>
+    </div>
   </div>`;
 }
 
@@ -3335,12 +3671,12 @@ function liqImprimir(){
     const ch2 = chicosActivos[i+1]||null;
     const extras1 = liqExtrasGet(liqSemSelIdx, ch1.nombre);
     const calc1   = liqCalcEmpleado(ch1, liqSemSelIdx, sem.labs, extras1);
-    const rec1    = liqGenerarHtmlRecibo(ch1, calc1, sem.labs);
+    const rec1    = liqGenerarHtmlRecibo(ch1, calc1, sem.labs, extras1);
     let rec2 = '<div class="recibo-bloque"></div>';
     if(ch2){
       const extras2 = liqExtrasGet(liqSemSelIdx, ch2.nombre);
       const calc2   = liqCalcEmpleado(ch2, liqSemSelIdx, sem.labs, extras2);
-      rec2 = liqGenerarHtmlRecibo(ch2, calc2, sem.labs);
+      rec2 = liqGenerarHtmlRecibo(ch2, calc2, sem.labs, extras2);
     }
     paginasHtml += `
     <div class="pagina">
@@ -3398,6 +3734,162 @@ function liqImprimir(){
 </html>`);
   ventana.document.close();
 }
+
+// ── COBROS MENU RESUMEN ──
+function renderCobrosMenuResumen(){
+  const cont = document.getElementById('cobros-menu-resumen');
+  if(!cont) return;
+
+  // Cobros diarios (del día actual)
+  const hoyKey = historialDiarios._fechaActual || new Date().toISOString().slice(0,10);
+  let diarCobrado=0, diarPendiente=0;
+  ZONAS.forEach(zona=>{
+    (state.cobros.zonas[zona]||[]).forEach(r=>{
+      if(r.separador||!r.cliente) return;
+      const imp = parseN(r.importe);
+      if(r.estado==='Cobrado') diarCobrado+=imp;
+      else diarPendiente+=imp;
+    });
+  });
+  // Especiales del día
+  if(state.cobros.especiales){
+    ESPECIALES.forEach(e=>{
+      (state.cobros.especiales[e.key]?.rows||[]).forEach(r=>{
+        const imp = parseN(r.importe);
+        if(r.estado==='Cobrado') diarCobrado+=imp;
+        else if(r.estado==='Pendiente') diarPendiente+=imp;
+      });
+    });
+  }
+
+  // Créditos por ventas (semanales/quincenales)
+  const credRows = [];
+  SEM_CLIENTES.forEach(cl=>{
+    let cobrado=0, pendiente=0;
+    (state.cobros.semanales[cl.key]||[]).forEach(r=>{
+      const imp = parseN(r.importe);
+      if(r.estado==='Cobrado') cobrado+=imp;
+      else if(r.estado==='Pendiente') pendiente+=imp;
+    });
+    credRows.push({label:cl.label, cobrado, pendiente});
+  });
+
+  const credCobrado   = credRows.reduce((s,r)=>s+r.cobrado,0);
+  const credPendiente = credRows.reduce((s,r)=>s+r.pendiente,0);
+  const totalCobrado   = diarCobrado + credCobrado;
+  const totalPendiente = diarPendiente + credPendiente;
+
+  const row = (label, cobrado, pendiente, bold=false) => `
+    <tr style="${bold?'font-weight:700;border-top:1.5px solid var(--border);':''}">
+      <td style="padding:5px 8px;font-size:12px;${bold?'':'color:var(--text);'}">${label}</td>
+      <td style="padding:5px 8px;font-size:12px;text-align:right;color:#3ecf5a;">${cobrado>0?'$'+fmt(cobrado):'—'}</td>
+      <td style="padding:5px 8px;font-size:12px;text-align:right;color:#f5a623;">${pendiente>0?'$'+fmt(pendiente):'—'}</td>
+    </tr>`;
+
+  cont.innerHTML = `
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;">
+    <div style="font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:.06em;color:var(--accent1);margin-bottom:12px;">📊 RESUMEN DE COBROS</div>
+    <table style="width:100%;border-collapse:collapse;">
+      <thead>
+        <tr style="border-bottom:1px solid var(--border);">
+          <th style="padding:5px 8px;font-size:11px;text-align:left;color:var(--muted);">Módulo</th>
+          <th style="padding:5px 8px;font-size:11px;text-align:right;color:#3ecf5a;">Cobrado</th>
+          <th style="padding:5px 8px;font-size:11px;text-align:right;color:#f5a623;">Pendiente</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${row('Cobros diarios', diarCobrado, diarPendiente)}
+        ${credRows.map(r=>row(r.label, r.cobrado, r.pendiente)).join('')}
+        ${row('TOTAL GENERAL', totalCobrado, totalPendiente, true)}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+
+// ── GASTOS ──
+const GASTOS_ITEMS = [
+  'CIUDAD','RETIROS','MERCEDES CUOTA','MERCEDES','RESGUARDO','ALQUILERES',
+  'PATENTES','HABILITACION','YPF','COMBUSTIBLE','MECANICO','MICORS',
+  'MONOTRIBUTO','IBB','CARGAS SOCIALES','AFIP','RETIRADAS','SEGURO',
+  'CONTADOR','ABOGADO','MOVISTAR','LAVADO','MANTENIMIENTO','AGUA','EXPRESOS'
+];
+
+const GASTOS_COLS = 4; // columnas de fecha+importe
+
+function gastosInit(){
+  if(!state.gastos || !Array.isArray(state.gastos)) state.gastos = [];
+  // Asegurar que existan todos los items
+  GASTOS_ITEMS.forEach(nombre=>{
+    if(!state.gastos.find(g=>g.nombre===nombre)){
+      state.gastos.push({
+        nombre,
+        cols: Array.from({length:GASTOS_COLS},()=>({fecha:'',importe:'',nota:''}))
+      });
+    } else {
+      const g = state.gastos.find(x=>x.nombre===nombre);
+      while(g.cols.length < GASTOS_COLS) g.cols.push({fecha:'',importe:'',nota:''});
+    }
+  });
+}
+
+function renderGastos(){
+  const cont = document.getElementById('gastos-container');
+  if(!cont) return;
+
+  // Recolectar todos los gastos de todos los días del historial
+  const todosGastos = [];
+  Object.entries(historialDiarios).forEach(([fecha,dayData])=>{
+    if(fecha==='_fechaActual') return;
+    if(dayData._gastosDiarios && dayData._gastosDiarios.length){
+      dayData._gastosDiarios.forEach(g=>{
+        if(parseN(g.importe)>0) todosGastos.push({...g, fecha});
+      });
+    }
+  });
+  // También el día actual
+  (state.cobros.gastosDiarios||[]).forEach(g=>{
+    if(parseN(g.importe)>0) todosGastos.push({...g, fecha: historialDiarios._fechaActual||new Date().toISOString().slice(0,10)});
+  });
+
+  // Ordenar cronológico
+  todosGastos.sort((a,b)=>(a.fecha||'').localeCompare(b.fecha||''));
+
+  const totalGeneral = todosGastos.reduce((s,g)=>s+parseN(g.importe),0);
+  const PERS_COLORS = {Nito:'#4f8ef7',Johnny:'#4ecdc4',Fede:'#3ecf5a',Diego:'#f5a623'};
+
+  const rows = todosGastos.map(g=>`
+    <tr>
+      <td style="padding:5px 8px;font-size:11px;color:var(--muted);">${g.fecha||'—'}</td>
+      <td style="padding:5px 8px;font-size:12px;">${g.concepto||'—'}</td>
+      <td style="padding:5px 8px;font-size:12px;text-align:right;color:var(--accent2);">$${fmt(parseN(g.importe))}</td>
+      <td style="padding:5px 8px;font-size:12px;color:var(--muted);">${g.nota||'—'}</td>
+      <td style="padding:5px 8px;">
+        ${g.quien?`<span class="badge cobrado" style="color:${PERS_COLORS[g.quien]||'#e8eaf2'};background:rgba(255,255,255,.05);border-color:${PERS_COLORS[g.quien]||'#e8eaf2'};">${g.quien}</span>`:'<span style="color:var(--muted);font-size:11px;">—</span>'}
+      </td>
+    </tr>`).join('');
+
+  cont.innerHTML = `
+  <div style="margin-bottom:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+    <div class="stat-card" style="min-width:180px;">
+      <div class="stat-label">Total gastos</div>
+      <div class="stat-val" style="color:var(--accent2);">$${fmt(totalGeneral)}</div>
+    </div>
+    <div class="stat-card" style="min-width:120px;">
+      <div class="stat-label">Registros</div>
+      <div class="stat-val">${todosGastos.length}</div>
+    </div>
+  </div>
+  ${todosGastos.length?`
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Fecha</th><th>Concepto</th><th style="text-align:right;">Importe</th><th>Nota</th><th>Quién</th></tr></thead>
+      <tbody>${rows}</tbody>
+      <tfoot><tr class="total-row"><td colspan="2">TOTAL</td><td style="text-align:right;">$${fmt(totalGeneral)}</td><td colspan="2"></td></tr></tfoot>
+    </table>
+  </div>`:'<p style="color:var(--muted);font-size:13px;margin-top:16px;">Sin gastos registrados aún. Cargalos desde Cobros y Gastos Diarios.</p>'}`;
+}
+
 
 // ── HISTORIAL DE DESHACER (10 pasos) ──
 const _undoStack = [];
