@@ -3018,7 +3018,7 @@ function importarBackup(){
 
 const SUELDO_DEFAULTS = {
   adicLunes:   20000,
-  adicMarVie:  14000,
+  adicMarVie:  15000,
   lluvia:      10000,
   puntDiaria:   2000,
   asistDiaria:  4000
@@ -3055,8 +3055,8 @@ function sueldosInit(){
     if((!s.sueldo||s.sueldo===0) && SUELDOS_PREDEF[n]) s.sueldo = SUELDOS_PREDEF[n];
     if(s.adicLunes===undefined)   s.adicLunes   = SUELDO_DEFAULTS.adicLunes;
     if(s.adicMarVie===undefined)  s.adicMarVie  = SUELDO_DEFAULTS.adicMarVie;
-    // Corregir valor incorrecto 15000 → 14000
-    if(parseN(s.adicMarVie)===15000) s.adicMarVie = 14000;
+    // Actualizar 14000 → 15000 para todos los empleados
+    if(parseN(s.adicMarVie)===14000) s.adicMarVie = 15000;
     if(s.lluvia===undefined)      s.lluvia      = SUELDO_DEFAULTS.lluvia;
     if(s.puntDiaria===undefined)  s.puntDiaria  = SUELDO_DEFAULTS.puntDiaria;
     if(s.asistDiaria===undefined) s.asistDiaria = SUELDO_DEFAULTS.asistDiaria;
