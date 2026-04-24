@@ -296,7 +296,7 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
     </div>
     <div class="menu-card c3" onclick="goTo('screen-informe')">
       <span class="card-icon">📈</span>
-      <div class="card-title">INVERSIONES</div>
+      <div class="card-title">MOVIMIENTOS CAJA BANCO Y PLANES</div>
       <div class="card-desc">Planes, bancos, cartera de cheques, USD MEP, acciones, compra USD.</div>
       <div class="card-arrow">→</div>
     </div>
@@ -607,8 +607,8 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
 <!-- ═══════════════ INFORME ═══════════════ -->
 <div id="screen-informe" class="screen">
   <button class="btn-back" onclick="goTo('screen-home')">← Volver al menú</button>
-  <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="active">Inversiones</span></div>
-  <p class="section-title">INVERSIONES</p>
+  <div class="breadcrumb"><span class="crumb" onclick="goTo('screen-home')">Inicio</span><span class="sep">/</span><span class="active">Movimientos Caja Banco y Planes</span></div>
+  <p class="section-title">MOVIMIENTOS CAJA BANCO Y PLANES</p>
   <div id="informe-resumen" class="stats-grid" style="margin-bottom:28px;"></div>
   <div id="informe-container"></div>
 </div>
@@ -1120,7 +1120,7 @@ function renderZonas(){
     const tot=rows.reduce((s,r)=>s+parseN(r.importe),0);
     html+=`<div class="zone-header"><span class="zone-title">${zona}</span></div>
     <div class="tbl-wrap" style="margin-bottom:20px;">
-      <table><thead><tr><th>#</th><th>Cliente</th><th>Importe $</th><th>Nota</th><th>Cobrador</th></tr></thead>
+      <table><thead><tr><th>#</th><th>Cliente</th><th>Importe $</th><th>Cobrador</th></tr></thead>
       <tbody id="zona-${zkey}"></tbody>
       <tfoot><tr class="total-row"><td colspan="2">Total ${zona}</td><td>$${fmt(tot)}</td><td></td></tr></tfoot>
     </table></div>`;
@@ -1142,8 +1142,6 @@ function renderZonas(){
         <td style="width:28px;text-align:center;color:var(--muted);font-size:11px;padding:6px 4px;">${i+1}</td>
         ${nc}
         <td>${cellHtml(tbodyId,i,(r.prefijado||esAyer)?0:1,r.importe,'110px','0,00')}</td>
-        <td><input value="${r.nota||''}" placeholder="nota..." style="width:120px;padding:3px 6px;background:#0f1118;border:1px solid var(--border);border-radius:5px;color:#e8eaf2;font-size:11px;font-family:'DM Sans',sans-serif;"
-          onblur="state.cobros.zonas['${zona}'][${i}].nota=this.value;autoGuardar()" onfocus="this.select()"></td>
         <td><span class="badge ${['Nito','Johnny','Fede','Diego'].includes(r.estado)?'cobrado':'pend'}" 
           style="cursor:pointer;${r.estado==='Nito'?'background:rgba(79,142,247,.2);color:#4f8ef7;border-color:#4f8ef7;':r.estado==='Johnny'?'background:rgba(78,205,196,.2);color:#4ecdc4;border-color:#4ecdc4;':r.estado==='Fede'?'background:rgba(62,207,90,.2);color:#3ecf5a;border-color:#3ecf5a;':r.estado==='Diego'?'background:rgba(245,166,35,.2);color:#f5a623;border-color:#f5a623;':''}" 
           onclick="(()=>{const opts=['Pendiente','Nito','Johnny','Fede','Diego'];const cur=state.cobros.zonas['${zona}'][${i}].estado||'Pendiente';const ix=opts.indexOf(cur);state.cobros.zonas['${zona}'][${i}].estado=opts[(ix+1)%5];renderZonas();autoGuardar();})()">${r.estado||'Pendiente'}</span></td>
@@ -1169,9 +1167,11 @@ function renderGastosDiarios(container){
   const rowsHtml = state.cobros.gastosDiarios.map((g,i)=>`
     <tr>
       <td style="padding:4px 6px;font-size:12px;">
-        <select style="padding:3px 6px;background:#0f1118;border:1px solid var(--border);border-radius:5px;color:#e8eaf2;font-size:11px;font-family:'DM Sans',sans-serif;"
-          onchange="state.cobros.gastosDiarios[${i}].concepto=this.value;autoGuardar()">
+        <select style="padding:3px 6px;background:#0f1118;border:1px solid var(--border);border-radius:5px;color:#e8eaf2;font-size:11px;font-family:'DM Sans',sans-serif;max-width:160px;"
+          onchange="if(this.value==='__manual__'){const m=prompt('Ingresá el concepto:','');if(m&&m.trim()){state.cobros.gastosDiarios[${i}].concepto=m.trim();autoGuardar();renderZonas();}this.value=state.cobros.gastosDiarios[${i}].concepto||'CIUDAD';}else{state.cobros.gastosDiarios[${i}].concepto=this.value;autoGuardar();}">
           ${GASTOS_ITEMS.map(c=>`<option value="${c}" ${g.concepto===c?'selected':''}>${c}</option>`).join('')}
+          <option value="${!GASTOS_ITEMS.includes(g.concepto)&&g.concepto?g.concepto:''}" ${!GASTOS_ITEMS.includes(g.concepto)&&g.concepto?'selected':''} style="display:${!GASTOS_ITEMS.includes(g.concepto)&&g.concepto?'block':'none'}">${!GASTOS_ITEMS.includes(g.concepto)&&g.concepto?g.concepto:''}</option>
+          <option value="__manual__" style="color:#f5a623;font-style:italic;">✏️ Ingresar manual...</option>
         </select>
       </td>
       <td style="padding:4px 6px;">
@@ -2881,7 +2881,7 @@ function restaurarDesdeFirebase(s){
         const prefActuales = CLIENTES_ZONA[zona]||[];
         // Reemplazar filas prefijadas con los clientes actuales de CLIENTES_ZONA
         const noPrefs = state.cobros.zonas[zona].filter(r=>!r.prefijado&&!r.separador&&!r.desdeFecha);
-        const nuevosPrefs = prefActuales.map(c=>({cliente:c,importe:'',estado:'Cobrado',prefijado:true}));
+        const nuevosPrefs = prefActuales.map(c=>({cliente:c,importe:'',estado:'Fede',prefijado:true}));
         // Mantener importes de prefijados si ya tenían datos
         const oldPrefs = state.cobros.zonas[zona].filter(r=>r.prefijado);
         nuevosPrefs.forEach(np=>{
@@ -3306,8 +3306,14 @@ let liqSemSelIdx = 0;
 
 function liqExtrasGet(semIdx, nombre){
   if(!liqExtras[semIdx]) liqExtras[semIdx]={};
-  if(!liqExtras[semIdx][nombre]) liqExtras[semIdx][nombre]={lluvia:{},adelanto:'',justDias:{}};
-  return liqExtras[semIdx][nombre];
+  if(!liqExtras[semIdx][nombre]) liqExtras[semIdx][nombre]={lluvia:{},adelanto:'',justDias:{},nota:'',sac:'',vacaciones:'',sacImporte:0,vacacionesImporte:0};
+  const e = liqExtras[semIdx][nombre];
+  if(!e.nota) e.nota='';
+  if(!e.sac) e.sac='';
+  if(!e.vacaciones) e.vacaciones='';
+  if(!e.sacImporte) e.sacImporte=0;
+  if(!e.vacacionesImporte) e.vacacionesImporte=0;
+  return e;
 }
 
 function renderLiqPanel(){
@@ -3450,6 +3456,27 @@ function renderLiqTabla(){
           onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').nota=this.value;autoGuardar()"
           onfocus="this.select()">
       </div>
+      <!-- SAC y Vacaciones -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
+        <span style="font-size:12px;color:var(--muted);">📅 SAC período:</span>
+        <input value="${extras.sac||''}" placeholder="ej: 1er sem 2026" 
+          style="width:150px;padding:6px 10px;background:#0f1118;border:1px solid var(--border);border-radius:7px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;"
+          onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').sac=this.value;autoGuardar()"
+          onfocus="this.select()">
+        <input value="${extras.sacImporte||''}" placeholder="$ importe" 
+          style="width:110px;padding:6px 10px;background:#0f1118;border:1px solid var(--border);border-radius:7px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+          onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').sacImporte=parseN(this.value);this.value=this.value?fmtInput(parseN(this.value)):'';"
+          onfocus="this.select()">
+        <span style="font-size:12px;color:var(--muted);margin-left:8px;">🏖️ Vacaciones período:</span>
+        <input value="${extras.vacaciones||''}" placeholder="ej: enero 2026" 
+          style="width:150px;padding:6px 10px;background:#0f1118;border:1px solid var(--border);border-radius:7px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;"
+          onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').vacaciones=this.value;autoGuardar()"
+          onfocus="this.select()">
+        <input value="${extras.vacacionesImporte||''}" placeholder="$ importe" 
+          style="width:110px;padding:6px 10px;background:#0f1118;border:1px solid var(--border);border-radius:7px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+          onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').vacacionesImporte=parseN(this.value);this.value=this.value?fmtInput(parseN(this.value)):'';"
+          onfocus="this.select()">
+      </div>
 
       <!-- Resumen de cálculo -->
       <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px;">
@@ -3558,6 +3585,13 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras){
     conceptosHtml += fila('LLUVIA', '', calc.totalLluvia, '');
   if(calc.adelanto > 0)
     conceptosHtml += fila('ADELANTO DE ESTA SEMANA', '', '', calc.adelanto);
+  // SAC y Vacaciones (solo si se completó el período)
+  const sacImp = parseN(extras.sacImporte)||0;
+  const vacImp = parseN(extras.vacacionesImporte)||0;
+  if(extras.sac)
+    conceptosHtml += fila('S.A.C. - PERÍODO '+extras.sac.toUpperCase(), '', sacImp||'', '');
+  if(extras.vacaciones)
+    conceptosHtml += fila('VACACIONES - PERÍODO '+extras.vacaciones.toUpperCase(), '', vacImp||'', '');
   conceptosHtml += filaTexto('COBERTURA POR SEGURO DE VIDA');
   conceptosHtml += filaTexto('CIA. SUDAMERIS Póliza Nro.12 002457383');
 
@@ -3566,7 +3600,7 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras){
   for(let x=nC; x<7; x++) conceptosHtml += filaVacia();
 
   const totalHaberes = calc.totalBase + calc.totalAdic + calc.totalPunt +
-    (!huboTarde ? puntAbsol : 0) + (!huboFalta ? asistPerf : 0) + calc.totalLluvia;
+    (!huboTarde ? puntAbsol : 0) + (!huboFalta ? asistPerf : 0) + calc.totalLluvia + sacImp + vacImp;
   const totalDeduc = calc.adelanto||0;
 
   const hoyD = new Date();
