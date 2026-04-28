@@ -3295,8 +3295,9 @@ function liqCalcEmpleado(ch, semIdx, semLabs, extras){
   if(totalBase < 0) totalBase = 0;
 
   const adelanto = parseN(extras.adelanto)||0;
+  const adelantoAnterior = parseN(extras.adelantoAnterior)||0;
   const totalBruto = totalBase+totalAdic+totalLluvia+totalPunt+totalAsist;
-  return {totalBase,totalAdic,totalLluvia,totalPunt,totalAsist,totalBruto,adelanto,detalleDias};
+  return {totalBase,totalAdic,totalLluvia,totalPunt,totalAsist,totalBruto,adelanto,adelantoAnterior,detalleDias};
 }
 
 // Estado de extras por empleado por semana
@@ -3306,13 +3307,22 @@ let liqSemSelIdx = 0;
 
 function liqExtrasGet(semIdx, nombre){
   if(!liqExtras[semIdx]) liqExtras[semIdx]={};
-  if(!liqExtras[semIdx][nombre]) liqExtras[semIdx][nombre]={lluvia:{},adelanto:'',justDias:{},nota:'',sac:'',vacaciones:'',sacImporte:0,vacacionesImporte:0};
+  if(!liqExtras[semIdx][nombre]) liqExtras[semIdx][nombre]={lluvia:{},adelanto:'',adelantoNota:'',adelantoAnterior:'',adelantoAnteriorNota:'',justDias:{},nota:'',sac:'',vacaciones:'',sacImporte:0,vacacionesImporte:0};
   const e = liqExtras[semIdx][nombre];
   if(!e.nota) e.nota='';
   if(!e.sac) e.sac='';
   if(!e.vacaciones) e.vacaciones='';
   if(!e.sacImporte) e.sacImporte=0;
   if(!e.vacacionesImporte) e.vacacionesImporte=0;
+  if(!e.adelantoNota) e.adelantoNota='';
+  if(!e.adelantoAnterior) e.adelantoAnterior='';
+  if(!e.adelantoAnteriorNota) e.adelantoAnteriorNota='';
+  // Propagar adelanto anterior a la siguiente semana si no está seteado
+  if(!e.adelantoAnterior && semIdx>0){
+    const prev = liqExtras[semIdx-1]&&liqExtras[semIdx-1][nombre];
+    if(prev&&parseN(prev.adelantoAnterior)>0){ e.adelantoAnterior=prev.adelantoAnterior; e.adelantoAnteriorNota=prev.adelantoAnteriorNota||''; }
+    else if(prev&&parseN(prev.adelanto)>0){ e.adelantoAnterior=prev.adelanto; e.adelantoAnteriorNota=prev.adelantoNota||''; }
+  }
   return e;
 }
 
@@ -3443,14 +3453,32 @@ function renderLiqTabla(){
 
     html += `</div>
 
-      <!-- Adelanto y Nota -->
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
-        <span style="font-size:12px;color:var(--muted);">💵 Adelanto semana:</span>
+      <!-- Adelantos y Nota -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;">
+        <span style="font-size:12px;color:var(--muted);white-space:nowrap;">💵 Adelanto semana:</span>
         <input value="${extras.adelanto||''}" placeholder="0" 
-          style="width:130px;padding:6px 10px;background:#0f1118;border:1px solid var(--border);border-radius:7px;color:#e8eaf2;font-size:13px;font-family:'DM Sans',sans-serif;text-align:right;"
+          style="width:120px;padding:6px 10px;background:#0f1118;border:1px solid var(--border);border-radius:7px;color:#e8eaf2;font-size:13px;font-family:'DM Sans',sans-serif;text-align:right;"
           onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').adelanto=parseN(this.value);this.value=this.value?fmtInput(parseN(this.value)):'';"
           onfocus="this.select()">
-        <span style="font-size:12px;color:var(--muted);">📝 Nota:</span>
+        <input value="${extras.adelantoNota||''}" placeholder="motivo..." 
+          style="width:180px;padding:6px 10px;background:#0f1118;border:1px solid var(--border);border-radius:7px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;"
+          onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').adelantoNota=this.value;autoGuardar()"
+          onfocus="this.select()">
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;">
+        <span style="font-size:12px;color:#f5a623;white-space:nowrap;">⏳ Adelanto anterior:</span>
+        <input value="${extras.adelantoAnterior||''}" placeholder="0" 
+          style="width:120px;padding:6px 10px;background:#0f1118;border:1px solid rgba(245,166,35,.3);border-radius:7px;color:#f5a623;font-size:13px;font-family:'DM Sans',sans-serif;text-align:right;"
+          onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').adelantoAnterior=parseN(this.value)||'0';this.value=parseN(this.value)?fmtInput(parseN(this.value)):'0';autoGuardar();"
+          onfocus="this.select()">
+        <input value="${extras.adelantoAnteriorNota||''}" placeholder="motivo (ej: lavarropas)..." 
+          style="width:220px;padding:6px 10px;background:#0f1118;border:1px solid rgba(245,166,35,.3);border-radius:7px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;"
+          onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').adelantoAnteriorNota=this.value;autoGuardar()"
+          onfocus="this.select()">
+        ${parseN(extras.adelantoAnterior)>0?'<span style="font-size:11px;color:#f5a623;opacity:.7;">Se propaga automáticamente</span>':''}
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
+        <span style="font-size:12px;color:var(--muted);">📝 Nota recibo:</span>
         <input value="${extras.nota||''}" placeholder="Nota para el recibo..." 
           style="flex:1;min-width:200px;padding:6px 10px;background:#0f1118;border:1px solid var(--border);border-radius:7px;color:#e8eaf2;font-size:13px;font-family:'DM Sans',sans-serif;"
           onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').nota=this.value;autoGuardar()"
@@ -3517,28 +3545,28 @@ function liqGetEstadisticas(ch, soloMes){
   return { ausentes, tardes };
 }
 
-function liqGenerarHtmlRecibo(ch, calc, semLabs, extras){
+function liqGenerarHtmlRecibo(ch, calc, semLabs, extras, fechaOverride){
   extras = extras || {};
+  const esSacVac = !!extras._soloSacVac;
   sueldosInit();
   const s   = state.sueldos[ch.nombre]||{};
   const dp  = ch.datosPersonales||{};
-  const fechaRecibo    = liqFechaRecibo(semLabs);
   const nombreCompleto = (dp.nombreCompleto||ch.nombre).toUpperCase();
   const cuil     = s.cuil||'';
   const categoria= s.categoria||'AYUDANTE DE CHOFER';
   const fechaIng = ch.fechaIngreso||'';
+  const fechaRecibo = fechaOverride || (semLabs.length ? liqFechaRecibo(semLabs) : '—');
 
   const adicLunes   = parseN(s.adicLunes)||20000;
-  const adicMarVie  = parseN(s.adicMarVie)||14000;
+  const adicMarVie  = parseN(s.adicMarVie)||15000;
   const puntDiaria  = parseN(s.puntDiaria)||2000;
   const asistDiaria = parseN(s.asistDiaria)||4000;
-  const puntAbsol   = puntDiaria * 5;   // $10.000 semanal
-  const asistPerf   = asistDiaria * 5;  // $20.000 semanal
+  const puntAbsol   = puntDiaria * 5;
+  const asistPerf   = asistDiaria * 5;
 
   const statsMes   = liqGetEstadisticas(ch, true);
   const statsTotal = liqGetEstadisticas(ch, false);
 
-  // Feriado NO afecta bonos semanales
   const huboTarde = calc.detalleDias.some(d=>d.vFinal==='T');
   const huboFalta = calc.detalleDias.some(d=>d.vFinal==='A');
 
@@ -3558,50 +3586,65 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras){
 
   const filaVacia = () => `<tr><td colspan="4" style="height:13px;"></td></tr>`;
 
-  let conceptosHtml = '';
-  const ausReales    = calc.detalleDias.filter(d=>d.vFinal==='A').length;
-  const tardesReales = calc.detalleDias.filter(d=>d.vFinal==='T').length;
-  const mediosReales = calc.detalleDias.filter(d=>d.vFinal==='1/2'||d.vFinal==='½').length;
-  const feriadosN    = calc.detalleDias.filter(d=>d.vFinal==='F').length;
-  const novedadesSem = [
-    ausReales>0    ? ausReales+(ausReales===1?' AUSENTE':' AUSENTES')          : '',
-    tardesReales>0 ? tardesReales+(tardesReales===1?' TARDE':' TARDES')        : '',
-    mediosReales>0 ? mediosReales+(mediosReales===1?' 1/2 DIA':' 1/2 DIAS')   : '',
-    feriadosN>0    ? feriadosN+(feriadosN===1?' FERIADO':' FERIADOS')          : '',
-  ].filter(Boolean).join('   ');
-  const semanaLabel = novedadesSem ? 'SEMANA   '+novedadesSem : 'SEMANA';
-  conceptosHtml += fila(semanaLabel, '', calc.totalBase, '');
-  conceptosHtml += filaTexto('Cumpliendo jornada laboral de Lu a Vi de 7 a 16Hs.,');
-  conceptosHtml += filaTexto('Sin horas Extras');
-  if(calc.totalAdic > 0)
-    conceptosHtml += fila('PUNTUALIDAD DIARIA -B', 'L:'+liqFmtPesos(adicLunes)+' / M-V:'+liqFmtPesos(adicMarVie), calc.totalAdic, '');
-  if(calc.totalPunt > 0)
-    conceptosHtml += fila('TOLERANCIA A PUNT.-B', liqFmtPesos(puntDiaria), calc.totalPunt, '');
-  if(!huboTarde && puntAbsol > 0)
-    conceptosHtml += fila('PUNT ABSOLUTA SEMANA', liqFmtPesos(puntAbsol), puntAbsol, '');
-  if(!huboFalta && asistPerf > 0)
-    conceptosHtml += fila('ASIST PERF SEMANA', liqFmtPesos(asistPerf), asistPerf, '');
-  if(calc.totalLluvia > 0)
-    conceptosHtml += fila('LLUVIA', '', calc.totalLluvia, '');
-  if(calc.adelanto > 0)
-    conceptosHtml += fila('ADELANTO DE ESTA SEMANA', '', '', calc.adelanto);
-  // SAC y Vacaciones (solo si se completó el período)
   const sacImp = parseN(extras.sacImporte)||0;
   const vacImp = parseN(extras.vacacionesImporte)||0;
-  if(extras.sac)
-    conceptosHtml += fila('S.A.C. - PERÍODO '+extras.sac.toUpperCase(), '', sacImp||'', '');
-  if(extras.vacaciones)
-    conceptosHtml += fila('VACACIONES - PERÍODO '+extras.vacaciones.toUpperCase(), '', vacImp||'', '');
-  conceptosHtml += filaTexto('COBERTURA POR SEGURO DE VIDA');
-  conceptosHtml += filaTexto('CIA. SUDAMERIS Póliza Nro.12 002457383');
 
-  // Padding mínimo
-  const nC = 1+(calc.totalAdic>0?1:0)+(calc.totalPunt>0?1:0)+(!huboTarde?1:0)+(!huboFalta?1:0)+(calc.totalLluvia>0?1:0)+(calc.adelanto>0?1:0);
-  for(let x=nC; x<7; x++) conceptosHtml += filaVacia();
+  let conceptosHtml = '';
+  let totalHaberes = 0;
+  let totalDeduc   = 0;
 
-  const totalHaberes = calc.totalBase + calc.totalAdic + calc.totalPunt +
-    (!huboTarde ? puntAbsol : 0) + (!huboFalta ? asistPerf : 0) + calc.totalLluvia + sacImp + vacImp;
-  const totalDeduc = calc.adelanto||0;
+  if(esSacVac){
+    // Recibo especial: solo SAC y/o Vacaciones
+    if(extras.sac)
+      conceptosHtml += fila('S.A.C. - PERÍODO '+extras.sac.toUpperCase(), '', sacImp||'', '');
+    if(extras.vacaciones)
+      conceptosHtml += fila('VACACIONES - PERÍODO '+extras.vacaciones.toUpperCase(), '', vacImp||'', '');
+    const nSV = (extras.sac?1:0)+(extras.vacaciones?1:0);
+    for(let x=nSV; x<7; x++) conceptosHtml += filaVacia();
+    conceptosHtml += filaTexto('COBERTURA POR SEGURO DE VIDA');
+    conceptosHtml += filaTexto('CIA. SUDAMERIS Póliza Nro.12 002457383');
+    totalHaberes = sacImp + vacImp;
+    totalDeduc   = (parseN(extras.adelanto)||0) + (parseN(extras.adelantoAnterior)||0);
+    if(parseN(extras.adelantoAnterior)>0)
+      conceptosHtml += fila('ADELANTOS'+(extras.adelantoAnteriorNota?' - '+extras.adelantoAnteriorNota.toUpperCase():''), '', '', parseN(extras.adelantoAnterior));
+    if(parseN(extras.adelanto)>0)
+      conceptosHtml += fila('ADELANTO DE LA SEMANA'+(extras.adelantoNota?' - '+extras.adelantoNota.toUpperCase():''), '', '', parseN(extras.adelanto));
+  } else {
+    // Recibo normal
+    const ausReales    = calc.detalleDias.filter(d=>d.vFinal==='A').length;
+    const tardesReales = calc.detalleDias.filter(d=>d.vFinal==='T').length;
+    const mediosReales = calc.detalleDias.filter(d=>d.vFinal==='1/2'||d.vFinal==='½').length;
+    const feriadosN    = calc.detalleDias.filter(d=>d.vFinal==='F').length;
+    const novedadesSem = [
+      ausReales>0    ? ausReales+(ausReales===1?' AUSENTE':' AUSENTES')        : '',
+      tardesReales>0 ? tardesReales+(tardesReales===1?' TARDE':' TARDES')      : '',
+      mediosReales>0 ? mediosReales+(mediosReales===1?' 1/2 DIA':' 1/2 DIAS') : '',
+      feriadosN>0    ? feriadosN+(feriadosN===1?' FERIADO':' FERIADOS')        : '',
+    ].filter(Boolean).join('   ');
+    const semanaLabel = novedadesSem ? 'SEMANA   '+novedadesSem : 'SEMANA';
+    conceptosHtml += fila(semanaLabel, '', calc.totalBase, '');
+    conceptosHtml += filaTexto('Cumpliendo jornada laboral de Lu a Vi de 7 a 16Hs.,');
+    conceptosHtml += filaTexto('Sin horas Extras');
+    if(calc.totalAdic > 0)
+      conceptosHtml += fila('PUNTUALIDAD DIARIA -B', 'L:'+liqFmtPesos(adicLunes)+' / M-V:'+liqFmtPesos(adicMarVie), calc.totalAdic, '');
+    if(!huboTarde && puntAbsol > 0)
+      conceptosHtml += fila('PUNT ABSOLUTA SEMANA', liqFmtPesos(puntAbsol), puntAbsol, '');
+    if(!huboFalta && asistPerf > 0)
+      conceptosHtml += fila('ASIST PERF SEMANA', liqFmtPesos(asistPerf), asistPerf, '');
+    if(calc.totalLluvia > 0)
+      conceptosHtml += fila('LLUVIA', '', calc.totalLluvia, '');
+    if(calc.adelantoAnterior > 0)
+      conceptosHtml += fila('ADELANTOS'+(extras.adelantoAnteriorNota?' - '+extras.adelantoAnteriorNota.toUpperCase():''), '', '', calc.adelantoAnterior);
+    if(calc.adelanto > 0)
+      conceptosHtml += fila('ADELANTO DE LA SEMANA'+(extras.adelantoNota?' - '+extras.adelantoNota.toUpperCase():''), '', '', calc.adelanto);
+    conceptosHtml += filaTexto('COBERTURA POR SEGURO DE VIDA');
+    conceptosHtml += filaTexto('CIA. SUDAMERIS Póliza Nro.12 002457383');
+    const nC = 1+(calc.totalAdic>0?1:0)+(!huboTarde?1:0)+(!huboFalta?1:0)+(calc.totalLluvia>0?1:0)+(calc.adelanto>0?1:0);
+    for(let x=nC; x<7; x++) conceptosHtml += filaVacia();
+    totalHaberes = calc.totalBase + calc.totalAdic +
+      (!huboTarde ? puntAbsol : 0) + (!huboFalta ? asistPerf : 0) + calc.totalLluvia;
+    totalDeduc = (calc.adelanto||0) + (calc.adelantoAnterior||0);
+  }
 
   const hoyD = new Date();
   const fechaCaba = `CABA, ${hoyD.getDate()}/${hoyD.getMonth()+1}/${hoyD.getFullYear()}`;
@@ -3687,6 +3730,27 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras){
   </div>`;
 }
 
+function liqGenerarHtmlReciboSacVac(ch, extras, fechaRecibo){
+  // Crear un calc vacío y un extras especial solo con SAC/Vac
+  const calcVacio = {
+    totalBase:0, totalAdic:0, totalLluvia:0, totalPunt:0, totalAsist:0,
+    totalBruto:0, adelanto:0,
+    detalleDias:[]
+  };
+  // Extras especial: solo SAC y Vac, sin semana ni otros conceptos
+  const extrasOnly = {
+    ...extras,
+    adelanto: 0,
+    lluvia: {},
+    justDias: {},
+    // Flag para que liqGenerarHtmlRecibo sepa que es recibo SAC/Vac
+    _soloSacVac: true
+  };
+  // Generar con la misma función — el contenido de conceptos lo controla internamente
+  return '<!--RECIBO_SPLIT-->' + liqGenerarHtmlRecibo(ch, calcVacio, [], extrasOnly, fechaRecibo);
+}
+
+
 function liqImprimir(){
   sueldosInit();
   const semanas = liqGetSemanas();
@@ -3700,6 +3764,8 @@ function liqImprimir(){
   if(!chicosActivos.length){ alert('No hay empleados con sueldo configurado.'); return; }
 
   let paginasHtml = '';
+  let sacVacHtml = ''; // Recibos separados para SAC/Vacaciones
+
   for(let i=0; i<chicosActivos.length; i+=2){
     const ch1 = chicosActivos[i];
     const ch2 = chicosActivos[i+1]||null;
@@ -3718,6 +3784,34 @@ function liqImprimir(){
       <div class="corte-linea">✂ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ✂</div>
       <div class="recibo-wrapper">${rec2}</div>
     </div>`;
+
+    // Generar recibos SAC/Vacaciones si corresponde
+    [ch1, ch2].forEach((ch,ci)=>{
+      if(!ch) return;
+      const extras = ci===0 ? extras1 : liqExtrasGet(liqSemSelIdx, ch2.nombre);
+      const sacImp = parseN(extras.sacImporte)||0;
+      const vacImp = parseN(extras.vacacionesImporte)||0;
+      if(extras.sac||extras.vacaciones){
+        sacVacHtml += liqGenerarHtmlReciboSacVac(ch, extras, liqFechaRecibo(sem.labs));
+      }
+    });
+  }
+
+  // Agrupar recibos SAC/Vac de a 2 por hoja
+  let sacVacPaginasHtml = '';
+  if(sacVacHtml){
+    // Crear array de recibos individuales y agrupar de a 2
+    const tempDiv = {innerHTML: sacVacHtml};
+    // Simple: poner todos en páginas de a 2
+    const items = sacVacHtml.split('<!--RECIBO_SPLIT-->').filter(Boolean);
+    for(let i=0; i<items.length; i+=2){
+      sacVacPaginasHtml += `
+      <div class="pagina">
+        <div class="recibo-wrapper">${items[i]}</div>
+        <div class="corte-linea">✂ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ✂</div>
+        <div class="recibo-wrapper">${items[i+1]||''}</div>
+      </div>`;
+    }
   }
 
   const ventana = window.open('','_blank');
@@ -3760,6 +3854,7 @@ function liqImprimir(){
 </head>
 <body>
   ${paginasHtml}
+  ${sacVacPaginasHtml ? `<div style="page-break-before:always;"></div>${sacVacPaginasHtml}` : ''}
   <div class="no-print" style="text-align:center;padding:16px;">
     <button onclick="window.print()" style="padding:10px 28px;font-size:14px;cursor:pointer;background:#222;color:#fff;border:none;border-radius:8px;">🖨️ Imprimir</button>
     <button onclick="window.close()" style="padding:10px 28px;font-size:14px;cursor:pointer;background:#888;color:#fff;border:none;border-radius:8px;margin-left:10px;">✕ Cerrar</button>
