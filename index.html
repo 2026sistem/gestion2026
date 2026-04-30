@@ -3523,10 +3523,12 @@ function renderLiqTabla(){
     // Apply overrides to calc for display
     if(extras.overBase!==undefined)      calc.totalBase  = extras.overBase;
     if(extras.overAdic!==undefined)      calc.totalAdic  = extras.overAdic;
-    if(extras.overPuntAbsol!==undefined) calc.puntAbsol  = extras.overPuntAbsol;
-    if(extras.overAsist!==undefined)     calc.totalAsist = extras.overAsist;
+    if(extras.overPuntAbsol!==undefined) calc.overPuntAbsol = extras.overPuntAbsol;
+    if(extras.overAsist!==undefined)     calc.overAsistPerf = extras.overAsist;
     if(extras.overLluvia!==undefined)    calc.totalLluvia= extras.overLluvia;
-    calc.totalBruto = calc.totalBase+calc.totalAdic+(calc.puntAbsol||puntAbsCalc)+(calc.totalAsist||asistPerfCalc)+calc.totalLluvia;
+    const puntFinal  = extras.overPuntAbsol!==undefined ? extras.overPuntAbsol : puntAbsCalc;
+    const asistFinal = extras.overAsist!==undefined     ? extras.overAsist     : asistPerfCalc;
+    calc.totalBruto = calc.totalBase + calc.totalAdic + puntFinal + asistFinal + calc.totalLluvia;
 
     // Cabecera empleado
     html += `<div class="card" style="margin-bottom:14px;">
