@@ -634,6 +634,8 @@ tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
   <p class="section-sub">Seleccioná un empleado para ver su resumen</p>
   <div id="chicos-ind-botones" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:28px;"></div>
   <div id="chicos-ind-detalle"></div>
+  <!-- Dados de baja -->
+  <div id="chicos-baja-section" style="margin-top:40px;"></div>
 </div>
 </main>
 
@@ -734,7 +736,8 @@ let state = {
   sueldos: {},
   casaAri: { cheques:[], cobros:[] },
   efectivizados: [],
-  gastos: []
+  gastos: [],
+  dadosDeBaja: []
 };
 ZONAS.forEach(z => state.cobros.zonas[z] = initZona(z));
 
@@ -1682,6 +1685,9 @@ function renderChicos(){
   const cont = document.getElementById('chicos-planilla-container');
   if(!cont) return;
 
+  // Solo chicos activos (no dados de baja)
+  const nombresEnBaja = (state.dadosDeBaja||[]).map(c=>c.nombre);
+
   const mesStr = chicosMesActual();
   const mesLabel = chicosMesLabel(mesStr);
   const allDias = chicosGetDiasMes(mesStr);
@@ -2200,11 +2206,12 @@ function renderCentral(){
     semanas.forEach((sem,si)=>{
       const extras=liqExtrasGet(si,ch.nombre);
       const calc=liqCalcEmpleado(ch,si,sem.labs,extras);
-      const puntAbsol=(parseN(s.puntDiaria)||2000)*5;
+      const pD=(parseN(s.puntDiaria)||2000);
       const asistPerf=(parseN(s.asistDiaria)||4000)*5;
-      const huboT=calc.detalleDias.some(d=>d.vFinal==="T");
+      const tardesD=calc.detalleDias.filter(d=>d.vFinal==='T').length;
+      const puntAbsol=Math.max(0,(5-tardesD)*pD);
       const huboA=calc.detalleDias.some(d=>d.vFinal==="A");
-      totalLiq+=calc.totalBase+calc.totalAdic+calc.totalPunt+(!huboT?puntAbsol:0)+(!huboA?asistPerf:0)+calc.totalLluvia;
+      totalLiq+=calc.totalBase+calc.totalAdic+calc.totalPunt+puntAbsol+(!huboA?asistPerf:0)+calc.totalLluvia;
       totalAdelantos+=parseN(calc.adelanto);
     });
   });
@@ -2414,9 +2421,10 @@ let chicoIndSeleccionado = null;
 
 function renderChicosInd(){
   const btnsCont = document.getElementById('chicos-ind-botones');
-  const detalle = document.getElementById('chicos-ind-detalle');
   if(!btnsCont) return;
+  if(!state.dadosDeBaja) state.dadosDeBaja = [];
 
+  // Solo empleados activos (no dados de baja)
   btnsCont.innerHTML = state.chicos.map((ch,i)=>`
     <button onclick="verChicoInd(${i})" style="
       background:${chicoIndSeleccionado===i?'rgba(79,142,247,.2)':'var(--card)'};
@@ -2429,6 +2437,72 @@ function renderChicosInd(){
     </button>`).join('');
 
   if(chicoIndSeleccionado !== null) verChicoInd(chicoIndSeleccionado);
+  renderBajaSection();
+}
+
+function renderBajaSection(){
+  const cont = document.getElementById('chicos-baja-section');
+  if(!cont) return;
+  if(!state.dadosDeBaja) state.dadosDeBaja = [];
+  if(!state.dadosDeBaja.length){ cont.innerHTML=''; return; }
+
+  const rows = state.dadosDeBaja.map((ch,i)=>{
+    // Contar faltas y tardes del historial
+    let ausentes=0, tardes=0;
+    (ch.filas||[]).forEach(fila=>{
+      Object.values(fila.dias||{}).forEach(v=>{
+        const vv=(v||'').trim().toUpperCase();
+        if(vv==='A'||vv==='AJ') ausentes++;
+        else if(vv==='T'||vv==='TJ') tardes++;
+      });
+    });
+    return `<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;opacity:.8;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+        <div>
+          <span style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#e05c5c;">${ch.nombre}</span>
+          <span style="font-size:11px;color:var(--muted);margin-left:10px;">Ingreso: ${ch.fechaIngreso||'—'} &nbsp;·&nbsp; Baja: ${ch.fechaBaja||'—'}</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <span style="padding:2px 9px;border-radius:20px;font-size:11px;background:rgba(204,0,0,.1);color:#ff6666;border:1px solid rgba(204,0,0,.2);">Faltas: ${ausentes}</span>
+          <span style="padding:2px 9px;border-radius:20px;font-size:11px;background:rgba(245,166,35,.1);color:#f5a623;border:1px solid rgba(245,166,35,.2);">Tardes: ${tardes}</span>
+          ${ch.datosPersonales?.dni?`<span style="padding:2px 9px;border-radius:20px;font-size:11px;background:rgba(79,142,247,.1);color:#4f8ef7;border:1px solid rgba(79,142,247,.2);">CUIL: ${ch.datosPersonales.dni}</span>`:''}
+        </div>
+        <button onclick="reactivarChico(${i})" style="padding:5px 12px;background:rgba(62,207,90,.15);border:1px solid rgba(62,207,90,.3);border-radius:6px;color:#3ecf5a;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">↩ Reactivar</button>
+      </div>
+      ${ch.datosPersonales?.domicilio?`<div style="font-size:11px;color:var(--muted);margin-top:6px;">${ch.datosPersonales.domicilio}</div>`:''}
+    </div>`;
+  }).join('');
+
+  cont.innerHTML = `
+    <div style="border-top:2px solid rgba(204,0,0,.3);padding-top:24px;">
+      <div style="font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:.08em;color:#e05c5c;margin-bottom:16px;">🗂 DADOS DE BAJA</div>
+      ${rows}
+    </div>`;
+}
+
+function darDeBaja(idx){
+  const ch = state.chicos[idx];
+  if(!ch) return;
+  const fechaBaja = prompt(`Fecha de baja de ${ch.nombre}:`, new Date().toLocaleDateString('es-AR'));
+  if(fechaBaja===null) return;
+  if(!confirm(`¿Dar de baja a ${ch.nombre}? Se archivará su historial completo.`)) return;
+  if(!state.dadosDeBaja) state.dadosDeBaja = [];
+  state.dadosDeBaja.push({...JSON.parse(JSON.stringify(ch)), fechaBaja});
+  state.chicos.splice(idx, 1);
+  if(chicoIndSeleccionado===idx) chicoIndSeleccionado=null;
+  else if(chicoIndSeleccionado>idx) chicoIndSeleccionado--;
+  autoGuardar();
+  renderChicosInd();
+  document.getElementById('chicos-ind-detalle').innerHTML='';
+}
+
+function reactivarChico(bajaIdx){
+  if(!confirm('¿Reactivar este empleado?')) return;
+  const ch = state.dadosDeBaja.splice(bajaIdx,1)[0];
+  delete ch.fechaBaja;
+  state.chicos.push(ch);
+  autoGuardar();
+  renderChicosInd();
 }
 
 function verChicoInd(idx){
@@ -2540,6 +2614,7 @@ function verChicoInd(idx){
       <span style="font-family:'Bebas Neue',cursive;font-size:1.5rem;color:#ffff00;letter-spacing:.08em;">${ch.nombre}</span>
       ${ch.apodo?`<span style="font-size:12px;color:#8b8fa8;">${ch.apodo}</span>`:''}
       ${ch.fechaIngreso?`<span style="font-size:11px;color:#4a5070;background:rgba(255,255,255,.04);padding:2px 8px;border-radius:10px;">${ch.fechaIngreso}</span>`:''}
+      <button onclick="darDeBaja(${idx})" style="margin-left:auto;padding:5px 14px;background:rgba(204,0,0,.15);border:1px solid rgba(204,0,0,.35);border-radius:7px;color:#e05c5c;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">🗂 Dar de baja</button>
     </div>
     ${fichaHtml}
     ${extrasHtml}
@@ -2602,26 +2677,55 @@ function verChicoInd(idx){
         </div>
       </div>`;
 
+    // Agrupar por día: movil + novedad
     if(eventosSem.length>0){
-      html+=`<div class="tbl-wrap"><table><thead><tr><th>Día</th><th>Fila</th><th>Valor</th><th>Motivo</th></tr></thead><tbody>`;
-      eventosSem.forEach(ev=>{
-        const isA = ev.val.toUpperCase()==='A';
-        const isT = ev.val.toUpperCase()==='T';
-        const isM = ev.val.toUpperCase()==='1/2'||ev.val==='½';
-        const bg = isA?'background:rgba(204,0,0,.15);':isT?'background:rgba(204,102,0,.15);':isM?'background:rgba(139,105,20,.15);':'';
-        const color = isA?'color:#ff4444;':isT?'color:#ff8c00;':isM?'color:#c9a227;':'color:var(--accent3);';
-        const motivoKey = `motivo_${ev.key}_${ev.fila}`;
+      // Obtener días únicos de la semana
+      const diasSem = [...new Set(eventosSem.map(e=>e.key))];
+      html+=`<div class="tbl-wrap"><table>
+        <thead><tr>
+          <th>Día</th>
+          <th>Móvil</th>
+          <th>Novedad</th>
+          <th>Motivo</th>
+        </tr></thead>
+        <tbody>`;
+
+      labs.forEach(d=>{
+        const key = chicosDateKey(d);
+        const dow = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'][d.getDay()];
+        const dayLabel = `${dow} ${d.getDate()}`;
+        const eventsDia = eventosSem.filter(e=>e.key===key);
+        if(!eventsDia.length) return;
+
+        // Buscar móvil (fila basico o movil con valor numérico)
+        const movilEv = eventsDia.find(e=>
+          (e.fila==='basico'||e.fila==='movil') && parseN(e.val)>0
+        );
+        const movilVal = movilEv ? movilEv.val : '—';
+
+        // Buscar novedad (T, A, AJ, TJ, ½, F)
+        const novedadEv = eventsDia.find(e=>{
+          const v=e.val.toUpperCase();
+          return v==='A'||v==='AJ'||v==='T'||v==='TJ'||v==='1/2'||v==='½'||v==='F';
+        });
+        const novedadVal = novedadEv ? novedadEv.val.toUpperCase() : '—';
+        const novedadLabel = novedadVal==='A'?'FALTA':novedadVal==='AJ'?'F. JUSTIF.':novedadVal==='T'?'TARDE':novedadVal==='TJ'?'T. JUSTIF.':novedadVal==='F'?'FERIADO':(novedadVal==='1/2'||novedadVal==='½')?'½ DÍA':'—';
+        const novedadColor = novedadVal==='A'?'color:#ff4444':novedadVal==='AJ'?'color:#cc88dd':novedadVal==='T'?'color:#ff8c00':novedadVal==='TJ'?'color:#7eb8f7':novedadVal==='F'?'color:#5c9c5c':(novedadVal==='1/2'||novedadVal==='½')?'color:#c9a227':'color:var(--muted)';
+        const rowBg = novedadVal==='A'?'background:rgba(204,0,0,.1);':novedadVal==='T'?'background:rgba(204,102,0,.1);':(novedadVal==='1/2'||novedadVal==='½')?'background:rgba(139,105,20,.1);':'';
+
+        const motivoKey = novedadEv ? `motivo_${key}_${novedadEv.fila}` : `motivo_${key}_movil`;
         const motivoVal = (ch.notas&&ch.notas[motivoKey])||'';
-        const ci_idx = idx;
-        html+=`<tr style="${bg}">
-          <td style="padding:6px 10px;font-size:12px;">${ev.dayLabel}</td>
-          <td style="padding:6px 10px;font-size:11px;color:#6b7194;">${ev.fila}</td>
-          <td style="padding:6px 10px;font-size:12px;font-weight:600;${color}">${isA?'FALTA':isT?'TARDE':isM?'½ DÍA':('$'+fmt(ev.val))}</td>
+
+        html+=`<tr style="${rowBg}">
+          <td style="padding:6px 10px;font-size:12px;">${dayLabel}</td>
+          <td style="padding:6px 10px;font-size:12px;color:var(--accent3);">${movilVal!=='—'?movilVal:'—'}</td>
+          <td style="padding:6px 10px;font-size:12px;font-weight:600;${novedadColor}">${novedadLabel}</td>
           <td style="padding:4px 6px;"><input value="${motivoVal.replace(/"/g,'&quot;')}" placeholder="Motivo / detalle..."
-            oninput="if(!state.chicos[${ci_idx}].notas)state.chicos[${ci_idx}].notas={};state.chicos[${ci_idx}].notas['${motivoKey}']=this.value"
+            oninput="if(!state.chicos[${idx}].notas)state.chicos[${idx}].notas={};state.chicos[${idx}].notas['${motivoKey}']=this.value"
             style="width:100%;padding:4px 7px;font-size:11px;border:1px solid var(--border);border-radius:5px;background:rgba(255,255,255,.04);color:var(--text);font-family:'DM Sans',sans-serif;min-width:160px;"></td>
         </tr>`;
       });
+
       html+=`</tbody></table></div>`;
     } else {
       html+=`<div style="font-size:11px;color:var(--muted);padding:8px 0;">Sin registros esta semana.</div>`;
@@ -2866,7 +2970,8 @@ function prepararParaFirebase(s){
     sueldos:    s.sueldos||{},
     casaAri:       s.casaAri||{cheques:[],cobros:[]},
     efectivizados: s.efectivizados||[],
-    gastos:        s.gastos||[]
+    gastos:        s.gastos||[],
+    dadosDeBaja:   s.dadosDeBaja||[]
   };
 }
 
@@ -2904,6 +3009,7 @@ function restaurarDesdeFirebase(s){
   if(s.casaAri) state.casaAri = s.casaAri;
   if(s.efectivizados) state.efectivizados = s.efectivizados;
   if(s.gastos) state.gastos = s.gastos;
+  if(s.dadosDeBaja) state.dadosDeBaja = s.dadosDeBaja;
 }
 
 function guardarEnFirebase(){
@@ -3036,7 +3142,8 @@ const SUELDOS_PREDEF = {
 
 function sueldosInit(){
   if(!state.sueldos) state.sueldos = {};
-  state.chicos.forEach(ch=>{
+  const nombresEnBaja2=(state.dadosDeBaja||[]).map(c=>c.nombre);
+  state.chicos.filter(ch=>!nombresEnBaja2.includes(ch.nombre)).forEach(ch=>{
     const n = ch.nombre;
     if(!state.sueldos[n]){
       state.sueldos[n] = {
@@ -3312,8 +3419,11 @@ function liqExtrasGet(semIdx, nombre){
   if(!e.nota) e.nota='';
   if(!e.sac) e.sac='';
   if(!e.vacaciones) e.vacaciones='';
-  if(!e.sacImporte) e.sacImporte=0;
-  if(!e.vacacionesImporte) e.vacacionesImporte=0;
+  if(!e.overBase) e.overBase=undefined;
+  if(!e.overAdic) e.overAdic=undefined;
+  if(!e.overPuntAbsol) e.overPuntAbsol=undefined;
+  if(!e.overAsist) e.overAsist=undefined;
+  if(!e.overLluvia) e.overLluvia=undefined;
   if(!e.adelantoNota) e.adelantoNota='';
   if(!e.adelantoAnterior) e.adelantoAnterior='';
   if(!e.adelantoAnteriorNota) e.adelantoAnteriorNota='';
@@ -3347,11 +3457,12 @@ function renderLiqPanel(){
       if(!parseN(s.sueldo)) return;
       const extras=liqExtrasGet(semIdx,ch.nombre);
       const calc=liqCalcEmpleado(ch,semIdx,sem.labs,extras);
-      const puntAbsol=(parseN(s.puntDiaria)||2000)*5;
+      const pD2=(parseN(s.puntDiaria)||2000);
       const asistPerf=(parseN(s.asistDiaria)||4000)*5;
-      const huboT=calc.detalleDias.some(d=>d.vFinal==='T');
+      const tardesD2=calc.detalleDias.filter(d=>d.vFinal==='T').length;
+      const puntAbsol=Math.max(0,(5-tardesD2)*pD2);
       const huboA=calc.detalleDias.some(d=>d.vFinal==='A');
-      bruto+=calc.totalBase+calc.totalAdic+calc.totalPunt+(!huboT?puntAbsol:0)+(!huboA?asistPerf:0)+calc.totalLluvia;
+      bruto+=calc.totalBase+calc.totalAdic+calc.totalPunt+puntAbsol+(!huboA?asistPerf:0)+calc.totalLluvia;
       adelantos+=parseN(calc.adelanto);
     });
     return {bruto, adelantos};
@@ -3402,6 +3513,20 @@ function renderLiqTabla(){
     const extras = liqExtrasGet(liqSemSelIdx, ch.nombre);
     const calc   = liqCalcEmpleado(ch, liqSemSelIdx, sem.labs, extras);
     const s      = state.sueldos[ch.nombre]||{};
+    // Calcular puntAbsol y asistPerf para mostrar como placeholder
+    const puntD = parseN(s.puntDiaria)||2000;
+    const asistD = parseN(s.asistDiaria)||4000;
+    const tardesCalc   = calc.detalleDias.filter(d=>d.vFinal==='T').length;
+    const puntAbsCalc  = Math.max(0,(5-tardesCalc)*puntD);
+    const huboFaltaCalc= calc.detalleDias.some(d=>d.vFinal==='A');
+    const asistPerfCalc= !huboFaltaCalc ? asistD*5 : 0;
+    // Apply overrides to calc for display
+    if(extras.overBase!==undefined)      calc.totalBase  = extras.overBase;
+    if(extras.overAdic!==undefined)      calc.totalAdic  = extras.overAdic;
+    if(extras.overPuntAbsol!==undefined) calc.puntAbsol  = extras.overPuntAbsol;
+    if(extras.overAsist!==undefined)     calc.totalAsist = extras.overAsist;
+    if(extras.overLluvia!==undefined)    calc.totalLluvia= extras.overLluvia;
+    calc.totalBruto = calc.totalBase+calc.totalAdic+(calc.puntAbsol||puntAbsCalc)+(calc.totalAsist||asistPerfCalc)+calc.totalLluvia;
 
     // Cabecera empleado
     html += `<div class="card" style="margin-bottom:14px;">
@@ -3506,14 +3631,46 @@ function renderLiqTabla(){
           onfocus="this.select()">
       </div>
 
-      <!-- Resumen de cálculo -->
-      <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px;">
-        <span style="padding:3px 9px;border-radius:6px;background:rgba(62,207,90,.08);color:#3ecf5a;border:1px solid rgba(62,207,90,.2);">Base: $${fmt(calc.totalBase)}</span>
-        ${calc.totalAdic>0?`<span style="padding:3px 9px;border-radius:6px;background:rgba(79,142,247,.08);color:#4f8ef7;border:1px solid rgba(79,142,247,.2);">Adicionales: $${fmt(calc.totalAdic)}</span>`:''}
-        ${calc.totalPunt>0?`<span style="padding:3px 9px;border-radius:6px;background:rgba(245,166,35,.08);color:#f5a623;border:1px solid rgba(245,166,35,.2);">Puntualidad: $${fmt(calc.totalPunt)}</span>`:''}
-        ${calc.totalAsist>0?`<span style="padding:3px 9px;border-radius:6px;background:rgba(99,179,113,.08);color:#63b371;border:1px solid rgba(99,179,113,.2);">Asistencia: $${fmt(calc.totalAsist)}</span>`:''}
-        ${calc.totalLluvia>0?`<span style="padding:3px 9px;border-radius:6px;background:rgba(79,142,247,.15);color:#7eb8f7;border:1px solid rgba(79,142,247,.3);">Lluvia: $${fmt(calc.totalLluvia)}</span>`:''}
-        ${calc.adelanto>0?`<span style="padding:3px 9px;border-radius:6px;background:rgba(204,0,0,.08);color:#ff6666;border:1px solid rgba(204,0,0,.2);">Adelanto: -$${fmt(calc.adelanto)}</span>`:''}
+      <!-- Resumen editable de cálculo -->
+      <div style="background:#0a0d15;border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:4px;">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-weight:600;letter-spacing:.04em;">DETALLE EDITABLE — dejar vacío para usar el calculado automáticamente</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <div style="display:flex;flex-direction:column;gap:3px;align-items:center;">
+            <span style="font-size:10px;color:#3ecf5a;">Base</span>
+            <input value="${extras.overBase!==undefined?fmtInput(extras.overBase):''}" placeholder="${fmt(calc.totalBase)}"
+              style="width:100px;padding:4px 7px;background:#0f1118;border:1px solid rgba(62,207,90,.3);border-radius:6px;color:#3ecf5a;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+              onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').overBase=this.value?parseN(this.value):undefined;this.value=this.value?fmtInput(parseN(this.value)):'';renderLiqTabla()" onfocus="this.select()">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:3px;align-items:center;">
+            <span style="font-size:10px;color:#4f8ef7;">Adicionales</span>
+            <input value="${extras.overAdic!==undefined?fmtInput(extras.overAdic):''}" placeholder="${fmt(calc.totalAdic)}"
+              style="width:100px;padding:4px 7px;background:#0f1118;border:1px solid rgba(79,142,247,.3);border-radius:6px;color:#4f8ef7;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+              onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').overAdic=this.value?parseN(this.value):undefined;this.value=this.value?fmtInput(parseN(this.value)):'';renderLiqTabla()" onfocus="this.select()">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:3px;align-items:center;">
+            <span style="font-size:10px;color:#f5c842;">Punt. Absoluta</span>
+            <input value="${extras.overPuntAbsol!==undefined?fmtInput(extras.overPuntAbsol):''}" placeholder="${fmt(puntAbsCalc)}"
+              style="width:100px;padding:4px 7px;background:#0f1118;border:1px solid rgba(245,200,66,.3);border-radius:6px;color:#f5c842;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+              onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').overPuntAbsol=this.value?parseN(this.value):undefined;this.value=this.value?fmtInput(parseN(this.value)):'';renderLiqTabla()" onfocus="this.select()">
+          </div>
+          <div style="display:flex;flex-direction:column;gap:3px;align-items:center;">
+            <span style="font-size:10px;color:#63b371;">Asist. Perf.</span>
+            <input value="${extras.overAsist!==undefined?fmtInput(extras.overAsist):''}" placeholder="${fmt(asistPerfCalc)}"
+              style="width:100px;padding:4px 7px;background:#0f1118;border:1px solid rgba(99,179,113,.3);border-radius:6px;color:#63b371;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+              onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').overAsist=this.value?parseN(this.value):undefined;this.value=this.value?fmtInput(parseN(this.value)):'';renderLiqTabla()" onfocus="this.select()">
+          </div>
+          ${calc.totalLluvia>0?`
+          <div style="display:flex;flex-direction:column;gap:3px;align-items:center;">
+            <span style="font-size:10px;color:#7eb8f7;">Lluvia</span>
+            <input value="${extras.overLluvia!==undefined?fmtInput(extras.overLluvia):''}" placeholder="${fmt(calc.totalLluvia)}"
+              style="width:90px;padding:4px 7px;background:#0f1118;border:1px solid rgba(79,142,247,.3);border-radius:6px;color:#7eb8f7;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+              onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').overLluvia=this.value?parseN(this.value):undefined;this.value=this.value?fmtInput(parseN(this.value)):'';renderLiqTabla()" onfocus="this.select()">
+          </div>`:''}
+          <div style="margin-left:8px;padding:8px 14px;background:rgba(62,207,90,.1);border:1px solid rgba(62,207,90,.25);border-radius:8px;text-align:center;">
+            <div style="font-size:10px;color:var(--muted);">TOTAL</div>
+            <div style="font-size:14px;font-weight:700;color:#3ecf5a;">$${fmt(calc.totalBruto)}</div>
+          </div>
+        </div>
       </div>
     </div>`;
   });
@@ -3561,8 +3718,10 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras, fechaOverride){
   const adicMarVie  = parseN(s.adicMarVie)||15000;
   const puntDiaria  = parseN(s.puntDiaria)||2000;
   const asistDiaria = parseN(s.asistDiaria)||4000;
-  const puntAbsol   = puntDiaria * 5;
-  const asistPerf   = asistDiaria * 5;
+  // puntAbsol: $2000 x 5 días siempre (feriados cuentan), solo descuenta tardanzas reales
+  const tardesDesc = calc.detalleDias.filter(d=>d.vFinal==='T').length;
+  const puntAbsol  = Math.max(0, (5 - tardesDesc) * puntDiaria);
+  const asistPerf     = asistDiaria * 5;
 
   const statsMes   = liqGetEstadisticas(ch, true);
   const statsTotal = liqGetEstadisticas(ch, false);
@@ -3627,7 +3786,7 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras, fechaOverride){
     conceptosHtml += filaTexto('Sin horas Extras');
     if(calc.totalAdic > 0)
       conceptosHtml += fila('PUNTUALIDAD DIARIA -B', 'L:'+liqFmtPesos(adicLunes)+' / M-V:'+liqFmtPesos(adicMarVie), calc.totalAdic, '');
-    if(!huboTarde && puntAbsol > 0)
+    if(puntAbsol > 0)
       conceptosHtml += fila('PUNT ABSOLUTA SEMANA', liqFmtPesos(puntAbsol), puntAbsol, '');
     if(!huboFalta && asistPerf > 0)
       conceptosHtml += fila('ASIST PERF SEMANA', liqFmtPesos(asistPerf), asistPerf, '');
@@ -3642,7 +3801,7 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras, fechaOverride){
     const nC = 1+(calc.totalAdic>0?1:0)+(!huboTarde?1:0)+(!huboFalta?1:0)+(calc.totalLluvia>0?1:0)+(calc.adelanto>0?1:0);
     for(let x=nC; x<7; x++) conceptosHtml += filaVacia();
     totalHaberes = calc.totalBase + calc.totalAdic +
-      (!huboTarde ? puntAbsol : 0) + (!huboFalta ? asistPerf : 0) + calc.totalLluvia;
+      puntAbsol + (!huboFalta ? asistPerf : 0) + calc.totalLluvia;
     totalDeduc = (calc.adelanto||0) + (calc.adelantoAnterior||0);
   }
 
