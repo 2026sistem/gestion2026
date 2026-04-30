@@ -1666,6 +1666,7 @@ function chicosGetCellClass(val){
   if(v==='T') return 'pc pc-tarde';
   if(v==='TJ') return 'pc pc-tarde-just';
   if(v==='F') return 'pc pc-feriado';
+  if(v==='S') return 'pc pc-suspendido';
   if(v==='1/2'||v==='½') return 'pc pc-medio';
   if(val.trim()!=='') return 'pc pc-valor';
   return 'pc';
@@ -1677,6 +1678,7 @@ function chicosCellStyle(val){
   if(v==='T') return 'background:#cc6600;';
   if(v==='TJ') return 'background:#2d6b8b;';
   if(v==='F') return 'background:#1a5c1a;';
+  if(v==='S') return 'background:#4a1a6e;';
   return '';
 }
 
@@ -1732,6 +1734,7 @@ function renderChicos(){
   .pm input.pc.pc-ausente-just{color:#fff;font-weight:800;background:#7b2d8b;}
   .pm input.pc.pc-tarde-just{color:#fff;font-weight:700;background:#2d6b8b;}
   .pm input.pc.pc-feriado{color:#fff;font-weight:700;background:#1a5c1a;}
+  .pm input.pc.pc-suspendido{color:#fff;font-weight:700;background:#4a1a6e;}
   .pm input.pc.pc-tarde{color:#000;font-weight:700;}
   .pm input.pc.pc-valor{color:#4ecdc4;}
   .pm input.pc-nota{display:block;width:100%;padding:2px 5px;font-size:10px;border:none;outline:none;background:transparent;color:#a0a8c0;font-family:'DM Sans',sans-serif;box-sizing:border-box;}
@@ -1850,8 +1853,8 @@ function renderChicos(){
           tdDias+=`<td class="${baseTdCls}" style="min-width:26px;width:26px;${cellBg}${bl};position:relative;">
             ${motDot}
             <input class="${pcCls}" value="${val.replace(/"/g,'&quot;')}" data-ci="${ci}" data-fi="${fi}" data-date="${key}"
-              oninput="chicosSetVal(${ci},${fi},'${key}',this.value);const vv=this.value.trim().toUpperCase();this.className=vv==='A'?'pc pc-ausente':vv==='AJ'?'pc pc-ausente-just':vv==='T'?'pc pc-tarde':vv==='TJ'?'pc pc-tarde-just':vv==='F'?'pc pc-feriado':(vv==='1/2'||vv==='½')?'pc pc-medio':(this.value.trim()?'pc pc-valor':'pc');const bg=vv==='A'?'#cc0000':vv==='AJ'?'#7b2d8b':vv==='T'?'#cc6600':vv==='TJ'?'#2d6b8b':vv==='F'?'#1a5c1a':(vv==='1/2'||vv==='½')?'#8b6914':'';this.closest('td').style.background=bg;"
-              onclick="const vv=this.value.trim().toUpperCase();if(vv==='A'||vv==='AJ'||vv==='T'||vv==='TJ'||vv==='F'||vv==='1/2'||vv==='½')abrirMotivoPopup(event,${ci},${fi},'${key}',this.value.trim())"
+              oninput="chicosSetVal(${ci},${fi},'${key}',this.value);const vv=this.value.trim().toUpperCase();this.className=vv==='A'?'pc pc-ausente':vv==='AJ'?'pc pc-ausente-just':vv==='T'?'pc pc-tarde':vv==='TJ'?'pc pc-tarde-just':vv==='F'?'pc pc-feriado':vv==='S'?'pc pc-suspendido':(vv==='1/2'||vv==='½')?'pc pc-medio':(this.value.trim()?'pc pc-valor':'pc');const bg=vv==='A'?'#cc0000':vv==='AJ'?'#7b2d8b':vv==='T'?'#cc6600':vv==='TJ'?'#2d6b8b':vv==='F'?'#1a5c1a':vv==='S'?'#4a1a6e':(vv==='1/2'||vv==='½')?'#8b6914':'';this.closest('td').style.background=bg;"
+              onclick="const vv=this.value.trim().toUpperCase();if(vv==='A'||vv==='AJ'||vv==='T'||vv==='TJ'||vv==='F'||vv==='S'||vv==='1/2'||vv==='½')abrirMotivoPopup(event,${ci},${fi},'${key}',this.value.trim())"
               onfocus="this.select()" style="width:26px;height:20px;">
           </td>`;
         });
@@ -1933,7 +1936,7 @@ function abrirMotivoPopup(e, ci, fi, key, valActual){
   const motivoKey = `motivo_${key}_${fi}`;
   const motivoVal = (ch.notas&&ch.notas[motivoKey])||'';
   const vUp = valActual.toUpperCase();
-  const tipoLabel = vUp==='A'?'FALTA':vUp==='AJ'?'FALTA JUSTIFICADA':vUp==='T'?'TARDE':vUp==='TJ'?'TARDE JUSTIFICADA':vUp==='F'?'FERIADO':'MEDIO DÍA';
+  const tipoLabel = vUp==='A'?'FALTA':vUp==='AJ'?'FALTA JUSTIFICADA':vUp==='T'?'TARDE':vUp==='TJ'?'TARDE JUSTIFICADA':vUp==='F'?'FERIADO':vUp==='S'?'SUSPENDIDO':'MEDIO DÍA';
   document.getElementById('pm-pop-title').textContent = `${tipoLabel} — ${fila.label||fila.tipo} — ${key}`;
   document.getElementById('pm-pop-input').value = motivoVal;
   const popup = document.getElementById('pm-motivo-popup');
@@ -2209,9 +2212,12 @@ function renderCentral(){
       const pD=(parseN(s.puntDiaria)||2000);
       const asistPerf=(parseN(s.asistDiaria)||4000)*5;
       const tardesD=calc.detalleDias.filter(d=>d.vFinal==='T').length;
-      const puntAbsol=Math.max(0,(5-tardesD)*pD);
+      const faltasD=calc.detalleDias.filter(d=>d.vFinal==='A'||d.vFinal==='S').length;
+      const puntAbsol=Math.max(0,(5-tardesD-faltasD)*pD);
       const huboA=calc.detalleDias.some(d=>d.vFinal==="A");
-      totalLiq+=calc.totalBase+calc.totalAdic+calc.totalPunt+puntAbsol+(!huboA?asistPerf:0)+calc.totalLluvia;
+      const diasSuspL=calc.detalleDias.filter(d=>d.vFinal==="S").length;
+      const asistPerfL=!huboA?Math.max(0,(5-diasSuspL)*(parseN(s.asistDiaria)||4000)):0;
+      totalLiq+=calc.totalBase+calc.totalAdic+calc.totalPunt+puntAbsol+asistPerfL+calc.totalLluvia;
       totalAdelantos+=parseN(calc.adelanto);
     });
   });
@@ -2547,6 +2553,7 @@ function verChicoInd(idx){
         if(v==='A') totalAusentes++;
         else if(v==='AJ') totalAusentes++; // falta justificada igual cuenta como ausente en stats
         else if(v==='F') {} // feriado no cuenta como ausente
+        else if(v==='S') totalAusentes++; // suspendido cuenta como ausente en stats
         else if(v==='T') totalTardes++;
         else if(v==='TJ') totalTardes++; // tarde justificada igual cuenta en stats
         else if(v==='1/2'||v==='½') totalMedios++;
@@ -3261,6 +3268,7 @@ function renderLiqConfig(){
       <span style="background:#cc6600;color:#fff;padding:1px 6px;border-radius:4px;margin:0 3px;">T</span> Tarde &nbsp;
       <span style="background:#2d6b8b;color:#fff;padding:1px 6px;border-radius:4px;margin:0 3px;">TJ</span> Tarde justificada (cobra todo) &nbsp;
       <span style="background:#1a5c1a;color:#fff;padding:1px 6px;border-radius:4px;margin:0 3px;">F</span> Feriado (base + adicional, sin asist./punt.) &nbsp;
+      <span style="background:#4a1a6e;color:#fff;padding:1px 6px;border-radius:4px;margin:0 3px;">S</span> Suspendido (cobra base, sin adicional/asist/punt) &nbsp;
       <span style="background:#8b6914;color:#fff;padding:1px 6px;border-radius:4px;margin:0 3px;">½</span> Medio día
     </div>
     </div>`;
@@ -3353,6 +3361,7 @@ function liqCalcEmpleado(ch, semIdx, semLabs, extras){
     const esT     = vFinal==='T';
     const esTJ    = vFinal==='TJ';
     const esF     = vFinal==='F';
+    const esS     = vFinal==='S';
     const esMedio = vFinal==='1/2'||vFinal==='½';
 
     const esFaltaAdyFeriado = esA && (()=>{
@@ -3366,6 +3375,9 @@ function liqCalcEmpleado(ch, semIdx, semLabs, extras){
 
     if(esA||esFaltaAdyFeriado){
       cobrasBase=false;
+    } else if(esS){
+      // Suspendido: cobra base, sin adicional/asist/punt
+      if(esLluvia) lluvia=lluviaM;
     } else if(esF&&noCobraFeriado[key]){
       cobrasBase=false;
     } else if(esF){
@@ -3460,9 +3472,12 @@ function renderLiqPanel(){
       const pD2=(parseN(s.puntDiaria)||2000);
       const asistPerf=(parseN(s.asistDiaria)||4000)*5;
       const tardesD2=calc.detalleDias.filter(d=>d.vFinal==='T').length;
-      const puntAbsol=Math.max(0,(5-tardesD2)*pD2);
+      const faltasD2=calc.detalleDias.filter(d=>d.vFinal==='A'||d.vFinal==='S').length;
+      const puntAbsol=Math.max(0,(5-tardesD2-faltasD2)*pD2);
       const huboA=calc.detalleDias.some(d=>d.vFinal==='A');
-      bruto+=calc.totalBase+calc.totalAdic+calc.totalPunt+puntAbsol+(!huboA?asistPerf:0)+calc.totalLluvia;
+      const diasSuspT=calc.detalleDias.filter(d=>d.vFinal==='S').length;
+      const asistPerfT=!huboA?Math.max(0,(5-diasSuspT)*(parseN(s.asistDiaria)||4000)):0;
+      bruto+=calc.totalBase+calc.totalAdic+calc.totalPunt+puntAbsol+asistPerfT+calc.totalLluvia;
       adelantos+=parseN(calc.adelanto);
     });
     return {bruto, adelantos};
@@ -3517,9 +3532,11 @@ function renderLiqTabla(){
     const puntD = parseN(s.puntDiaria)||2000;
     const asistD = parseN(s.asistDiaria)||4000;
     const tardesCalc   = calc.detalleDias.filter(d=>d.vFinal==='T').length;
-    const puntAbsCalc  = Math.max(0,(5-tardesCalc)*puntD);
-    const huboFaltaCalc= calc.detalleDias.some(d=>d.vFinal==='A');
-    const asistPerfCalc= !huboFaltaCalc ? asistD*5 : 0;
+    const faltasCalc   = calc.detalleDias.filter(d=>d.vFinal==='A'||d.vFinal==='S').length;
+    const puntAbsCalc  = Math.max(0,(5-tardesCalc-faltasCalc)*puntD);
+    const huboFaltaCalc = calc.detalleDias.some(d=>d.vFinal==='A');
+    const diasSuspCalc  = calc.detalleDias.filter(d=>d.vFinal==='S').length;
+    const asistPerfCalc = !huboFaltaCalc ? Math.max(0,(5-diasSuspCalc)*asistD) : 0;
     // Apply overrides to calc for display
     if(extras.overBase!==undefined)      calc.totalBase  = extras.overBase;
     if(extras.overAdic!==undefined)      calc.totalAdic  = extras.overAdic;
@@ -3556,8 +3573,8 @@ function renderLiqTabla(){
       const vShow = ovr||vUp||'P';
       const llv   = !!(extras.lluvia&&extras.lluvia[key]);
 
-      const colorEstado = vShow==='A'?'#cc0000':vShow==='AJ'?'#7b2d8b':vShow==='T'?'#cc6600':vShow==='TJ'?'#2d6b8b':vShow==='F'?'#1a5c1a':vShow==='1/2'||vShow==='½'?'#8b6914':'#1e4d2b';
-      const textEstado  = vShow==='A'?'FALTA':vShow==='AJ'?'F.JUST':vShow==='T'?'TARDE':vShow==='TJ'?'T.JUST':vShow==='F'?'FERIADO':vShow==='1/2'||vShow==='½'?'½ DÍA':'OK';
+      const colorEstado = vShow==='A'?'#cc0000':vShow==='AJ'?'#7b2d8b':vShow==='T'?'#cc6600':vShow==='TJ'?'#2d6b8b':vShow==='F'?'#1a5c1a':vShow==='S'?'#4a1a6e':vShow==='1/2'||vShow==='½'?'#8b6914':'#1e4d2b';
+      const textEstado  = vShow==='A'?'FALTA':vShow==='AJ'?'F.JUST':vShow==='T'?'TARDE':vShow==='TJ'?'T.JUST':vShow==='F'?'FERIADO':vShow==='S'?'SUSP.':vShow==='1/2'||vShow==='½'?'½ DÍA':'OK';
 
       html += `<div style="background:#0f1118;border:1px solid var(--border);border-radius:10px;padding:10px 12px;min-width:80px;text-align:center;">
         <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">${dLabel} ${dNum}</div>
@@ -3569,6 +3586,7 @@ function renderLiqTabla(){
           ${(vUp==='A'||vUp==='T')?`<option value="AJ" ${ovr==='AJ'?'selected':''}>→ F.Just</option>`:''}
           ${vUp==='T'?`<option value="TJ" ${ovr==='TJ'?'selected':''}>→ T.Just</option>`:''}
           ${vUp===''||vUp==='P'?`<option value="F" ${ovr==='F'?'selected':''}>→ Feriado</option>`:''}
+          ${vUp===''||vUp==='P'?`<option value="S" ${ovr==='S'?'selected':''}>→ Suspendido</option>`:''}
         </select>
         <!-- Lluvia -->
         <label style="display:flex;align-items:center;justify-content:center;gap:4px;font-size:10px;color:${llv?'#4f8ef7':'var(--muted)'};cursor:pointer;">
@@ -3721,15 +3739,18 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras, fechaOverride){
   const puntDiaria  = parseN(s.puntDiaria)||2000;
   const asistDiaria = parseN(s.asistDiaria)||4000;
   // puntAbsol: $2000 x 5 días siempre (feriados cuentan), solo descuenta tardanzas reales
-  const tardesDesc = calc.detalleDias.filter(d=>d.vFinal==='T').length;
-  const puntAbsol  = Math.max(0, (5 - tardesDesc) * puntDiaria);
+  const tardesDesc  = calc.detalleDias.filter(d=>d.vFinal==='T').length;
+  const faltasDesc  = calc.detalleDias.filter(d=>d.vFinal==='A'||d.vFinal==='S').length;
+  const puntAbsol   = Math.max(0, (5 - tardesDesc - faltasDesc) * puntDiaria);
   const asistPerf     = asistDiaria * 5;
 
   const statsMes   = liqGetEstadisticas(ch, true);
   const statsTotal = liqGetEstadisticas(ch, false);
 
   const huboTarde = calc.detalleDias.some(d=>d.vFinal==='T');
-  const huboFalta = calc.detalleDias.some(d=>d.vFinal==='A');
+  const huboFalta  = calc.detalleDias.some(d=>d.vFinal==='A');
+  const diasSusp   = calc.detalleDias.filter(d=>d.vFinal==='S').length;
+  const asistPerfS = Math.max(0,(5-diasSusp)*asistDiaria); // proporcional por suspendidos
 
   // Fila: cod | concepto + importe_referencia_inline | haberes | adelantos
   const fila = (concepto, refInline, haberes, deducciones) => `
@@ -3790,8 +3811,9 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras, fechaOverride){
       conceptosHtml += fila('PUNTUALIDAD DIARIA -B', 'L:'+liqFmtPesos(adicLunes)+' / M-V:'+liqFmtPesos(adicMarVie), calc.totalAdic, '');
     if(puntAbsol > 0)
       conceptosHtml += fila('PUNT ABSOLUTA SEMANA', liqFmtPesos(puntAbsol), puntAbsol, '');
-    if(!huboFalta && asistPerf > 0)
-      conceptosHtml += fila('ASIST PERF SEMANA', liqFmtPesos(asistPerf), asistPerf, '');
+    const asistPerfFinal = !huboFalta ? asistPerfS : 0;
+    if(asistPerfFinal > 0)
+      conceptosHtml += fila('ASIST PERF SEMANA', liqFmtPesos(asistPerfFinal), asistPerfFinal, '');
     if(calc.totalLluvia > 0)
       conceptosHtml += fila('LLUVIA', '', calc.totalLluvia, '');
     if(calc.adelantoAnterior > 0)
@@ -3803,7 +3825,7 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras, fechaOverride){
     const nC = 1+(calc.totalAdic>0?1:0)+(!huboTarde?1:0)+(!huboFalta?1:0)+(calc.totalLluvia>0?1:0)+(calc.adelanto>0?1:0);
     for(let x=nC; x<7; x++) conceptosHtml += filaVacia();
     totalHaberes = calc.totalBase + calc.totalAdic +
-      puntAbsol + (!huboFalta ? asistPerf : 0) + calc.totalLluvia;
+      puntAbsol + asistPerfFinal + calc.totalLluvia;
     totalDeduc = (calc.adelanto||0) + (calc.adelantoAnterior||0);
   }
 
