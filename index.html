@@ -693,6 +693,8 @@ function fmtInput(val){
 document.addEventListener('blur', function(e){
   const el = e.target;
   if(!el || el.tagName!=='INPUT') return;
+  // Excluir celdas de la planilla de chicos (PC) y grid-cells
+  if(el.classList.contains('pc') || el.classList.contains('grid-cell')) return;
   const ph = (el.placeholder||'').toLowerCase();
   const isNumeric = ph.includes('0,00') || ph.includes('0.00') || el.classList.contains('pc-valor');
   if(!isNumeric) return;
@@ -747,8 +749,8 @@ let FOC = null;
 function cellHtml(tbodyId, ri, ci, val, w, ph){
   const isFoc = FOC && FOC.tbodyId===tbodyId && FOC.row===ri && FOC.col===ci;
   const ws = w ? `style="width:${w}"` : '';
-  // Si el placeholder indica número (0,00), mostrar el valor formateado
-  const isNum = ph && (ph.includes('0,00') || ph==='0');
+  // Solo formatear si el placeholder es explícitamente monetario (0,00)
+  const isNum = ph && ph==='0,00';
   const displayVal = (isNum && val && !isFoc) ? fmtInput(val) : (val||'');
   const v = displayVal.toString().replace(/"/g,'&quot;');
   return `<input class="grid-cell${isFoc?' focused':''}" data-tb="${tbodyId}" data-r="${ri}" data-c="${ci}" value="${v}" placeholder="${ph||''}" ${ws} ${isFoc?'':'readonly'}>`;
