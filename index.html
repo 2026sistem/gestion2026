@@ -2212,13 +2212,11 @@ function renderCentral(){
       const extras=liqExtrasGet(si,ch.nombre);
       const calc=liqCalcEmpleado(ch,si,sem.labs,extras);
       const pD=(parseN(s.puntDiaria)||2000);
-      const asistPerf=(parseN(s.asistDiaria)||4000)*5;
+      const aD=(parseN(s.asistDiaria)||4000);
       const tardesD=calc.detalleDias.filter(d=>d.vFinal==='T').length;
       const faltasD=calc.detalleDias.filter(d=>d.vFinal==='A'||d.vFinal==='S').length;
       const puntAbsol=Math.max(0,(5-tardesD-faltasD)*pD);
-      const huboA=calc.detalleDias.some(d=>d.vFinal==="A");
-      const diasSuspL=calc.detalleDias.filter(d=>d.vFinal==="S").length;
-      const asistPerfL=!huboA?Math.max(0,(5-diasSuspL)*(parseN(s.asistDiaria)||4000)):0;
+      const asistPerfL=Math.max(0,(5-faltasD)*aD);
       totalLiq+=calc.totalBase+calc.totalAdic+calc.totalPunt+puntAbsol+asistPerfL+calc.totalLluvia;
       totalAdelantos+=parseN(calc.adelanto);
     });
@@ -3472,13 +3470,11 @@ function renderLiqPanel(){
       const extras=liqExtrasGet(semIdx,ch.nombre);
       const calc=liqCalcEmpleado(ch,semIdx,sem.labs,extras);
       const pD2=(parseN(s.puntDiaria)||2000);
-      const asistPerf=(parseN(s.asistDiaria)||4000)*5;
+      const aD2=(parseN(s.asistDiaria)||4000);
       const tardesD2=calc.detalleDias.filter(d=>d.vFinal==='T').length;
       const faltasD2=calc.detalleDias.filter(d=>d.vFinal==='A'||d.vFinal==='S').length;
       const puntAbsol=Math.max(0,(5-tardesD2-faltasD2)*pD2);
-      const huboA=calc.detalleDias.some(d=>d.vFinal==='A');
-      const diasSuspT=calc.detalleDias.filter(d=>d.vFinal==='S').length;
-      const asistPerfT=!huboA?Math.max(0,(5-diasSuspT)*(parseN(s.asistDiaria)||4000)):0;
+      const asistPerfT=Math.max(0,(5-faltasD2)*aD2);
       bruto+=calc.totalBase+calc.totalAdic+calc.totalPunt+puntAbsol+asistPerfT+calc.totalLluvia;
       adelantos+=parseN(calc.adelanto);
     });
@@ -3536,9 +3532,8 @@ function renderLiqTabla(){
     const tardesCalc   = calc.detalleDias.filter(d=>d.vFinal==='T').length;
     const faltasCalc   = calc.detalleDias.filter(d=>d.vFinal==='A'||d.vFinal==='S').length;
     const puntAbsCalc  = Math.max(0,(5-tardesCalc-faltasCalc)*puntD);
-    const huboFaltaCalc = calc.detalleDias.some(d=>d.vFinal==='A');
-    const diasSuspCalc  = calc.detalleDias.filter(d=>d.vFinal==='S').length;
-    const asistPerfCalc = !huboFaltaCalc ? Math.max(0,(5-diasSuspCalc)*asistD) : 0;
+    const faltasSuspCalc = calc.detalleDias.filter(d=>d.vFinal==='A'||d.vFinal==='S').length;
+    const asistPerfCalc   = Math.max(0,(5-faltasSuspCalc)*asistD);
     // Apply overrides to calc for display
     if(extras.overBase!==undefined)      calc.totalBase  = extras.overBase;
     if(extras.overAdic!==undefined)      calc.totalAdic  = extras.overAdic;
@@ -3750,9 +3745,9 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras, fechaOverride){
   const statsTotal = liqGetEstadisticas(ch, false);
 
   const huboTarde = calc.detalleDias.some(d=>d.vFinal==='T');
-  const huboFalta  = calc.detalleDias.some(d=>d.vFinal==='A');
-  const diasSusp   = calc.detalleDias.filter(d=>d.vFinal==='S').length;
-  const asistPerfS = Math.max(0,(5-diasSusp)*asistDiaria); // proporcional por suspendidos
+  const huboFalta    = calc.detalleDias.some(d=>d.vFinal==='A');
+  const faltasSusp  = calc.detalleDias.filter(d=>d.vFinal==='A'||d.vFinal==='S').length;
+  const asistPerfS  = Math.max(0,(5-faltasSusp)*asistDiaria);
 
   // Fila: cod | concepto + importe_referencia_inline | haberes | adelantos
   const fila = (concepto, refInline, haberes, deducciones) => `
@@ -3776,6 +3771,13 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras, fechaOverride){
   let conceptosHtml = '';
   let totalHaberes = 0;
   let totalDeduc   = 0;
+
+  // Apply overrides from panel if set
+  const recBase      = extras.overBase!==undefined      ? extras.overBase      : calc.totalBase;
+  const recAdic      = extras.overAdic!==undefined      ? extras.overAdic      : calc.totalAdic;
+  const recPuntAbsol = extras.overPuntAbsol!==undefined ? extras.overPuntAbsol : puntAbsol;
+  const recAsistPerf = extras.overAsist!==undefined     ? extras.overAsist     : asistPerfS;
+  const recLluvia    = extras.overLluvia!==undefined    ? extras.overLluvia    : calc.totalLluvia;
 
   if(esSacVac){
     // Recibo especial: solo SAC y/o Vacaciones
@@ -3806,28 +3808,26 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras, fechaOverride){
       feriadosN>0    ? feriadosN+(feriadosN===1?' FERIADO':' FERIADOS')        : '',
     ].filter(Boolean).join('   ');
     const semanaLabel = novedadesSem ? 'SEMANA   '+novedadesSem : 'SEMANA';
-    conceptosHtml += fila(semanaLabel, '', calc.totalBase, '');
+    conceptosHtml += fila(semanaLabel, '', recBase, '');
     conceptosHtml += filaTexto('Cumpliendo jornada laboral de Lu a Vi de 7 a 16Hs.,');
     conceptosHtml += filaTexto('Sin horas Extras');
-    if(calc.totalAdic > 0)
-      conceptosHtml += fila('PUNTUALIDAD DIARIA -B', 'L:'+liqFmtPesos(adicLunes)+' / M-V:'+liqFmtPesos(adicMarVie), calc.totalAdic, '');
-    if(puntAbsol > 0)
-      conceptosHtml += fila('PUNT ABSOLUTA SEMANA', liqFmtPesos(puntAbsol), puntAbsol, '');
-    const asistPerfFinal = !huboFalta ? asistPerfS : 0;
-    if(asistPerfFinal > 0)
-      conceptosHtml += fila('ASIST PERF SEMANA', liqFmtPesos(asistPerfFinal), asistPerfFinal, '');
-    if(calc.totalLluvia > 0)
-      conceptosHtml += fila('LLUVIA', '', calc.totalLluvia, '');
+    if(recAdic > 0)
+      conceptosHtml += fila('PUNTUALIDAD DIARIA -B', 'L:'+liqFmtPesos(adicLunes)+' / M-V:'+liqFmtPesos(adicMarVie), recAdic, '');
+    if(recPuntAbsol > 0)
+      conceptosHtml += fila('PUNT ABSOLUTA SEMANA', liqFmtPesos(recPuntAbsol), recPuntAbsol, '');
+    if(recAsistPerf > 0)
+      conceptosHtml += fila('ASIST PERF SEMANA', liqFmtPesos(recAsistPerf), recAsistPerf, '');
+    if(recLluvia > 0)
+      conceptosHtml += fila('LLUVIA', '', recLluvia, '');
     if(calc.adelantoAnterior > 0)
       conceptosHtml += fila('ADELANTOS'+(extras.adelantoAnteriorNota?' - '+extras.adelantoAnteriorNota.toUpperCase():''), '', '', calc.adelantoAnterior);
     if(calc.adelanto > 0)
       conceptosHtml += fila('ADELANTO DE LA SEMANA'+(extras.adelantoNota?' - '+extras.adelantoNota.toUpperCase():''), '', '', calc.adelanto);
     conceptosHtml += filaTexto('COBERTURA POR SEGURO DE VIDA');
     conceptosHtml += filaTexto('CIA. SUDAMERIS Póliza Nro.12 002457383');
-    const nC = 1+(calc.totalAdic>0?1:0)+(!huboTarde?1:0)+(!huboFalta?1:0)+(calc.totalLluvia>0?1:0)+(calc.adelanto>0?1:0);
+    const nC = 1+(recAdic>0?1:0)+(recPuntAbsol>0?1:0)+(recAsistPerf>0?1:0)+(recLluvia>0?1:0)+(calc.adelanto>0?1:0);
     for(let x=nC; x<7; x++) conceptosHtml += filaVacia();
-    totalHaberes = calc.totalBase + calc.totalAdic +
-      puntAbsol + asistPerfFinal + calc.totalLluvia;
+    totalHaberes = recBase + recAdic + recPuntAbsol + recAsistPerf + recLluvia;
     totalDeduc = (calc.adelanto||0) + (calc.adelantoAnterior||0);
   }
 
