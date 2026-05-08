@@ -7,23 +7,23 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:      #0d0f14;
-  --surface: #151820;
-  --card:    #1c2030;
-  --border:  #2a2f42;
-  --accent1: #4f8ef7;
-  --accent2: #e05c5c;
-  --accent3: #4ecdc4;
-  --text:    #e8eaf2;
-  --muted:   #6b7194;
-  --white:   #ffffff;
+  --bg:      #f0f2f7;
+  --surface: #ffffff;
+  --card:    #ffffff;
+  --border:  #d1d5e0;
+  --accent1: #2563eb;
+  --accent2: #dc2626;
+  --accent3: #0891b2;
+  --text:    #1e2030;
+  --muted:   #6b7280;
+  --white:   #1e2030;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 20% 10%,rgba(79,142,247,.08) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 80% 80%,rgba(78,205,196,.06) 0%,transparent 60%);pointer-events:none;z-index:0;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 20% 10%,rgba(37,99,235,.04) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 80% 80%,rgba(8,145,178,.03) 0%,transparent 60%);pointer-events:none;z-index:0;}
 
 /* HEADER */
-header{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:18px 36px;border-bottom:1px solid var(--border);background:rgba(21,24,32,.85);backdrop-filter:blur(12px);}
+header{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:18px 36px;border-bottom:1px solid var(--border);background:rgba(255,255,255,.95);backdrop-filter:blur(12px);}
 .logo{font-family:'Bebas Neue',cursive;font-size:1.7rem;letter-spacing:.12em;color:var(--white);display:flex;align-items:center;gap:10px;}
 .logo-dot{width:10px;height:10px;border-radius:50%;background:var(--accent1);box-shadow:0 0 10px var(--accent1);animation:pulse 2.4s ease-in-out infinite;}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.75);}}
@@ -54,7 +54,7 @@ main{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:40px 24p
 .menu-card.c1::before{background:radial-gradient(ellipse 120% 120% at 0% 0%,rgba(79,142,247,.14) 0%,transparent 70%);}
 .menu-card.c2::before{background:radial-gradient(ellipse 120% 120% at 100% 0%,rgba(78,205,196,.14) 0%,transparent 70%);}
 .menu-card.c3::before{background:radial-gradient(ellipse 120% 120% at 50% 0%,rgba(224,92,92,.12) 0%,transparent 70%);}
-.menu-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.4);}
+.menu-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.12);}
 .menu-card:hover::before{opacity:1;}
 .menu-card.c1:hover{border-color:var(--accent1);}
 .menu-card.c2:hover{border-color:var(--accent3);}
@@ -68,7 +68,7 @@ main{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:40px 24p
 .c2 .card-arrow{background:rgba(78,205,196,.18);color:var(--accent3);}
 .c3 .card-arrow{background:rgba(224,92,92,.18);color:var(--accent2);}
 .menu-card:hover .card-arrow{transform:translate(3px,-3px);}
-.pill-count{display:inline-flex;align-items:center;margin-top:12px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:.73rem;color:var(--muted);gap:5px;}
+.pill-count{display:inline-flex;align-items:center;margin-top:12px;background:rgba(37,99,235,.06);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:.73rem;color:var(--muted);gap:5px;}
 .pill-count .dot{width:6px;height:6px;border-radius:50%;}
 .c1 .dot{background:var(--accent1);}
 .c2 .dot{background:var(--accent3);}
@@ -85,7 +85,7 @@ main{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:40px 24p
 .sub-btn:hover{transform:translateY(-2px);border-color:var(--hover-border,var(--accent1));}
 .sub-btn:hover::after{opacity:1;}
 .sub-btn:active{transform:scale(.97);}
-.sub-icon{font-size:1.3rem;flex-shrink:0;width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);}
+.sub-icon{font-size:1.3rem;flex-shrink:0;width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;background:rgba(37,99,235,.08);}
 .sub-label{font-size:.83rem;font-weight:500;color:var(--text);line-height:1.3;}
 .principal-sub .sub-btn{--hover-color:rgba(79,142,247,.08);--hover-border:var(--accent1);}
 .diseno-sub .sub-btn{--hover-color:rgba(78,205,196,.08);--hover-border:var(--accent3);}
@@ -105,21 +105,21 @@ main{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:40px 24p
 /* TABLES */
 .tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin-bottom:16px;}
 table{width:100%;border-collapse:collapse;min-width:400px;}
-thead th{background:rgba(255,255,255,.04);padding:10px 12px;text-align:left;font-weight:500;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em;}
-tbody tr{border-bottom:1px solid rgba(42,47,66,.6);}
+thead th{background:rgba(37,99,235,.05);padding:10px 12px;text-align:left;font-weight:500;font-size:11px;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em;}
+tbody tr{border-bottom:1px solid rgba(209,213,224,.7);}
 tbody tr:last-child{border-bottom:none;}
-tbody tr:hover{background:rgba(79,142,247,.04);}
+tbody tr:hover{background:rgba(37,99,235,.04);}
 td{padding:9px 12px;font-size:13px;vertical-align:middle;}
 td input,td select{width:100%;padding:5px 7px;font-size:12px;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--text);font-family:'DM Sans',sans-serif;}
 td input:hover,td select:hover{border-color:var(--border);}
 td input:focus,td select:focus{outline:none;border-color:var(--accent1);background:rgba(79,142,247,.06);}
-td select option{background:var(--card);color:var(--text);}
+td select option{background:#ffffff;color:var(--text);}
 .calc{color:var(--muted);font-size:12px;}
-.total-row td{font-weight:600;background:rgba(255,255,255,.04);border-top:1px solid var(--border);color:var(--white);}
+.total-row td{font-weight:600;background:rgba(37,99,235,.07);border-top:1px solid var(--border);color:var(--white);}
 
 /* BUTTONS */
-.btn{padding:8px 16px;font-size:12px;font-weight:500;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s;}
-.btn:hover{background:rgba(255,255,255,.06);border-color:var(--accent1);}
+.btn{padding:8px 16px;font-size:12px;font-weight:500;border:1px solid var(--border);border-radius:8px;background:#ffffff;color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s;}
+.btn:hover{background:rgba(37,99,235,.05);border-color:var(--accent1);}
 .btn.add{background:rgba(79,142,247,.15);color:var(--accent1);border-color:var(--accent1);}
 .btn.add:hover{background:rgba(79,142,247,.25);}
 .btn.del{border-color:transparent;color:var(--muted);background:transparent;padding:4px 8px;font-size:12px;}
@@ -127,7 +127,7 @@ td select option{background:var(--card);color:var(--text);}
 
 /* SUBTABS */
 .subtabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;}
-.stab{padding:6px 14px;font-size:12px;border:1px solid var(--border);border-radius:20px;background:transparent;color:var(--muted);cursor:pointer;transition:all .18s;}
+.stab{padding:6px 14px;font-size:12px;border:1px solid var(--border);border-radius:20px;background:#ffffff;color:var(--muted);cursor:pointer;transition:all .18s;}
 .stab:hover{border-color:var(--accent1);color:var(--text);}
 .stab.active{background:rgba(79,142,247,.15);color:var(--accent1);border-color:var(--accent1);}
 .stab.teal.active{background:rgba(78,205,196,.15);color:var(--accent3);border-color:var(--accent3);}
@@ -138,7 +138,7 @@ td select option{background:var(--card);color:var(--text);}
 
 /* STATS CARDS */
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:20px;}
-.stat-card{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+.stat-card{background:#ffffff;border:1px solid var(--border);border-radius:10px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
 .stat-label{font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em;}
 .stat-val{font-size:20px;font-weight:600;color:var(--white);}
 
@@ -156,33 +156,33 @@ td select option{background:var(--card);color:var(--text);}
 .chico-row:last-child{border-bottom:none;}
 .chico-row:hover{background:rgba(79,142,247,.03);border-radius:6px;}
 .chico-name{font-size:12px;font-weight:500;color:var(--text);}
-.chico-row input{padding:4px 6px;font-size:11px;border:1px solid rgba(42,47,66,.8);border-radius:5px;background:rgba(255,255,255,.03);color:var(--text);width:100%;font-family:'DM Sans',sans-serif;}
+.chico-row input{padding:4px 6px;font-size:11px;border:1px solid rgba(209,213,224,.8);border-radius:5px;background:rgba(255,255,255,.8);color:var(--text);width:100%;font-family:'DM Sans',sans-serif;}
 .chico-row input:focus{outline:none;border-color:var(--accent1);background:rgba(79,142,247,.06);}
 
 /* CREDITOS CLIENT HEADER */
-.client-header{display:flex;align-items:center;gap:16px;margin-bottom:16px;padding:14px 16px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;}
+.client-header{display:flex;align-items:center;gap:16px;margin-bottom:16px;padding:14px 16px;background:rgba(37,99,235,.04);border:1px solid var(--border);border-radius:10px;}
 .client-name{font-family:'Bebas Neue',cursive;font-size:1.4rem;letter-spacing:.08em;color:var(--white);}
 .client-price{font-size:12px;color:var(--accent3);background:rgba(78,205,196,.1);border:1px solid rgba(78,205,196,.2);padding:3px 10px;border-radius:20px;}
-.hint-keys{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;padding:8px 12px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;}
+.hint-keys{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;padding:8px 12px;background:rgba(37,99,235,.03);border:1px solid var(--border);border-radius:8px;}
 .hint-keys span{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;}
-.key{display:inline-block;padding:2px 6px;border:1px solid var(--border);border-radius:4px;font-size:10px;background:rgba(255,255,255,.05);color:var(--text);}
+.key{display:inline-block;padding:2px 6px;border:1px solid var(--border);border-radius:4px;font-size:10px;background:#ffffff;color:var(--text);}
 input.grid-cell{display:block;width:100%;padding:6px 8px;font-size:12px;border:1px solid transparent;border-radius:5px;background:transparent;color:var(--text);font-family:'DM Sans',sans-serif;cursor:default;}
 input.grid-cell:hover{border-color:var(--border);}
-input.grid-cell.focused{border-color:var(--accent1)!important;background:rgba(79,142,247,.08);cursor:text;outline:none;box-shadow:0 0 0 2px rgba(79,142,247,.2);}
-tbody tr.row-selected{background:rgba(79,142,247,.06)!important;}
+input.grid-cell.focused{border-color:var(--accent1)!important;background:rgba(37,99,235,.06);cursor:text;outline:none;box-shadow:0 0 0 2px rgba(37,99,235,.15);}
+tbody tr.row-selected{background:rgba(37,99,235,.08)!important;}
 </style>
 </head>
 <body>
 
 <!-- ═══ LOGIN ═══ -->
-<div id="login-screen" style="position:fixed;inset:0;z-index:99999;background:#0d0f14;display:flex;align-items:center;justify-content:center;">
-  <div style="background:#151820;border:1px solid #2a2f42;border-radius:20px;padding:48px 40px;width:100%;max-width:360px;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.6);">
-    <div style="font-family:'Bebas Neue',cursive;font-size:2rem;letter-spacing:.12em;color:#fff;margin-bottom:4px;">SISTEMA DE GESTIÓN</div>
-    <div style="font-size:12px;color:#6b7194;margin-bottom:32px;">Ingresá la contraseña para continuar</div>
+<div id="login-screen" style="position:fixed;inset:0;z-index:99999;background:#f0f2f7;display:flex;align-items:center;justify-content:center;">
+  <div style="background:#ffffff;border:1px solid #d1d5e0;border-radius:20px;padding:48px 40px;width:100%;max-width:360px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.12);">
+    <div style="font-family:'Bebas Neue',cursive;font-size:2rem;letter-spacing:.12em;color:#1e2030;margin-bottom:4px;">SISTEMA DE GESTIÓN</div>
+    <div style="font-size:12px;color:#6b7280;margin-bottom:32px;">Ingresá la contraseña para continuar</div>
     <div style="position:relative;margin-bottom:16px;">
       <input id="login-pass" type="password" placeholder="Contraseña"
-        style="width:100%;padding:12px 44px 12px 16px;font-size:14px;border:1px solid #2a2f42;border-radius:10px;background:#0d0f14;color:#e8eaf2;font-family:'DM Sans',sans-serif;box-sizing:border-box;outline:none;"
-        onfocus="this.style.borderColor='#4f8ef7'" onblur="this.style.borderColor='#2a2f42'">
+        style="width:100%;padding:12px 44px 12px 16px;font-size:14px;border:1px solid #d1d5e0;border-radius:10px;background:#f8f9fc;color:#1e2030;font-family:'DM Sans',sans-serif;box-sizing:border-box;outline:none;"
+        onfocus="this.style.borderColor='#2563eb'" onblur="this.style.borderColor='#d1d5e0'">
       <button id="login-eye" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:#6b7194;cursor:pointer;font-size:16px;">👁</button>
     </div>
     <div id="login-error" style="font-size:12px;color:#e05c5c;margin-bottom:12px;min-height:18px;"></div>
@@ -999,11 +999,11 @@ function renderCasaAri(container){
     <tr>
       <td style="padding:4px 6px;font-size:12px;">${dateInputHtml(c.fecha,"state.casaAri.cheques[${i}].fecha=this.value;autoGuardar()",'120px')}</td>
       <td style="padding:4px 6px;">
-        <input value="${c.importe||''}" placeholder="0,00" style="width:110px;padding:4px 7px;background:#0f1118;border:1px solid var(--border);border-radius:6px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+        <input value="${c.importe||''}" placeholder="0,00" style="width:110px;padding:4px 7px;background:#f8f9fc;border:1px solid var(--border);border-radius:6px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
           onblur="state.casaAri.cheques[${i}].importe=this.value;autoGuardar()" onfocus="this.select()">
       </td>
       <td style="padding:4px 6px;">
-        <input value="${c.nota||''}" placeholder="nota..." style="width:140px;padding:4px 7px;background:#0f1118;border:1px solid var(--border);border-radius:6px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;"
+        <input value="${c.nota||''}" placeholder="nota..." style="width:140px;padding:4px 7px;background:#f8f9fc;border:1px solid var(--border);border-radius:6px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;"
           onblur="state.casaAri.cheques[${i}].nota=this.value;autoGuardar()" onfocus="this.select()">
       </td>
       <td style="padding:4px 6px;font-size:12px;text-align:right;color:#3ecf5a;">$${fmt(parseN(c.importe))}</td>
@@ -1019,7 +1019,7 @@ function renderCasaAri(container){
     <tr>
       <td style="padding:3px 6px;font-size:12px;">${c.fecha||'—'}</td>
       <td style="padding:3px 6px;">
-        <input value="${c.importe||''}" style="width:110px;padding:3px 6px;background:#0f1118;border:1px solid var(--border);border-radius:5px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+        <input value="${c.importe||''}" style="width:110px;padding:3px 6px;background:#f8f9fc;border:1px solid var(--border);border-radius:5px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
           onblur="state.casaAri.cobros[${i}].importe=this.value;autoGuardar();renderZonas()" onfocus="this.select()">
       </td>
       <td style="padding:3px 6px;font-size:12px;text-align:right;color:#f5a623;">$${fmt(saldoAcum)}</td>
@@ -1065,7 +1065,7 @@ function renderCasaAri(container){
           </table>
         </div>
         <div style="display:flex;gap:8px;margin-top:10px;align-items:center;">
-          <input id="casaari-monto" placeholder="Importe remito" style="width:130px;padding:6px 8px;background:#0f1118;border:1px solid var(--border);border-radius:6px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;" onfocus="this.select()">
+          <input id="casaari-monto" placeholder="Importe remito" style="width:130px;padding:6px 8px;background:#f8f9fc;border:1px solid var(--border);border-radius:6px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;" onfocus="this.select()">
           <button class="btn" onclick="(()=>{const v=document.getElementById('casaari-monto').value;if(!v)return;const fecha=getFechaActual();state.casaAri.cobros.push({fecha,importe:v});document.getElementById('casaari-monto').value='';autoGuardar();renderZonas();})()" style="font-size:12px;">+ Registrar remito</button>
         </div>
       </div>
@@ -1139,7 +1139,7 @@ function renderZonas(){
     if(!tb) return;
     const rows=state.cobros.zonas[zona];
     tb.innerHTML=rows.map((r,i)=>{
-      if(r.separador) return `<tr><td colspan="4" style="padding:6px 10px;font-size:10px;font-weight:600;color:var(--muted);background:rgba(255,255,255,.02);letter-spacing:.08em;text-align:center;">${r.cliente}</td></tr>`;
+      if(r.separador) return `<tr><td colspan="4" style="padding:6px 10px;font-size:10px;font-weight:600;color:var(--muted);background:rgba(37,99,235,.02);letter-spacing:.08em;text-align:center;">${r.cliente}</td></tr>`;
       const isFoc=FOC&&FOC.tbodyId===tbodyId&&FOC.row===i;
       const esAyer=!!r.desdeFecha;
       const nc=(r.prefijado||esAyer)?`<td style="padding:7px 10px;font-size:12px;font-weight:500;color:${esAyer?'var(--accent2)':'var(--text)'};">${r.cliente}${esAyer?` <span style="font-size:10px;opacity:.6;">(${r.desdeFecha})</span>`:''}</td>`:`<td>${cellHtml(tbodyId,i,0,r.cliente,'','Cliente')}</td>`;
@@ -1172,7 +1172,7 @@ function renderGastosDiarios(container){
   const rowsHtml = state.cobros.gastosDiarios.map((g,i)=>`
     <tr>
       <td style="padding:4px 6px;font-size:12px;">
-        <select style="padding:3px 6px;background:#0f1118;border:1px solid var(--border);border-radius:5px;color:#e8eaf2;font-size:11px;font-family:'DM Sans',sans-serif;max-width:160px;"
+        <select style="padding:3px 6px;background:#f8f9fc;border:1px solid var(--border);border-radius:5px;color:#1e2030;font-size:11px;font-family:'DM Sans',sans-serif;max-width:160px;"
           onchange="if(this.value==='__manual__'){const m=prompt('Ingresá el concepto:','');if(m&&m.trim()){state.cobros.gastosDiarios[${i}].concepto=m.trim();autoGuardar();renderZonas();}this.value=state.cobros.gastosDiarios[${i}].concepto||'CIUDAD';}else{state.cobros.gastosDiarios[${i}].concepto=this.value;autoGuardar();}">
           ${GASTOS_ITEMS.map(c=>`<option value="${c}" ${g.concepto===c?'selected':''}>${c}</option>`).join('')}
           <option value="${!GASTOS_ITEMS.includes(g.concepto)&&g.concepto?g.concepto:''}" ${!GASTOS_ITEMS.includes(g.concepto)&&g.concepto?'selected':''} style="display:${!GASTOS_ITEMS.includes(g.concepto)&&g.concepto?'block':'none'}">${!GASTOS_ITEMS.includes(g.concepto)&&g.concepto?g.concepto:''}</option>
@@ -1180,11 +1180,11 @@ function renderGastosDiarios(container){
         </select>
       </td>
       <td style="padding:4px 6px;">
-        <input value="${g.importe||''}" placeholder="0,00" style="width:100px;padding:3px 6px;background:#0f1118;border:1px solid var(--border);border-radius:5px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+        <input value="${g.importe||''}" placeholder="0,00" style="width:100px;padding:3px 6px;background:#f8f9fc;border:1px solid var(--border);border-radius:5px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
           onblur="state.cobros.gastosDiarios[${i}].importe=this.value;autoGuardar();renderZonas()" onfocus="this.select()">
       </td>
       <td style="padding:4px 6px;">
-        <input value="${g.nota||''}" placeholder="nota..." style="width:120px;padding:3px 6px;background:#0f1118;border:1px solid var(--border);border-radius:5px;color:#e8eaf2;font-size:11px;font-family:'DM Sans',sans-serif;"
+        <input value="${g.nota||''}" placeholder="nota..." style="width:120px;padding:3px 6px;background:#f8f9fc;border:1px solid var(--border);border-radius:5px;color:#1e2030;font-size:11px;font-family:'DM Sans',sans-serif;"
           onblur="state.cobros.gastosDiarios[${i}].nota=this.value;autoGuardar()" onfocus="this.select()">
       </td>
       <td style="padding:4px 6px;">
@@ -1288,7 +1288,7 @@ function renderCobrosMonthView(){
       const isHoy = d.getTime()===hoy.getTime();
       const isFut = d > hoy;
       const dowLabel = DOW[d.getDay()]+' '+d.getDate();
-      const bgColor = isHoy?'rgba(0,188,212,.08)':isFut?'rgba(0,100,0,.06)':'rgba(255,255,255,.02)';
+      const bgColor = isHoy?'rgba(0,188,212,.08)':isFut?'rgba(0,100,0,.06)':'rgba(37,99,235,.02)';
       const borderColor = isHoy?'rgba(0,188,212,.3)':isFut?'rgba(0,200,0,.15)':'rgba(42,47,66,.6)';
       const dayColor = isHoy?'#00bcd4':isFut?'#4caf50':'var(--muted)';
 
@@ -1698,10 +1698,14 @@ function renderChicos(){
   const hoy = new Date(); hoy.setHours(0,0,0,0);
   const [my,mm] = mesStr.split('-').map(Number);
 
-  // Agrupar días del mes en semanas (lunes→domingo)
+  // Agrupar días del mes en semanas L-V, arrancando desde el primer lunes del mes
+  // Descartar días iniciales anteriores al primer lunes
+  const primerLunes = allDias.find(d=>d.getDay()===1);
+  const diasDesdeL = primerLunes ? allDias.filter(d=>d>=primerLunes) : allDias;
+
   const semanas = [];
   let semActual = [];
-  allDias.forEach(d=>{
+  diasDesdeL.forEach(d=>{
     const dow = d.getDay();
     if(dow===1 && semActual.length>0){ semanas.push(semActual); semActual=[]; }
     semActual.push(d);
@@ -1716,31 +1720,31 @@ function renderChicos(){
   })).filter(s=>s.labs.length>0);
 
   const css = `<style>
-  .pm-wrap{overflow-x:auto;margin-bottom:4px;border-radius:10px;border:1px solid #2a2f42;}
-  .pm{border-collapse:collapse;font-size:11px;font-family:'DM Sans',sans-serif;min-width:100%;}
-  .pm th,.pm td{border:1px solid #2a2f42;padding:0;margin:0;white-space:nowrap;box-sizing:border-box;}
-  .pm thead th{background:#1a1e2e;color:#6b7194;text-align:center;font-weight:600;font-size:10px;letter-spacing:.04em;position:sticky;top:0;z-index:3;}
-  .pm thead th.th-nombre{background:#0f1118;width:80px;min-width:80px;max-width:80px;text-align:left;padding-left:6px;position:sticky;left:0;z-index:4;}
-  .pm thead th.th-tipo{background:#0f1118;width:44px;min-width:44px;max-width:44px;text-align:center;font-size:9px;}
-  .pm thead th.th-nota{background:#131825;min-width:80px;width:80px;text-align:center;font-size:9px;color:#5a6080;border-left:2px solid #3a4060;}
+  .pm-wrap{overflow-x:auto;margin-bottom:4px;border-radius:10px;border:1px solid #d1d5e0;}
+  .pm{border-collapse:collapse;font-size:12px;font-family:'DM Sans',sans-serif;min-width:100%;}
+  .pm th,.pm td{border:1px solid #d1d5e0;padding:0;margin:0;white-space:nowrap;box-sizing:border-box;}
+  .pm thead th{background:#e8edf8;color:#6b7280;text-align:center;font-weight:600;font-size:10px;letter-spacing:.04em;position:sticky;top:0;z-index:3;}
+  .pm thead th.th-nombre{background:#f8f9fc;width:80px;min-width:80px;max-width:80px;text-align:left;padding-left:6px;position:sticky;left:0;z-index:4;}
+  .pm thead th.th-tipo{background:#f8f9fc;width:44px;min-width:44px;max-width:44px;text-align:center;font-size:9px;}
+  .pm thead th.th-nota{background:#eef1f8;min-width:80px;width:80px;text-align:center;font-size:9px;color:#6b7280;border-left:2px solid #d1d5e0;}
   .pm thead th.th-hoy{background:#00bcd4 !important;color:#000 !important;font-weight:800;}
-  .pm thead th.th-fut{background:#0e200e;color:#4caf50;}
-  .pm td.td-nombre{background:#0f1118;font-size:11px;font-weight:700;color:#ffff00;padding:2px 6px;vertical-align:middle;position:sticky;left:0;z-index:2;width:80px;min-width:80px;max-width:80px;overflow:hidden;text-overflow:ellipsis;}
-  .pm td.td-tipo{background:#0f1118;font-size:9px;color:#6b7194;padding:2px 4px;text-align:right;vertical-align:middle;width:44px;min-width:44px;max-width:44px;border-right:2px solid #3a4060;}
-  .pm td.td-nota{background:#0f1118;min-width:80px;width:80px;vertical-align:middle;border-left:2px solid #3a4060;}
-  .pm td.td-hoy{background:#003344 !important;}
-  .pm td.td-fut{background:#081208 !important;}
-  .pm input.pc{display:block;width:100%;padding:2px 3px;font-size:11px;border:none;outline:none;background:transparent;color:#e8eaf2;font-family:'DM Sans',sans-serif;text-align:center;box-sizing:border-box;}
-  .pm input.pc:focus{background:rgba(79,142,247,.25);box-shadow:inset 0 0 0 2px #4f8ef7;}
+  .pm thead th.th-fut{background:#e8f5e9;color:#2e7d32;}
+  .pm td.td-nombre{background:#f8f9fc;font-size:11px;font-weight:700;color:#1e40af;padding:2px 6px;vertical-align:middle;position:sticky;left:0;z-index:2;width:80px;min-width:80px;max-width:80px;overflow:hidden;text-overflow:ellipsis;}
+  .pm td.td-tipo{background:#f8f9fc;font-size:9px;color:#6b7280;padding:2px 4px;text-align:right;vertical-align:middle;width:44px;min-width:44px;max-width:44px;border-right:2px solid #d1d5e0;}
+  .pm td.td-nota{background:#f8f9fc;min-width:80px;width:80px;vertical-align:middle;border-left:2px solid #bdc3d0;}
+  .pm td.td-hoy{background:#dbeafe !important;}
+  .pm td.td-fut{background:#f0fdf4 !important;}
+  .pm input.pc{display:block;width:100%;padding:2px 3px;font-size:12px;border:none;outline:none;background:transparent;color:#1e2030;font-family:'DM Sans',sans-serif;text-align:center;box-sizing:border-box;}
+  .pm input.pc:focus{background:rgba(37,99,235,.15);box-shadow:inset 0 0 0 2px #4f8ef7;}
   .pm input.pc.pc-ausente{color:#000;font-weight:800;}
   .pm input.pc.pc-ausente-just{color:#fff;font-weight:800;background:#7b2d8b;}
   .pm input.pc.pc-tarde-just{color:#fff;font-weight:700;background:#2d6b8b;}
   .pm input.pc.pc-feriado{color:#fff;font-weight:700;background:#1a5c1a;}
   .pm input.pc.pc-suspendido{color:#fff;font-weight:700;background:#4a1a6e;}
   .pm input.pc.pc-tarde{color:#000;font-weight:700;}
-  .pm input.pc.pc-valor{color:#4ecdc4;}
-  .pm input.pc-nota{display:block;width:100%;padding:2px 5px;font-size:10px;border:none;outline:none;background:transparent;color:#a0a8c0;font-family:'DM Sans',sans-serif;box-sizing:border-box;}
-  .pm input.pc-nota:focus{background:rgba(79,142,247,.1);}
+  .pm input.pc.pc-valor{color:#1e3a8a;font-weight:600;}
+  .pm input.pc-nota{display:block;width:100%;padding:2px 5px;font-size:10px;border:none;outline:none;background:transparent;color:#6b7280;font-family:'DM Sans',sans-serif;box-sizing:border-box;}
+  .pm input.pc-nota:focus{background:rgba(37,99,235,.08);}
   .pm tr.tr-top td{border-bottom:1px dashed #23283a;}
   .pm tr.tr-mid td{border-top:none;border-bottom:1px dashed #23283a;}
   .pm tr.tr-bot td{border-top:none;border-bottom:2px solid #3a4060;}
@@ -1751,9 +1755,9 @@ function renderChicos(){
   .pm-edit-emp:hover{color:#4f8ef7;}
   .pm input.pc.pc-medio{color:#000;font-weight:700;}
   /* Popup motivo */
-  #pm-motivo-popup{position:fixed;z-index:9999;background:#1c2030;border:1px solid #4f8ef7;border-radius:10px;padding:12px 14px;box-shadow:0 8px 32px rgba(0,0,0,.6);min-width:230px;display:none;}
+  #pm-motivo-popup{position:fixed;z-index:9999;background:#ffffff;border:1px solid #4f8ef7;border-radius:10px;padding:12px 14px;box-shadow:0 8px 32px rgba(0,0,0,.6);min-width:230px;display:none;}
   #pm-motivo-popup .pm-pop-title{font-size:10px;color:#6b7194;margin-bottom:7px;letter-spacing:.05em;text-transform:uppercase;}
-  #pm-motivo-popup input{width:100%;padding:6px 8px;font-size:12px;border:1px solid #3a4060;border-radius:6px;background:#0f1118;color:#e8eaf2;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;}
+  #pm-motivo-popup input{width:100%;padding:6px 8px;font-size:12px;border:1px solid #d1d5e0;border-radius:6px;background:#f8f9fc;color:#1e2030;font-family:'DM Sans',sans-serif;outline:none;box-sizing:border-box;}
   #pm-motivo-popup input:focus{border-color:#4f8ef7;}
   #pm-motivo-popup .pm-pop-close{position:absolute;top:6px;right:8px;background:transparent;border:none;color:#4a5070;cursor:pointer;font-size:13px;line-height:1;}
   #pm-motivo-popup .pm-pop-close:hover{color:#e05c5c;}
@@ -1767,25 +1771,25 @@ function renderChicos(){
   // ── CABECERA ──
   // Fila 1: nombre | tipo | [SEM1 colspan días | NOTA] | [SEM2 colspan días | NOTA] ...
   // Fila 2: (vacío) | (vacío) | [Lu Ma Mi Ju Vi | ] por semana
-  let th1 = `<th class="th-nombre" rowspan="2" style="font-size:11px;color:#fff;">${my}<br><span style="font-size:9px;color:#6b7194;">${mesLabel}</span></th>`;
+  let th1 = `<th class="th-nombre" rowspan="2" style="font-size:11px;color:#1e2030;">${my}<br><span style="font-size:9px;color:#6b7194;">${mesLabel}</span></th>`;
   th1 += `<th class="th-tipo" rowspan="2" style="color:#5a6080;font-size:9px;">TIPO</th>`;
   let th2 = '';
 
   semanasLab.forEach(({labs},si)=>{
-    th1+=`<th colspan="${labs.length}" style="background:#131825;color:#4a5070;font-size:9px;letter-spacing:.06em;border-bottom:1px solid #2a2f42;border-left:${si>0?'2px solid #3a4060':''};">SEM ${si+1}</th>`;
-    th1+=`<th class="th-nota" colspan="3" style="border-left:2px solid #3a4060;">SEM ${si+1} EXTRAS</th>`;
+    th1+=`<th colspan="${labs.length}" style="background:#e8edf8;color:#6b7280;font-size:9px;letter-spacing:.06em;border-bottom:1px solid #d1d5e0;border-left:${si>0?'2px solid #bdc3d0':''};">SEM ${si+1}</th>`;
+    th1+=`<th class="th-nota" colspan="3" style="border-left:2px solid #bdc3d0;">SEM ${si+1} EXTRAS</th>`;
 
     labs.forEach(d=>{
       const isHoy = d.getTime()===hoy.getTime();
       const isFut = d > hoy;
       const cls = isHoy?'th-hoy':isFut?'th-fut':'';
       const dow = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'][d.getDay()];
-      const borderLeft = d.getDay()===1&&si>0 ? 'border-left:2px solid #3a4060;' : '';
+      const borderLeft = d.getDay()===1&&si>0 ? 'border-left:2px solid #bdc3d0;' : '';
       th2+=`<th class="${cls}" style="min-width:26px;width:26px;${borderLeft}">${dow}<br><span style="font-size:9px;opacity:.7;">${d.getDate()}</span></th>`;
     });
-    th2+=`<th style="min-width:70px;width:70px;background:#0a1a0a;border-left:2px solid #3a4060;color:#3ecf5a;font-size:9px;">COBRADO</th>`;
-    th2+=`<th style="min-width:70px;width:70px;background:#0a0a1a;border-left:1px solid #2a2f42;color:#4f8ef7;font-size:9px;">ADELANTO</th>`;
-    th2+=`<th style="min-width:80px;width:80px;background:#0f1118;border-left:1px solid #2a2f42;"></th>`;
+    th2+=`<th style="min-width:70px;width:70px;background:#f0fdf4;border-left:2px solid #bdc3d0;color:#15803d;font-size:9px;">COBRADO</th>`;
+    th2+=`<th style="min-width:70px;width:70px;background:#eff6ff;border-left:1px solid #d1d5e0;color:#2563eb;font-size:9px;">ADELANTO</th>`;
+    th2+=`<th style="min-width:80px;width:80px;background:#f8f9fc;border-left:1px solid #2a2f42;"></th>`;
   });
 
   let html = css + `<div class="pm-wrap"><table class="pm">
@@ -1830,7 +1834,7 @@ function renderChicos(){
       // Celdas de días + columna nota por semana (FIX 1)
       let tdDias = '';
       semanasLab.forEach(({labs},si)=>{
-        const borderL = si>0 ? 'border-left:2px solid #3a4060;' : '';
+        const borderL = si>0 ? 'border-left:2px solid #bdc3d0;' : '';
         labs.forEach((d,di)=>{
           const key = chicosDateKey(d);
           const val = fila.dias[key]||'';
@@ -1848,7 +1852,7 @@ function renderChicos(){
           const isM  = vUp==='1/2'||vUp==='½';
           const cellBg = isA?'background:#cc0000;':isAJ?'background:#7b2d8b;':isT?'background:#cc6600;':isTJ?'background:#2d6b8b;':isF?'background:#1a5c1a;':isM?'background:#8b6914;':'';
           const pcCls  = isA?'pc pc-ausente':isAJ?'pc pc-ausente-just':isT?'pc pc-tarde':isTJ?'pc pc-tarde-just':isF?'pc pc-feriado':isM?'pc pc-medio':(val.trim()?'pc pc-valor':'pc');
-          const bl = (di===0&&si>0)?'border-left:2px solid #3a4060;':'';
+          const bl = (di===0&&si>0)?'border-left:2px solid #bdc3d0;':'';
           // Indicador visual de motivo guardado
           const hasMot = motivoVal.trim()!=='';
           const motDot = hasMot?`<span style="position:absolute;top:1px;right:1px;width:5px;height:5px;border-radius:50%;background:#4f8ef7;pointer-events:none;"></span>`:'';
@@ -1869,11 +1873,11 @@ function renderChicos(){
         const adelantoVal= isFirst ? ((ch.notas&&ch.notas[adelantoKey])||'') : null;
 
         if(isFirst){
-          tdDias+=`<td class="td-nota" rowspan="${nf}" style="background:#0a1a0a;border-left:2px solid #3a4060;vertical-align:middle;">
+          tdDias+=`<td class="td-nota" rowspan="${nf}" style="background:#f0fdf4;border-left:2px solid #bdc3d0;vertical-align:middle;">
             <input class="pc-nota" value="${(cobradoVal||'').replace(/"/g,'&quot;')}"
               oninput="if(!state.chicos[${ci}].notas)state.chicos[${ci}].notas={};state.chicos[${ci}].notas['${cobradoKey}']=this.value;autoGuardar()"
               style="width:68px;color:#3ecf5a;" placeholder="$"></td>`;
-          tdDias+=`<td class="td-nota" rowspan="${nf}" style="background:#0a0a1a;border-left:1px solid #2a2f42;vertical-align:middle;">
+          tdDias+=`<td class="td-nota" rowspan="${nf}" style="background:#eff6ff;border-left:1px solid #d1d5e0;vertical-align:middle;">
             <input class="pc-nota" value="${(adelantoVal||'').replace(/"/g,'&quot;')}"
               oninput="if(!state.chicos[${ci}].notas)state.chicos[${ci}].notas={};state.chicos[${ci}].notas['${adelantoKey}']=this.value;autoGuardar()"
               style="width:68px;color:#4f8ef7;" placeholder="$"></td>`;
@@ -2260,7 +2264,7 @@ function renderCentral(){
     <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;">
       <div style="font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:.06em;color:var(--accent1);margin-bottom:12px;">💼 CAJA POR COBRADOR</div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">
-        ${PERS_COBRO.map(p=>`<div style="text-align:center;padding:12px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid rgba(255,255,255,.06);">
+        ${PERS_COBRO.map(p=>`<div style="text-align:center;padding:12px;background:rgba(37,99,235,.03);border-radius:8px;border:1px solid rgba(37,99,235,.05);">
           <div style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:${PERS_COLORS[p]};">${p}</div>
           <div style="font-size:1.2rem;font-weight:700;color:${PERS_COLORS[p]};margin-top:4px;">$${fmt(cajaPers[p])}</div>
         </div>`).join('')}
@@ -2369,7 +2373,7 @@ function renderCentral(){
       <td style="padding:6px 8px;font-size:12px;">${c.banco||'—'}</td>
       <td style="padding:6px 8px;font-size:12px;text-align:right;">$${fmt(parseN(c.importe))}</td>
       <td style="padding:6px 8px;">
-        <input id="comision-${key}" placeholder="Comisión $" style="width:110px;padding:4px 7px;background:#0f1118;border:1px solid var(--border);border-radius:6px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;" onfocus="this.select()">
+        <input id="comision-${key}" placeholder="Comisión $" style="width:110px;padding:4px 7px;background:#f8f9fc;border:1px solid var(--border);border-radius:6px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;" onfocus="this.select()">
       </td>
       <td style="padding:6px 8px;">
         <button onclick="efectivizarCheque('${c.tipo}','${c.nro||''}','${c.cliente||''}',${parseN(c.importe)},'comision-${key}')" style="padding:5px 12px;background:rgba(62,207,90,.15);border:1px solid rgba(62,207,90,.3);border-radius:6px;color:#3ecf5a;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">✓ Efectivizar</button>
@@ -2471,7 +2475,7 @@ function renderBajaSection(){
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
           <span style="padding:2px 9px;border-radius:20px;font-size:11px;background:rgba(204,0,0,.1);color:#ff6666;border:1px solid rgba(204,0,0,.2);">Faltas: ${ausentes}</span>
           <span style="padding:2px 9px;border-radius:20px;font-size:11px;background:rgba(245,166,35,.1);color:#f5a623;border:1px solid rgba(245,166,35,.2);">Tardes: ${tardes}</span>
-          ${ch.datosPersonales?.dni?`<span style="padding:2px 9px;border-radius:20px;font-size:11px;background:rgba(79,142,247,.1);color:#4f8ef7;border:1px solid rgba(79,142,247,.2);">CUIL: ${ch.datosPersonales.dni}</span>`:''}
+          ${ch.datosPersonales?.dni?`<span style="padding:2px 9px;border-radius:20px;font-size:11px;background:rgba(37,99,235,.08);color:#4f8ef7;border:1px solid rgba(79,142,247,.2);">CUIL: ${ch.datosPersonales.dni}</span>`:''}
         </div>
         <button onclick="reactivarChico(${i})" style="padding:5px 12px;background:rgba(62,207,90,.15);border:1px solid rgba(62,207,90,.3);border-radius:6px;color:#3ecf5a;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">↩ Reactivar</button>
       </div>
@@ -2531,10 +2535,12 @@ function verChicoInd(idx){
   const allDias = chicosGetDiasMes(mesStr);
   const labDias = allDias.filter(d=>d.getDay()>=1&&d.getDay()<=5);
 
-  // Agrupar en semanas
+  // Agrupar en semanas desde el primer lunes del mes
+  const primerLunesInd = allDias.find(d=>d.getDay()===1);
+  const diasDesdeLInd = primerLunesInd ? allDias.filter(d=>d>=primerLunesInd) : allDias;
   const semanas = [];
   let semActual = [];
-  allDias.forEach(d=>{
+  diasDesdeLInd.forEach(d=>{
     if(d.getDay()===1 && semActual.length>0){ semanas.push(semActual); semActual=[]; }
     semActual.push(d);
   });
@@ -2589,7 +2595,7 @@ function verChicoInd(idx){
       <div style="font-size:10px;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em;">${c.label}</div>
       <input value="${val}" placeholder="${c.placeholder}"
         oninput="if(!state.chicos[${idx}].datosPersonales)state.chicos[${idx}].datosPersonales={};state.chicos[${idx}].datosPersonales['${c.key}']=this.value;autoGuardar()"
-        style="width:100%;padding:6px 9px;font-size:12px;border:1px solid var(--border);border-radius:7px;background:rgba(255,255,255,.04);color:var(--text);font-family:'DM Sans',sans-serif;box-sizing:border-box;">
+        style="width:100%;padding:6px 9px;font-size:12px;border:1px solid var(--border);border-radius:7px;background:rgba(37,99,235,.04);color:var(--text);font-family:'DM Sans',sans-serif;box-sizing:border-box;">
     </div>`;
   });
   fichaHtml+=`</div></div>`;
@@ -2611,16 +2617,16 @@ function verChicoInd(idx){
       <div style="font-size:10px;color:${c.color};margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em;">${c.label}</div>
       <input value="${val}" placeholder="${c.placeholder}"
         oninput="if(!state.chicos[${idx}].extras)state.chicos[${idx}].extras={};state.chicos[${idx}].extras['${c.key}']=this.value;autoGuardar()"
-        style="width:100%;padding:6px 9px;font-size:12px;border:1px solid var(--border);border-radius:7px;background:rgba(255,255,255,.04);color:var(--text);font-family:'DM Sans',sans-serif;box-sizing:border-box;">
+        style="width:100%;padding:6px 9px;font-size:12px;border:1px solid var(--border);border-radius:7px;background:rgba(37,99,235,.04);color:var(--text);font-family:'DM Sans',sans-serif;box-sizing:border-box;">
     </div>`;
   });
   extrasHtml+=`</div></div>`;
 
   let html = `
     <div style="margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-      <span style="font-family:'Bebas Neue',cursive;font-size:1.5rem;color:#ffff00;letter-spacing:.08em;">${ch.nombre}</span>
+      <span style="font-family:'Bebas Neue',cursive;font-size:1.5rem;color:#1e40af;letter-spacing:.08em;">${ch.nombre}</span>
       ${ch.apodo?`<span style="font-size:12px;color:#8b8fa8;">${ch.apodo}</span>`:''}
-      ${ch.fechaIngreso?`<span style="font-size:11px;color:#4a5070;background:rgba(255,255,255,.04);padding:2px 8px;border-radius:10px;">${ch.fechaIngreso}</span>`:''}
+      ${ch.fechaIngreso?`<span style="font-size:11px;color:#4a5070;background:rgba(37,99,235,.04);padding:2px 8px;border-radius:10px;">${ch.fechaIngreso}</span>`:''}
       <button onclick="darDeBaja(${idx})" style="margin-left:auto;padding:5px 14px;background:rgba(204,0,0,.15);border:1px solid rgba(204,0,0,.35);border-radius:7px;color:#e05c5c;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">🗂 Dar de baja</button>
     </div>
     ${fichaHtml}
@@ -2680,7 +2686,7 @@ function verChicoInd(idx){
           ${medEnSem>0?`<span style="display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:500;background:rgba(201,162,39,.15);color:#c9a227;border:1px solid rgba(201,162,39,.25);">½ día: ${medEnSem}</span>`:''}
           ${dinEnSem>0?`<span class="badge cobrado">$${fmt(dinEnSem)}</span>`:''}
           ${cobradoSem?`<span style="padding:2px 9px;border-radius:20px;font-size:11px;background:rgba(62,207,90,.1);color:#3ecf5a;border:1px solid rgba(62,207,90,.25);">Cobrado: $${cobradoSem}</span>`:''}
-          ${adelantoSem?`<span style="padding:2px 9px;border-radius:20px;font-size:11px;background:rgba(79,142,247,.1);color:#4f8ef7;border:1px solid rgba(79,142,247,.25);">Adelanto: $${adelantoSem}</span>`:''}
+          ${adelantoSem?`<span style="padding:2px 9px;border-radius:20px;font-size:11px;background:rgba(37,99,235,.08);color:#4f8ef7;border:1px solid rgba(79,142,247,.25);">Adelanto: $${adelantoSem}</span>`:''}
         </div>
       </div>`;
 
@@ -2729,7 +2735,7 @@ function verChicoInd(idx){
           <td style="padding:6px 10px;font-size:12px;font-weight:600;${novedadColor}">${novedadLabel}</td>
           <td style="padding:4px 6px;"><input value="${motivoVal.replace(/"/g,'&quot;')}" placeholder="Motivo / detalle..."
             oninput="if(!state.chicos[${idx}].notas)state.chicos[${idx}].notas={};state.chicos[${idx}].notas['${motivoKey}']=this.value"
-            style="width:100%;padding:4px 7px;font-size:11px;border:1px solid var(--border);border-radius:5px;background:rgba(255,255,255,.04);color:var(--text);font-family:'DM Sans',sans-serif;min-width:160px;"></td>
+            style="width:100%;padding:4px 7px;font-size:11px;border:1px solid var(--border);border-radius:5px;background:rgba(37,99,235,.04);color:var(--text);font-family:'DM Sans',sans-serif;min-width:160px;"></td>
         </tr>`;
       });
 
@@ -2741,7 +2747,7 @@ function verChicoInd(idx){
     if(notasSem.length>0){
       html+=`<div style="margin-top:10px;padding:8px 12px;background:rgba(79,142,247,.06);border-radius:8px;border:1px solid rgba(79,142,247,.15);">`;
       notasSem.forEach(n=>{
-        html+=`<div style="font-size:11px;margin-bottom:4px;"><span style="color:var(--accent1);font-weight:600;">${n.fila}:</span> <span style="color:#a0a8c0;">${n.texto}</span></div>`;
+        html+=`<div style="font-size:11px;margin-bottom:4px;"><span style="color:var(--accent1);font-weight:600;">${n.fila}:</span> <span style="color:#6b7280;">${n.texto}</span></div>`;
       });
       html+=`</div>`;
     }
@@ -2776,7 +2782,7 @@ const informeState = {
 };
 
 function infInput(val, ph, w, onch){
-  return '<input style="width:'+(w||'100%')+';padding:5px 7px;font-size:12px;border:1px solid var(--border);border-radius:5px;background:rgba(255,255,255,.04);color:var(--text);font-family:\'DM Sans\',sans-serif;" value="'+(val||'').toString().replace(/"/g,'&quot;')+'" placeholder="'+(ph||'')+'" oninput="'+onch+'">';
+  return '<input style="width:'+(w||'100%')+';padding:5px 7px;font-size:12px;border:1px solid var(--border);border-radius:5px;background:rgba(37,99,235,.04);color:var(--text);font-family:\'DM Sans\',sans-serif;" value="'+(val||'').toString().replace(/"/g,'&quot;')+'" placeholder="'+(ph||'')+'" oninput="'+onch+'">';
 }
 
 function infAddBtn(onclick){
@@ -2874,7 +2880,7 @@ function renderInforme(){
     infTable(['#','YPF (unidades)','VN $','VA $',''], accionesRows,
     '<tr class="total-row"><td colspan="2" style="padding:8px 10px;">Total</td><td style="padding:8px 10px;color:var(--accent3);">$'+fmt(totalAccVN)+'</td><td style="padding:8px 10px;color:var(--accent3);">$'+fmt(totalAccVA)+'</td><td></td></tr>') +
     infAddBtn("informeState.acciones.filas.push({ypf:'',vn:'',va:''});renderInforme()") +
-    '<div style="display:flex;align-items:center;gap:12px;margin-top:12px;padding:10px 14px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid var(--border);">'+
+    '<div style="display:flex;align-items:center;gap:12px;margin-top:12px;padding:10px 14px;background:rgba(37,99,235,.03);border-radius:8px;border:1px solid var(--border);">'+
     '<span style="font-size:12px;color:var(--muted);">Rendimiento:</span>'+
     infInput(s.acciones.rendimiento,'0,00 %','100px','informeState.acciones.rendimiento=this.value')+
     '<span style="font-size:12px;color:var(--muted);">%</span></div>';
@@ -3216,19 +3222,19 @@ function renderLiqConfig(){
 
   const fmtV = v => fmtInput(v||0);
   const inp = (nombre, campo, val, w) =>
-    `<input value="${fmtV(val)}" style="width:${w||'90px'};padding:5px 7px;background:#0f1118;border:1px solid var(--border);border-radius:6px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+    `<input value="${fmtV(val)}" style="width:${w||'90px'};padding:5px 7px;background:#f8f9fc;border:1px solid var(--border);border-radius:6px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
       onblur="liqSetSueldo('${nombre}','${campo}',parseN(this.value));this.value=fmtInput(parseN(this.value));autoGuardar()"
       onfocus="this.select()">`;
 
   const selCat = (nombre, val) =>
-    `<select style="padding:5px 7px;background:#0f1118;border:1px solid var(--border);border-radius:6px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;"
+    `<select style="padding:5px 7px;background:#f8f9fc;border:1px solid var(--border);border-radius:6px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;"
       onchange="liqSetSueldo('${nombre}','categoria',this.value);autoGuardar()">
       <option value="AYUDANTE DE CHOFER" ${val==='AYUDANTE DE CHOFER'?'selected':''}>AYUDANTE DE CHOFER</option>
       <option value="CHOFER" ${val==='CHOFER'?'selected':''}>CHOFER</option>
     </select>`;
 
   const inpCuil = (nombre, val) =>
-    `<input value="${val||''}" placeholder="CUIL" style="width:110px;padding:5px 7px;background:#0f1118;border:1px solid var(--border);border-radius:6px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;"
+    `<input value="${val||''}" placeholder="CUIL" style="width:110px;padding:5px 7px;background:#f8f9fc;border:1px solid var(--border);border-radius:6px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;"
       onblur="liqSetSueldo('${nombre}','cuil',this.value);autoGuardar()"
       onfocus="this.select()">`;
 
@@ -3291,26 +3297,36 @@ function liqSetSueldo(nombre, campo, valor){
 
 // ── HELPERS LIQUIDACIÓN ──
 function liqGetSemanas(){
-  // Devuelve todas las semanas (L-V) del mes actual de Chicos
+  // Devuelve semanas L-V del mes actual, arrancando desde el primer lunes del mes
   const mesStr = chicosMesActual(); // "YYYY-MM"
   const [y,m] = mesStr.split('-').map(Number);
-  const dias = [];
-  const d = new Date(y, m-1, 1);
-  while(d.getMonth()===m-1){ dias.push(new Date(d)); d.setDate(d.getDate()+1); }
+
+  // Encontrar el primer lunes del mes
+  const primero = new Date(y, m-1, 1);
+  let inicioLunes = new Date(primero);
+  while(inicioLunes.getDay() !== 1){
+    inicioLunes.setDate(inicioLunes.getDate()+1);
+  }
+
+  // Generar semanas L-V desde ese lunes hasta fin de mes
   const semanas = [];
-  let semActual = [];
-  dias.forEach(dd=>{
-    const dow = dd.getDay();
-    if(dow===1 && semActual.length>0){ semanas.push(semActual); semActual=[]; }
-    semActual.push(dd);
-  });
-  if(semActual.length>0) semanas.push(semActual);
-  return semanas.map((sem,si)=>({
+  let lunesActual = new Date(inicioLunes);
+
+  while(lunesActual.getMonth() === m-1){
+    const semana = [];
+    for(let i=0; i<5; i++){
+      const d = new Date(lunesActual);
+      d.setDate(lunesActual.getDate()+i);
+      if(d.getMonth() === m-1) semana.push(d); // solo días del mes
+    }
+    if(semana.length > 0) semanas.push(semana);
+    lunesActual.setDate(lunesActual.getDate()+7);
+  }
+
+  return semanas.map((labs,si)=>({
     idx: si,
-    labs: sem.filter(dd=>dd.getDay()>=1&&dd.getDay()<=5),
+    labs: labs.filter(d=>d.getDay()>=1&&d.getDay()<=5),
     label: (()=>{
-      const labs = sem.filter(dd=>dd.getDay()>=1&&dd.getDay()<=5);
-      if(!labs.length) return '';
       const f = labs[0], l = labs[labs.length-1];
       return `${f.getDate()}/${f.getMonth()+1} al ${l.getDate()}/${l.getMonth()+1}`;
     })()
@@ -3495,7 +3511,7 @@ function renderLiqPanel(){
     <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
       <span style="font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:.06em;color:var(--accent1);">SEMANA</span>
       <select id="liq-sem-sel" onchange="liqSemSelIdx=parseInt(this.value);renderLiqPanel()"
-        style="padding:7px 12px;background:#0f1118;border:1px solid var(--border);border-radius:8px;color:#e8eaf2;font-size:13px;font-family:'DM Sans',sans-serif;">
+        style="padding:7px 12px;background:#f8f9fc;border:1px solid var(--border);border-radius:8px;color:#1e2030;font-size:13px;font-family:'DM Sans',sans-serif;">
         ${semanas.map((s,i)=>`<option value="${i}" ${i===liqSemSelIdx?'selected':''}>${s.label}</option>`).join('')}
       </select>
       <div style="display:flex;gap:8px;margin-left:8px;">
@@ -3557,7 +3573,7 @@ function renderLiqTabla(){
         <span style="font-family:'Bebas Neue',cursive;font-size:1.1rem;letter-spacing:.06em;color:var(--accent3);">${ch.nombre}</span>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
           <span style="padding:3px 10px;border-radius:20px;font-size:12px;background:rgba(62,207,90,.1);color:#3ecf5a;border:1px solid rgba(62,207,90,.25);">Total: $${fmt(calc.totalBruto)}</span>
-          ${calc.adelanto>0?`<span style="padding:3px 10px;border-radius:20px;font-size:12px;background:rgba(79,142,247,.1);color:#4f8ef7;border:1px solid rgba(79,142,247,.25);">Adelanto: $${fmt(calc.adelanto)}</span>`:''}
+          ${calc.adelanto>0?`<span style="padding:3px 10px;border-radius:20px;font-size:12px;background:rgba(37,99,235,.08);color:#4f8ef7;border:1px solid rgba(79,142,247,.25);">Adelanto: $${fmt(calc.adelanto)}</span>`:''}
         </div>
       </div>
 
@@ -3580,11 +3596,11 @@ function renderLiqTabla(){
       const colorEstado = vShow==='A'?'#cc0000':vShow==='AJ'?'#7b2d8b':vShow==='T'?'#cc6600':vShow==='TJ'?'#2d6b8b':vShow==='F'?'#1a5c1a':vShow==='S'?'#4a1a6e':vShow==='1/2'||vShow==='½'?'#8b6914':'#1e4d2b';
       const textEstado  = vShow==='A'?'FALTA':vShow==='AJ'?'F.JUST':vShow==='T'?'TARDE':vShow==='TJ'?'T.JUST':vShow==='F'?'FERIADO':vShow==='S'?'SUSP.':vShow==='1/2'||vShow==='½'?'½ DÍA':'OK';
 
-      html += `<div style="background:#0f1118;border:1px solid var(--border);border-radius:10px;padding:10px 12px;min-width:80px;text-align:center;">
+      html += `<div style="background:#f8f9fc;border:1px solid var(--border);border-radius:10px;padding:10px 12px;min-width:80px;text-align:center;">
         <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">${dLabel} ${dNum}</div>
         <div style="background:${colorEstado};color:#fff;border-radius:5px;padding:2px 6px;font-size:10px;font-weight:700;margin-bottom:8px;">${textEstado}</div>
         <!-- Override justificado -->
-        <select style="width:100%;padding:2px 3px;background:#181c2a;border:1px solid #3a4060;border-radius:5px;color:#e8eaf2;font-size:10px;font-family:'DM Sans',sans-serif;margin-bottom:6px;"
+        <select style="width:100%;padding:2px 3px;background:#f0f2f7;border:1px solid #d1d5e0;border-radius:5px;color:#1e2030;font-size:10px;font-family:'DM Sans',sans-serif;margin-bottom:6px;"
           onchange="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').justDias['${key}']=this.value;renderLiqTabla()">
           <option value="" ${!ovr?'selected':''}>— sin cambio —</option>
           ${(vUp==='A'||vUp==='T')?`<option value="AJ" ${ovr==='AJ'?'selected':''}>→ F.Just</option>`:''}
@@ -3606,22 +3622,22 @@ function renderLiqTabla(){
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;">
         <span style="font-size:12px;color:var(--muted);white-space:nowrap;">💵 Adelanto semana:</span>
         <input value="${extras.adelanto||''}" placeholder="0" 
-          style="width:120px;padding:6px 10px;background:#0f1118;border:1px solid var(--border);border-radius:7px;color:#e8eaf2;font-size:13px;font-family:'DM Sans',sans-serif;text-align:right;"
+          style="width:120px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:13px;font-family:'DM Sans',sans-serif;text-align:right;"
           onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').adelanto=parseN(this.value);this.value=this.value?fmtInput(parseN(this.value)):'';"
           onfocus="this.select()">
         <input value="${extras.adelantoNota||''}" placeholder="motivo..." 
-          style="width:180px;padding:6px 10px;background:#0f1118;border:1px solid var(--border);border-radius:7px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;"
+          style="width:180px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;"
           onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').adelantoNota=this.value;autoGuardar()"
           onfocus="this.select()">
       </div>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;">
         <span style="font-size:12px;color:#f5a623;white-space:nowrap;">⏳ Adelanto anterior:</span>
         <input value="${extras.adelantoAnterior||''}" placeholder="0" 
-          style="width:120px;padding:6px 10px;background:#0f1118;border:1px solid rgba(245,166,35,.3);border-radius:7px;color:#f5a623;font-size:13px;font-family:'DM Sans',sans-serif;text-align:right;"
+          style="width:120px;padding:6px 10px;background:#f8f9fc;border:1px solid rgba(245,166,35,.3);border-radius:7px;color:#f5a623;font-size:13px;font-family:'DM Sans',sans-serif;text-align:right;"
           onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').adelantoAnterior=parseN(this.value)||'0';this.value=parseN(this.value)?fmtInput(parseN(this.value)):'0';autoGuardar();"
           onfocus="this.select()">
         <input value="${extras.adelantoAnteriorNota||''}" placeholder="motivo (ej: lavarropas)..." 
-          style="width:220px;padding:6px 10px;background:#0f1118;border:1px solid rgba(245,166,35,.3);border-radius:7px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;"
+          style="width:220px;padding:6px 10px;background:#f8f9fc;border:1px solid rgba(245,166,35,.3);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;"
           onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').adelantoAnteriorNota=this.value;autoGuardar()"
           onfocus="this.select()">
         ${parseN(extras.adelantoAnterior)>0?'<span style="font-size:11px;color:#f5a623;opacity:.7;">Se propaga automáticamente</span>':''}
@@ -3629,7 +3645,7 @@ function renderLiqTabla(){
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
         <span style="font-size:12px;color:var(--muted);">📝 Nota recibo:</span>
         <input value="${extras.nota||''}" placeholder="Nota para el recibo..." 
-          style="flex:1;min-width:200px;padding:6px 10px;background:#0f1118;border:1px solid var(--border);border-radius:7px;color:#e8eaf2;font-size:13px;font-family:'DM Sans',sans-serif;"
+          style="flex:1;min-width:200px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:13px;font-family:'DM Sans',sans-serif;"
           onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').nota=this.value;autoGuardar()"
           onfocus="this.select()">
       </div>
@@ -3637,57 +3653,57 @@ function renderLiqTabla(){
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
         <span style="font-size:12px;color:var(--muted);">📅 SAC período:</span>
         <input value="${extras.sac||''}" placeholder="ej: 1er sem 2026" 
-          style="width:150px;padding:6px 10px;background:#0f1118;border:1px solid var(--border);border-radius:7px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;"
+          style="width:150px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;"
           onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').sac=this.value;autoGuardar()"
           onfocus="this.select()">
         <input value="${extras.sacImporte||''}" placeholder="$ importe" 
-          style="width:110px;padding:6px 10px;background:#0f1118;border:1px solid var(--border);border-radius:7px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+          style="width:110px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
           onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').sacImporte=parseN(this.value);this.value=this.value?fmtInput(parseN(this.value)):'';"
           onfocus="this.select()">
         <span style="font-size:12px;color:var(--muted);margin-left:8px;">🏖️ Vacaciones período:</span>
         <input value="${extras.vacaciones||''}" placeholder="ej: enero 2026" 
-          style="width:150px;padding:6px 10px;background:#0f1118;border:1px solid var(--border);border-radius:7px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;"
+          style="width:150px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;"
           onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').vacaciones=this.value;autoGuardar()"
           onfocus="this.select()">
         <input value="${extras.vacacionesImporte||''}" placeholder="$ importe" 
-          style="width:110px;padding:6px 10px;background:#0f1118;border:1px solid var(--border);border-radius:7px;color:#e8eaf2;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+          style="width:110px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
           onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').vacacionesImporte=parseN(this.value);this.value=this.value?fmtInput(parseN(this.value)):'';"
           onfocus="this.select()">
       </div>
 
       <!-- Resumen editable de cálculo -->
-      <div style="background:#0a0d15;border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:4px;">
+      <div style="background:#f0f2f7;border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:4px;">
         <div style="font-size:11px;color:var(--muted);margin-bottom:8px;font-weight:600;letter-spacing:.04em;">DETALLE EDITABLE — dejar vacío para usar el calculado automáticamente</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
           <div style="display:flex;flex-direction:column;gap:3px;align-items:center;">
             <span style="font-size:10px;color:#3ecf5a;">Base</span>
             <input value="${extras.overBase!==undefined?fmtInput(extras.overBase):''}" placeholder="${fmt(calc.totalBase)}"
-              style="width:100px;padding:4px 7px;background:#0f1118;border:1px solid rgba(62,207,90,.3);border-radius:6px;color:#3ecf5a;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+              style="width:100px;padding:4px 7px;background:#f8f9fc;border:1px solid rgba(62,207,90,.3);border-radius:6px;color:#3ecf5a;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
               onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').overBase=this.value?parseN(this.value):undefined;this.value=this.value?fmtInput(parseN(this.value)):'';renderLiqTabla()" onfocus="this.select()">
           </div>
           <div style="display:flex;flex-direction:column;gap:3px;align-items:center;">
             <span style="font-size:10px;color:#4f8ef7;">Adicionales</span>
             <input value="${extras.overAdic!==undefined?fmtInput(extras.overAdic):''}" placeholder="${fmt(calc.totalAdic)}"
-              style="width:100px;padding:4px 7px;background:#0f1118;border:1px solid rgba(79,142,247,.3);border-radius:6px;color:#4f8ef7;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+              style="width:100px;padding:4px 7px;background:#f8f9fc;border:1px solid rgba(79,142,247,.3);border-radius:6px;color:#4f8ef7;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
               onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').overAdic=this.value?parseN(this.value):undefined;this.value=this.value?fmtInput(parseN(this.value)):'';renderLiqTabla()" onfocus="this.select()">
           </div>
           <div style="display:flex;flex-direction:column;gap:3px;align-items:center;">
             <span style="font-size:10px;color:#f5c842;">Punt. Absoluta</span>
             <input value="${extras.overPuntAbsol!==undefined?fmtInput(extras.overPuntAbsol):''}" placeholder="${fmt(puntAbsCalc)}"
-              style="width:100px;padding:4px 7px;background:#0f1118;border:1px solid rgba(245,200,66,.3);border-radius:6px;color:#f5c842;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+              style="width:100px;padding:4px 7px;background:#f8f9fc;border:1px solid rgba(245,200,66,.3);border-radius:6px;color:#f5c842;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
               onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').overPuntAbsol=this.value?parseN(this.value):undefined;this.value=this.value?fmtInput(parseN(this.value)):'';renderLiqTabla()" onfocus="this.select()">
           </div>
           <div style="display:flex;flex-direction:column;gap:3px;align-items:center;">
             <span style="font-size:10px;color:#63b371;">Asist. Perf.</span>
             <input value="${extras.overAsist!==undefined?fmtInput(extras.overAsist):''}" placeholder="${fmt(asistPerfCalc)}"
-              style="width:100px;padding:4px 7px;background:#0f1118;border:1px solid rgba(99,179,113,.3);border-radius:6px;color:#63b371;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+              style="width:100px;padding:4px 7px;background:#f8f9fc;border:1px solid rgba(99,179,113,.3);border-radius:6px;color:#63b371;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
               onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').overAsist=this.value?parseN(this.value):undefined;this.value=this.value?fmtInput(parseN(this.value)):'';renderLiqTabla()" onfocus="this.select()">
           </div>
           ${calc.totalLluvia>0?`
           <div style="display:flex;flex-direction:column;gap:3px;align-items:center;">
             <span style="font-size:10px;color:#7eb8f7;">Lluvia</span>
             <input value="${extras.overLluvia!==undefined?fmtInput(extras.overLluvia):''}" placeholder="${fmt(calc.totalLluvia)}"
-              style="width:90px;padding:4px 7px;background:#0f1118;border:1px solid rgba(79,142,247,.3);border-radius:6px;color:#7eb8f7;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+              style="width:90px;padding:4px 7px;background:#f8f9fc;border:1px solid rgba(79,142,247,.3);border-radius:6px;color:#7eb8f7;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
               onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').overLluvia=this.value?parseN(this.value):undefined;this.value=this.value?fmtInput(parseN(this.value)):'';renderLiqTabla()" onfocus="this.select()">
           </div>`:''}
           <div style="margin-left:8px;padding:8px 14px;background:rgba(62,207,90,.1);border:1px solid rgba(62,207,90,.25);border-radius:8px;text-align:center;">
@@ -4186,7 +4202,7 @@ function renderGastos(){
       <td style="padding:5px 8px;font-size:12px;text-align:right;color:var(--accent2);">$${fmt(parseN(g.importe))}</td>
       <td style="padding:5px 8px;font-size:12px;color:var(--muted);">${g.nota||'—'}</td>
       <td style="padding:5px 8px;">
-        ${g.quien?`<span class="badge cobrado" style="color:${PERS_COLORS[g.quien]||'#e8eaf2'};background:rgba(255,255,255,.05);border-color:${PERS_COLORS[g.quien]||'#e8eaf2'};">${g.quien}</span>`:'<span style="color:var(--muted);font-size:11px;">—</span>'}
+        ${g.quien?`<span class="badge cobrado" style="color:${PERS_COLORS[g.quien]||'#e8eaf2'};background:rgba(37,99,235,.05);border-color:${PERS_COLORS[g.quien]||'#e8eaf2'};">${g.quien}</span>`:'<span style="color:var(--muted);font-size:11px;">—</span>'}
       </td>
     </tr>`).join('');
 
