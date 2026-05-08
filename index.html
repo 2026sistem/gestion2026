@@ -3038,10 +3038,17 @@ function guardarEnFirebase(){
 
 function autoGuardar(){
   if(!_listo) return;
-  undoSave();
   clearTimeout(_timer);
   _timer = setTimeout(guardarEnFirebase, 2000);
 }
+
+// Capturar snapshot ANTES de que el usuario modifique un input
+document.addEventListener('focus', function(e){
+  const el = e.target;
+  if(!el || el.tagName!=='INPUT' && el.tagName!=='SELECT' && el.tagName!=='TEXTAREA') return;
+  if(el.type==='checkbox'||el.type==='radio'||el.type==='date') return;
+  if(_listo) undoSave();
+}, true);
 
 window.addEventListener('load', function(){
   try {
@@ -4208,27 +4215,51 @@ function renderGastos(){
 // ── HISTORIAL DE DESHACER (10 pasos) ──
 const _undoStack = [];
 const _UNDO_MAX  = 10;
+let _undoPending = null; // snapshot tomado ANTES del cambio
+
 function undoSave(){
   try {
-    _undoStack.push(JSON.stringify(state));
-    if(_undoStack.length > _UNDO_MAX) _undoStack.shift();
-    document.getElementById('btn-undo').style.opacity = '1';
-    document.getElementById('btn-undo').disabled = false;
-  } catch(e){}
+    const snap = JSON.stringify({state, liqExtras});
+    if(_undoStack.length===0 || _undoStack[_undoStack.length-1]!==snap){
+      _undoStack.push(snap);
+      if(_undoStack.length > _UNDO_MAX) _undoStack.shift();
+      const btn = document.getElementById('btn-undo');
+      if(btn){ btn.style.opacity='1'; btn.disabled=false; }
+    }
+  } catch(e){ console.error('undoSave error:',e); }
 }
+
 function undoRestore(){
-  if(!_undoStack.length) return;
+  if(!_undoStack.length){ alert('Sin cambios para deshacer.'); return; }
   const prev = _undoStack.pop();
   try {
-    Object.assign(state, JSON.parse(prev));
-    if(!_undoStack.length){
-      document.getElementById('btn-undo').style.opacity = '.4';
-      document.getElementById('btn-undo').disabled = true;
+    const restored = JSON.parse(prev);
+    // Restaurar state
+    Object.keys(restored.state).forEach(k=>{ state[k] = restored.state[k]; });
+    // Restaurar liqExtras
+    Object.keys(liqExtras).forEach(k=>{ delete liqExtras[k]; });
+    Object.assign(liqExtras, restored.liqExtras||{});
+    const btn = document.getElementById('btn-undo');
+    if(btn){
+      btn.style.opacity = _undoStack.length ? '1' : '.4';
+      btn.disabled = !_undoStack.length;
     }
-    renderZonas();
-    autoGuardar();
+    // Refrescar pantalla activa
+    const screenActiva = document.querySelector('.screen.active');
+    const id = screenActiva ? screenActiva.id : '';
+    if(id==='screen-cobros-diarios'||id==='screen-cobros-menu') renderZonas();
+    else if(id==='screen-chicos') renderChicos();
+    else if(id==='screen-chicos-ind') renderChicosInd();
+    else if(id==='screen-liquidacion') renderLiquidacion();
+    else if(id==='screen-central') renderCentral();
+    else if(id==='screen-retiros') renderRetiros();
+    else if(id==='screen-cheques') renderCheques();
+    else if(id==='screen-gastos') renderGastos();
+    else renderZonas();
+    clearTimeout(_timer);
+    _timer = setTimeout(guardarEnFirebase, 2000);
     ind('↩ Deshecho','#f5a623');
-  } catch(e){}
+  } catch(e){ console.error('undoRestore error:',e); }
 }
 
 </script>
