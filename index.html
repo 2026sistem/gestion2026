@@ -2786,21 +2786,21 @@ function verChicoInd(idx){
             <span style="padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;background:${r.tipo==='SAC'?'rgba(8,145,178,.1)':'rgba(124,58,237,.1)'};color:${r.tipo==='SAC'?'#0891b2':'#7c3aed'};">${r.tipo==='SAC'?'🏦 SAC':'🏖 VAC'}</span>
           </td>
           <td><input value="${r.periodo||''}" style="width:120px;padding:3px 6px;border:1px solid var(--border);border-radius:5px;font-size:12px;font-family:'DM Sans',sans-serif;background:#f8f9fc;"
-            onblur="state.chicos[${idx}].sacVacHistorial[${ri}].periodo=this.value;autoGuardar()"></td>
+            onblur="state.chicos[${idx}].sacVacHistorial[${ri}].periodo=this.value;sacVacSync(${idx});verChicoInd(${idx})"></td>
           <td><input value="${r.importe?fmtInput(parseN(r.importe)):''}" placeholder="0" style="width:110px;padding:3px 6px;border:1px solid var(--border);border-radius:5px;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;background:#f8f9fc;"
-            onblur="state.chicos[${idx}].sacVacHistorial[${ri}].importe=parseN(this.value);this.value=parseN(this.value)?fmtInput(parseN(this.value)):'';autoGuardar()"></td>
+            onblur="state.chicos[${idx}].sacVacHistorial[${ri}].importe=parseN(this.value);this.value=parseN(this.value)?fmtInput(parseN(this.value)):'';sacVacSync(${idx})"></td>
           <td>
             <select style="padding:3px 6px;border:1px solid var(--border);border-radius:5px;font-size:12px;font-family:'DM Sans',sans-serif;background:#f8f9fc;"
-              onchange="state.chicos[${idx}].sacVacHistorial[${ri}].cuotas=parseInt(this.value);autoGuardar()">
+              onchange="state.chicos[${idx}].sacVacHistorial[${ri}].cuotas=parseInt(this.value);sacVacSync(${idx})">
               ${[1,2,3].map(n=>`<option value="${n}" ${(r.cuotas||1)===n?'selected':''}>${n} cuota${n>1?'s':''}</option>`).join('')}
             </select>
           </td>
           <td><input value="${r.fecha||''}" style="width:100px;padding:3px 6px;border:1px solid var(--border);border-radius:5px;font-size:12px;font-family:'DM Sans',sans-serif;background:#f8f9fc;"
-            onblur="state.chicos[${idx}].sacVacHistorial[${ri}].fecha=this.value;autoGuardar()"></td>
+            onblur="state.chicos[${idx}].sacVacHistorial[${ri}].fecha=this.value;sacVacSync(${idx})"></td>
           <td><input value="${r.nota||''}" placeholder="nota..." style="width:140px;padding:3px 6px;border:1px solid var(--border);border-radius:5px;font-size:12px;font-family:'DM Sans',sans-serif;background:#f8f9fc;"
-            onblur="state.chicos[${idx}].sacVacHistorial[${ri}].nota=this.value;autoGuardar()"></td>
+            onblur="state.chicos[${idx}].sacVacHistorial[${ri}].nota=this.value;sacVacSync(${idx})"></td>
           <td>
-            <button onclick="state.chicos[${idx}].sacVacHistorial.splice(${ri},1);autoGuardar();verChicoInd(${idx})"
+            <button onclick="state.chicos[${idx}].sacVacHistorial.splice(${ri},1);sacVacSync(${idx});verChicoInd(${idx})"
               style="background:transparent;border:none;color:#9ca3af;cursor:pointer;font-size:13px;" 
               onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='#9ca3af'">✕</button>
           </td>
@@ -2819,8 +2819,39 @@ function sacVacAgregar(idx){
     tipo, periodo:'', importe:0, cuotas:1,
     fecha: new Date().toLocaleDateString('es-AR'), nota:''
   });
-  autoGuardar();
+  sacVacSync(idx);
   verChicoInd(idx);
+}
+
+function sacVacSync(idx){
+  // Sincroniza el historial SAC/VAC de Chicos Info → liqExtras (para el recibo)
+  const ch = state.chicos[idx];
+  if(!ch||!ch.sacVacHistorial) return;
+  // Para cada semana del mes, actualizar liqExtras con el último SAC/VAC
+  const semanas = liqGetSemanas();
+  semanas.forEach((sem,si)=>{
+    const e = liqExtrasGet(si, ch.nombre);
+    // Tomar el SAC y VAC más reciente del historial
+    const sacs = ch.sacVacHistorial.filter(r=>r.tipo==='SAC'&&r.periodo);
+    const vacs = ch.sacVacHistorial.filter(r=>r.tipo==='VAC'&&r.periodo);
+    const ultimoSac = sacs[sacs.length-1];
+    const ultimoVac = vacs[vacs.length-1];
+    if(ultimoSac){
+      e.sac = ultimoSac.periodo||'';
+      e.sacImporte = parseN(ultimoSac.importe)||0;
+    } else {
+      e.sac = '';
+      e.sacImporte = 0;
+    }
+    if(ultimoVac){
+      e.vacaciones = ultimoVac.periodo||'';
+      e.vacacionesImporte = parseN(ultimoVac.importe)||0;
+    } else {
+      e.vacaciones = '';
+      e.vacacionesImporte = 0;
+    }
+  });
+  autoGuardar();
 }
 
 // ── INFORME ──
@@ -3730,22 +3761,40 @@ function renderLiqTabla(){
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
         <span style="font-size:12px;color:var(--muted);">📅 SAC período:</span>
         <input value="${extras.sac||''}" placeholder="ej: 1er sem 2026" 
-          style="width:150px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;"
+          style="width:140px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;"
           onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').sac=this.value;autoGuardar()"
           onfocus="this.select()">
         <input value="${extras.sacImporte||''}" placeholder="$ importe" 
-          style="width:110px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+          style="width:100px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
           onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').sacImporte=parseN(this.value);this.value=this.value?fmtInput(parseN(this.value)):'';autoGuardar();"
           onfocus="this.select()">
-        <span style="font-size:12px;color:var(--muted);margin-left:8px;">🏖️ Vacaciones período:</span>
+        <select style="padding:6px 8px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;"
+          onchange="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').sacCuotas=parseInt(this.value);autoGuardar();renderLiqTabla()">
+          ${[1,2,3].map(n=>`<option value="${n}" ${(extras.sacCuotas||1)===n?'selected':''}>${n} cuota${n>1?'s':''}</option>`).join('')}
+        </select>
+        ${(extras.sacCuotas||1)>1?`<select style="padding:6px 8px;background:#fff3cd;border:1px solid #f5a623;border-radius:7px;color:#b45309;font-size:12px;font-family:'DM Sans',sans-serif;font-weight:600;"
+          onchange="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').sacCuotaActual=parseInt(this.value);autoGuardar()">
+          ${Array.from({length:extras.sacCuotas||1},(_,i)=>`<option value="${i+1}" ${(extras.sacCuotaActual||1)===i+1?'selected':''}>Cuota ${i+1}/${extras.sacCuotas}</option>`).join('')}
+        </select>`:''}
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
+        <span style="font-size:12px;color:var(--muted);">🏖️ Vacaciones período:</span>
         <input value="${extras.vacaciones||''}" placeholder="ej: enero 2026" 
-          style="width:150px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;"
+          style="width:140px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;"
           onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').vacaciones=this.value;autoGuardar()"
           onfocus="this.select()">
         <input value="${extras.vacacionesImporte||''}" placeholder="$ importe" 
-          style="width:110px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
+          style="width:100px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;text-align:right;"
           onblur="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').vacacionesImporte=parseN(this.value);this.value=this.value?fmtInput(parseN(this.value)):'';autoGuardar();"
           onfocus="this.select()">
+        <select style="padding:6px 8px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;"
+          onchange="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').vacCuotas=parseInt(this.value);autoGuardar();renderLiqTabla()">
+          ${[1,2,3].map(n=>`<option value="${n}" ${(extras.vacCuotas||1)===n?'selected':''}>${n} cuota${n>1?'s':''}</option>`).join('')}
+        </select>
+        ${(extras.vacCuotas||1)>1?`<select style="padding:6px 8px;background:#fff3cd;border:1px solid #f5a623;border-radius:7px;color:#b45309;font-size:12px;font-family:'DM Sans',sans-serif;font-weight:600;"
+          onchange="liqExtrasGet(${liqSemSelIdx},'${ch.nombre}').vacCuotaActual=parseInt(this.value);autoGuardar()">
+          ${Array.from({length:extras.vacCuotas||1},(_,i)=>`<option value="${i+1}" ${(extras.vacCuotaActual||1)===i+1?'selected':''}>Cuota ${i+1}/${extras.vacCuotas}</option>`).join('')}
+        </select>`:''}
       </div>
 
       <!-- Resumen editable de cálculo -->
@@ -3881,10 +3930,18 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras, fechaOverride){
 
   if(esSacVac){
     // Recibo especial: solo SAC y/o Vacaciones
-    if(extras.sac)
-      conceptosHtml += fila('S.A.C. - PERÍODO '+extras.sac.toUpperCase(), '', sacImp||'', '');
-    if(extras.vacaciones)
-      conceptosHtml += fila('VACACIONES - PERÍODO '+extras.vacaciones.toUpperCase(), '', vacImp||'', '');
+    if(extras.sac){
+      const sacCuotas = extras.sacCuotas||1;
+      const sacCuotaActual = extras.sacCuotaActual||1;
+      const sacLabel = 'S.A.C. - PERÍODO '+extras.sac.toUpperCase()+(sacCuotas>1?' CUOTA '+sacCuotaActual+'/'+sacCuotas:'');
+      conceptosHtml += fila(sacLabel, '', sacImp||'', '');
+    }
+    if(extras.vacaciones){
+      const vacCuotas = extras.vacCuotas||1;
+      const vacCuotaActual = extras.vacCuotaActual||1;
+      const vacLabel = 'VACACIONES - PERÍODO '+extras.vacaciones.toUpperCase()+(vacCuotas>1?' CUOTA '+vacCuotaActual+'/'+vacCuotas:'');
+      conceptosHtml += fila(vacLabel, '', vacImp||'', '');
+    }
     const nSV = (extras.sac?1:0)+(extras.vacaciones?1:0);
     for(let x=nSV; x<7; x++) conceptosHtml += filaVacia();
     conceptosHtml += filaTexto('COBERTURA POR SEGURO DE VIDA');
