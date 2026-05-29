@@ -2234,8 +2234,9 @@ function renderCentral(){
       const aD=(parseN(s.asistDiaria)||4000);
       const tardesD=calc.detalleDias.filter(d=>d.vFinal==='T').length;
       const faltasD=calc.detalleDias.filter(d=>d.vFinal==='A'||d.vFinal==='S').length;
-      const puntAbsol=Math.max(0,(5-tardesD-faltasD)*pD);
-      const asistPerfL=Math.max(0,(5-faltasD)*aD);
+      const feriadosAnL=calc.detalleDias.filter(d=>d.vFinal==='F'&&d.base===0).length;
+      const puntAbsol=Math.max(0,(5-tardesD-faltasD-feriadosAnL)*pD);
+      const asistPerfL=Math.max(0,(5-faltasD-feriadosAnL)*aD);
       totalLiq+=calc.totalBase+calc.totalAdic+calc.totalPunt+puntAbsol+asistPerfL+calc.totalLluvia;
       totalAdelantos+=parseN(calc.adelanto);
     });
@@ -3447,11 +3448,22 @@ function liqCalcEmpleado(ch, semIdx, semLabs, extras){
   const baseDia   = semLabs.length>0 ? sueldo/5 : 0;
 
   // Recolectar estados finales por día
+  // El estado (T, A, F, S, etc.) se carga en la fila tipo 'basico' (renombrada a 'asistencia' visualmente)
+  const filaAsistencia = ch.filas.find(f=>f.tipo==='basico') || ch.filas.find(f=>f.tipo==='movil');
   const estadosDia = {};
   semLabs.forEach(d=>{
     const key = chicosDateKey(d);
     let val = '';
-    ch.filas.forEach(f=>{ const v=(f.dias&&f.dias[key])||''; if(v.trim()) val=v.trim(); });
+    // Leer primero de la fila de asistencia (tipo basico)
+    if(filaAsistencia) val = (filaAsistencia.dias&&filaAsistencia.dias[key])||'';
+    // Si no hay valor, buscar en las demás filas (compatibilidad hacia atrás)
+    if(!val.trim()){
+      ch.filas.forEach(f=>{ 
+        if(f===filaAsistencia) return;
+        const v=(f.dias&&f.dias[key])||''; 
+        if(v.trim()&&isNaN(parseN(v))) val=v.trim(); // solo si no es número (evitar confundir nro de movil)
+      });
+    }
     const vUp = val.toUpperCase();
     const override = (extras.justDias&&extras.justDias[key])||'';
     estadosDia[key] = override || vUp;
@@ -3598,8 +3610,9 @@ function renderLiqPanel(){
       const aD2=(parseN(s.asistDiaria)||4000);
       const tardesD2=calc.detalleDias.filter(d=>d.vFinal==='T').length;
       const faltasD2=calc.detalleDias.filter(d=>d.vFinal==='A'||d.vFinal==='S').length;
-      const puntAbsol=Math.max(0,(5-tardesD2-faltasD2)*pD2);
-      const asistPerfT=Math.max(0,(5-faltasD2)*aD2);
+      const feriadosAnT=calc.detalleDias.filter(d=>d.vFinal==='F'&&d.base===0).length;
+      const puntAbsol=Math.max(0,(5-tardesD2-faltasD2-feriadosAnT)*pD2);
+      const asistPerfT=Math.max(0,(5-faltasD2-feriadosAnT)*aD2);
       bruto+=calc.totalBase+calc.totalAdic+calc.totalPunt+puntAbsol+asistPerfT+calc.totalLluvia;
       adelantos+=parseN(calc.adelanto);
     });
@@ -3656,9 +3669,11 @@ function renderLiqTabla(){
     const asistD = parseN(s.asistDiaria)||4000;
     const tardesCalc   = calc.detalleDias.filter(d=>d.vFinal==='T').length;
     const faltasCalc   = calc.detalleDias.filter(d=>d.vFinal==='A'||d.vFinal==='S').length;
-    const puntAbsCalc  = Math.max(0,(5-tardesCalc-faltasCalc)*puntD);
+    const feriadosAnC  = calc.detalleDias.filter(d=>d.vFinal==='F'&&d.base===0).length;
+    const puntAbsCalc  = Math.max(0,(5-tardesCalc-faltasCalc-feriadosAnC)*puntD);
     const faltasSuspCalc = calc.detalleDias.filter(d=>d.vFinal==='A'||d.vFinal==='S').length;
-    const asistPerfCalc   = Math.max(0,(5-faltasSuspCalc)*asistD);
+    const feriadosAnCalc = calc.detalleDias.filter(d=>d.vFinal==='F'&&d.base===0).length;
+    const asistPerfCalc   = Math.max(0,(5-faltasSuspCalc-feriadosAnCalc)*asistD);
     // Apply overrides to calc for display
     if(extras.overBase!==undefined)      calc.totalBase  = extras.overBase;
     if(extras.overAdic!==undefined)      calc.totalAdic  = extras.overAdic;
@@ -3670,7 +3685,13 @@ function renderLiqTabla(){
     calc.totalBruto = calc.totalBase + calc.totalAdic + puntFinal + asistFinal + calc.totalLluvia;
 
     // Cabecera empleado
-    const sacVacBadges = (ch.sacVacHistorial||[]).map(r=>`
+    // Solo mostrar badge si no está completamente pagado
+    const sacVacBadges = (ch.sacVacHistorial||[]).filter(r=>{
+      // Contar cuántas veces se pagó este período
+      const cuotasTotales = r.cuotas||1;
+      const pagosMismosPeriodo = (ch.sacVacHistorial||[]).filter(x=>x.tipo===r.tipo&&x.periodo===r.periodo).length;
+      return pagosMismosPeriodo < cuotasTotales;
+    }).map(r=>`
       <span style="padding:2px 8px;border-radius:20px;font-size:11px;background:${r.tipo==='SAC'?'rgba(8,145,178,.1)':'rgba(124,58,237,.1)'};color:${r.tipo==='SAC'?'#0891b2':'#7c3aed'};border:1px solid ${r.tipo==='SAC'?'rgba(8,145,178,.3)':'rgba(124,58,237,.3)'};">
         ${r.tipo==='SAC'?'🏦':'🏖'} ${r.tipo} ${r.periodo} · $${fmt(parseN(r.importe))}${r.cuotas>1?' ('+r.cuotas+' cuotas)':''}
       </span>`).join('');
@@ -3884,10 +3905,12 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras, fechaOverride){
   const adicMarVie  = parseN(s.adicMarVie)||15000;
   const puntDiaria  = parseN(s.puntDiaria)||2000;
   const asistDiaria = parseN(s.asistDiaria)||4000;
-  // puntAbsol: $2000 x 5 días siempre (feriados cuentan), solo descuenta tardanzas reales
+  // puntAbsol: $2000 x día efectivo, excluye faltas, suspendidos, y feriados anulados por falta adyacente
   const tardesDesc  = calc.detalleDias.filter(d=>d.vFinal==='T').length;
   const faltasDesc  = calc.detalleDias.filter(d=>d.vFinal==='A'||d.vFinal==='S').length;
-  const puntAbsol   = Math.max(0, (5 - tardesDesc - faltasDesc) * puntDiaria);
+  // Contar feriados anulados (base=0 y vFinal=F)
+  const feriadosAnulados = calc.detalleDias.filter(d=>d.vFinal==='F'&&d.base===0).length;
+  const puntAbsol   = Math.max(0, (5 - tardesDesc - faltasDesc - feriadosAnulados) * puntDiaria);
   const asistPerf     = asistDiaria * 5;
 
   const statsMes   = liqGetEstadisticas(ch, true);
@@ -3896,7 +3919,8 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras, fechaOverride){
   const huboTarde = calc.detalleDias.some(d=>d.vFinal==='T');
   const huboFalta    = calc.detalleDias.some(d=>d.vFinal==='A');
   const faltasSusp  = calc.detalleDias.filter(d=>d.vFinal==='A'||d.vFinal==='S').length;
-  const asistPerfS  = Math.max(0,(5-faltasSusp)*asistDiaria);
+  const feriadosAn  = calc.detalleDias.filter(d=>d.vFinal==='F'&&d.base===0).length;
+  const asistPerfS  = Math.max(0,(5-faltasSusp-feriadosAn)*asistDiaria);
 
   // Fila: cod | concepto + importe_referencia_inline | haberes | adelantos
   const fila = (concepto, refInline, haberes, deducciones) => `
