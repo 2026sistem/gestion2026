@@ -3493,10 +3493,30 @@ function liqCalcEmpleado(ch, semIdx, semLabs, extras){
   let diasSinBase=0, diasMedio=0;
   const detalleDias=[];
 
+  // Regla del primer día efectivo:
+  // - Si el lunes es feriado Y el martes es falta adyacente → nadie cobra adicLunes ($25k), todos $15k
+  // - Si el lunes es feriado Y el martes trabaja → martes cobra adicLunes ($25k)
+  // - Si el lunes trabaja → lunes cobra adicLunes ($25k)
+  const hayFaltaAdyFeriado = keysSem.some((k,i)=>{
+    const v = estadosDia[k]||'';
+    if(v!=='A') return false;
+    const prev = i>0 ? estadosDia[keysSem[i-1]]||'' : '';
+    const next = i<keysSem.length-1 ? estadosDia[keysSem[i+1]]||'' : '';
+    return prev==='F' || next==='F';
+  });
+  const primerDiaEfectivoKey = hayFaltaAdyFeriado ? null : (()=>{
+    // Primer día que no sea feriado ni falta
+    for(let i=0; i<keysSem.length; i++){
+      const v = estadosDia[keysSem[i]]||'';
+      if(v!=='F'&&v!=='A'&&v!=='AJ'&&v!=='S'&&!noCobraFeriado[keysSem[i]]) return keysSem[i];
+    }
+    return null;
+  })();
+
   semLabs.forEach((d,i)=>{
     const key    = liqDateKey(d);
     const dow    = d.getDay();
-    const esLunes= dow===1;
+    const esPrimerDia = primerDiaEfectivoKey !== null && key===primerDiaEfectivoKey;
     const vFinal = estadosDia[key]||'';
     const esLluvia = !!(extras.lluvia&&extras.lluvia[key]);
 
@@ -3525,7 +3545,7 @@ function liqCalcEmpleado(ch, semIdx, semLabs, extras){
     } else if(esF&&noCobraFeriado[key]){
       cobrasBase=false;
     } else if(esF){
-      adic = esLunes ? adicLunes : adicMV;
+      // Feriado: solo cobra base, sin adicional
       if(esLluvia) lluvia=lluviaM;
     } else if(esAJ){
       if(esLluvia) lluvia=lluviaM;
@@ -3534,14 +3554,15 @@ function liqCalcEmpleado(ch, semIdx, semLabs, extras){
       asist=asistM;
       if(esLluvia) lluvia=lluviaM;
     } else if(esT){
+      adic=esPrimerDia?adicLunes:adicMV; // tarde cobra adicional pero no puntualidad
       asist=asistM;
       if(esLluvia) lluvia=lluviaM;
     } else if(esTJ){
-      adic=esLunes?adicLunes:adicMV;
+      adic=esPrimerDia?adicLunes:adicMV;
       punt=puntM; asist=asistM;
       if(esLluvia) lluvia=lluviaM;
     } else {
-      adic=esLunes?adicLunes:adicMV;
+      adic=esPrimerDia?adicLunes:adicMV;
       punt=puntM; asist=asistM;
       if(esLluvia) lluvia=lluviaM;
     }
@@ -4021,7 +4042,7 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras, fechaOverride){
     conceptosHtml += filaTexto('Cumpliendo jornada laboral de Lu a Vi de 7 a 16Hs.,');
     conceptosHtml += filaTexto('Sin horas Extras');
     if(recAdic > 0)
-      conceptosHtml += fila('PUNTUALIDAD DIARIA -B', 'L:'+liqFmtPesos(adicLunes)+' / M-V:'+liqFmtPesos(adicMarVie), recAdic, '');
+      conceptosHtml += fila('PUNTUALIDAD DIARIA -B', '1er día:'+liqFmtPesos(adicLunes)+' / Resto:'+liqFmtPesos(adicMarVie), recAdic, '');
     if(recPuntAbsol > 0)
       conceptosHtml += fila('PUNT ABSOLUTA SEMANA', liqFmtPesos(recPuntAbsol), recPuntAbsol, '');
     if(recAsistPerf > 0)
