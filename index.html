@@ -1631,6 +1631,13 @@ function chicosGetDiasMes(mesStr){
 }
 
 function chicosDateKey(d){ return d.toISOString().slice(0,10); }
+function liqDateKey(d){
+  // Usar fecha local (no UTC) para evitar problemas de timezone en liquidacion
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${dd}`;
+}
 
 function chicosMesLabel(mesStr){
   const [y,m] = mesStr.split('-').map(Number);
@@ -3448,29 +3455,29 @@ function liqCalcEmpleado(ch, semIdx, semLabs, extras){
   const baseDia   = semLabs.length>0 ? sueldo/5 : 0;
 
   // Recolectar estados finales por día
-  // El estado (T, A, F, S, etc.) se carga en la fila tipo 'basico' (renombrada a 'asistencia' visualmente)
-  const filaAsistencia = ch.filas.find(f=>f.tipo==='basico') || ch.filas.find(f=>f.tipo==='movil');
+  // Los estados (T, A, F, S, etc.) se guardan en la fila tipo 'movil' (label 'asistencia')
+  // Los números de móvil se guardan en la fila tipo 'basico' (label 'movil')
+  const ESTADOS_VALIDOS = ['T','TJ','A','AJ','F','S','1/2','½'];
   const estadosDia = {};
   semLabs.forEach(d=>{
-    const key = chicosDateKey(d);
+    const key = liqDateKey(d);
     let val = '';
-    // Leer primero de la fila de asistencia (tipo basico)
-    if(filaAsistencia) val = (filaAsistencia.dias&&filaAsistencia.dias[key])||'';
-    // Si no hay valor, buscar en las demás filas (compatibilidad hacia atrás)
-    if(!val.trim()){
-      ch.filas.forEach(f=>{ 
-        if(f===filaAsistencia) return;
-        const v=(f.dias&&f.dias[key])||''; 
-        if(v.trim()&&isNaN(parseN(v))) val=v.trim(); // solo si no es número (evitar confundir nro de movil)
-      });
-    }
-    const vUp = val.toUpperCase();
+    // Buscar en todas las filas, priorizar estados válidos (no números)
+    ch.filas.forEach(f=>{
+      const v = ((f.dias&&f.dias[key])||'').trim().toUpperCase();
+      if(!v) return;
+      if(ESTADOS_VALIDOS.includes(v)){
+        val = v; // estado válido tiene prioridad absoluta
+      } else if(!val && isNaN(parseFloat(v.replace(',','.')))) {
+        val = v; // texto no numérico como fallback
+      }
+    });
     const override = (extras.justDias&&extras.justDias[key])||'';
-    estadosDia[key] = override || vUp;
+    estadosDia[key] = override || val;
   });
 
   // Detectar feriados anulados por falta adyacente
-  const keysSem = semLabs.map(d=>chicosDateKey(d));
+  const keysSem = semLabs.map(d=>liqDateKey(d));
   const noCobraFeriado = {};
   keysSem.forEach((key,i)=>{
     if(estadosDia[key]==='F'){
@@ -3487,7 +3494,7 @@ function liqCalcEmpleado(ch, semIdx, semLabs, extras){
   const detalleDias=[];
 
   semLabs.forEach((d,i)=>{
-    const key    = chicosDateKey(d);
+    const key    = liqDateKey(d);
     const dow    = d.getDay();
     const esLunes= dow===1;
     const vFinal = estadosDia[key]||'';
@@ -3685,16 +3692,31 @@ function renderLiqTabla(){
     calc.totalBruto = calc.totalBase + calc.totalAdic + puntFinal + asistFinal + calc.totalLluvia;
 
     // Cabecera empleado
-    // Solo mostrar badge si no está completamente pagado
-    const sacVacBadges = (ch.sacVacHistorial||[]).filter(r=>{
-      // Contar cuántas veces se pagó este período
-      const cuotasTotales = r.cuotas||1;
-      const pagosMismosPeriodo = (ch.sacVacHistorial||[]).filter(x=>x.tipo===r.tipo&&x.periodo===r.periodo).length;
-      return pagosMismosPeriodo < cuotasTotales;
-    }).map(r=>`
-      <span style="padding:2px 8px;border-radius:20px;font-size:11px;background:${r.tipo==='SAC'?'rgba(8,145,178,.1)':'rgba(124,58,237,.1)'};color:${r.tipo==='SAC'?'#0891b2':'#7c3aed'};border:1px solid ${r.tipo==='SAC'?'rgba(8,145,178,.3)':'rgba(124,58,237,.3)'};">
-        ${r.tipo==='SAC'?'🏦':'🏖'} ${r.tipo} ${r.periodo} · $${fmt(parseN(r.importe))}${r.cuotas>1?' ('+r.cuotas+' cuotas)':''}
-      </span>`).join('');
+    // Badge SAC/VAC - siempre visible (informativo), indica estado de pago
+    const sacVacResumen = {};
+    (ch.sacVacHistorial||[]).forEach(r=>{
+      const k = r.tipo+'_'+r.periodo;
+      if(!sacVacResumen[k]) sacVacResumen[k] = {tipo:r.tipo, periodo:r.periodo, importe:r.importe, cuotasTotales:r.cuotas||1, pagos:0};
+      sacVacResumen[k].pagos++;
+      sacVacResumen[k].cuotasTotales = Math.max(sacVacResumen[k].cuotasTotales, r.cuotas||1);
+    });
+    const sacVacBadges = Object.values(sacVacResumen).map(r=>{
+      const completo = r.pagos >= r.cuotasTotales;
+      return `<span style="padding:2px 8px;border-radius:20px;font-size:11px;background:${r.tipo==='SAC'?'rgba(8,145,178,.1)':'rgba(124,58,237,.1)'};color:${r.tipo==='SAC'?'#0891b2':'#7c3aed'};border:1px solid ${r.tipo==='SAC'?'rgba(8,145,178,.3)':'rgba(124,58,237,.3)'};${completo?'opacity:.6;':''}">
+        ${r.tipo==='SAC'?'🏦':'🏖'} ${r.tipo} ${r.periodo} · $${fmt(parseN(r.importe))} ${completo?'✓ pagado':'(cuota '+r.pagos+'/'+r.cuotasTotales+' pagada)'}
+      </span>`;
+    }).join('');
+
+    // Si ya cobró todas las cuotas, limpiar los campos de liqExtras para que no regenere el recibo
+    if(Object.values(sacVacResumen).some(r=>r.pagos>=r.cuotasTotales)){
+      const e = liqExtrasGet(liqSemSelIdx, ch.nombre);
+      Object.values(sacVacResumen).forEach(r=>{
+        if(r.pagos >= r.cuotasTotales){
+          if(r.tipo==='SAC'){ e.sac=''; e.sacImporte=0; e.sacCuotas=1; e.sacCuotaActual=1; }
+          if(r.tipo==='VAC'){ e.vacaciones=''; e.vacacionesImporte=0; e.vacCuotas=1; e.vacCuotaActual=1; }
+        }
+      });
+    }
 
     html += `<div class="card" style="margin-bottom:14px;">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:${sacVacBadges?'8px':'14px'};">
@@ -3710,13 +3732,19 @@ function renderLiqTabla(){
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">`;
 
     sem.labs.forEach(d=>{
-      const key  = chicosDateKey(d);
+      const key  = liqDateKey(d);
       const dow  = d.getDay();
       const dLabel = DIAS_LABEL[dow];
       const dNum   = d.getDate();
-      // Leer estado actual
+      // Leer estado actual - priorizar estados válidos sobre números
+      const ESTADOS_V = ['T','TJ','A','AJ','F','S','1/2','½'];
       let val = '';
-      ch.filas.forEach(f=>{ const v=(f.dias&&f.dias[key])||''; if(v.trim()) val=v.trim(); });
+      ch.filas.forEach(f=>{
+        const v = ((f.dias&&f.dias[key])||'').trim().toUpperCase();
+        if(!v) return;
+        if(ESTADOS_V.includes(v)) val = v; // estado válido tiene prioridad absoluta
+        else if(!val && isNaN(parseFloat(v.replace(',','.')))) val = v;
+      });
       const vUp   = val.toUpperCase();
       const ovr   = (extras.justDias&&extras.justDias[key])||'';
       const vShow = ovr||vUp||'P';
