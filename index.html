@@ -3407,29 +3407,34 @@ function liqSetSueldo(nombre, campo, valor){
 
 // ── HELPERS LIQUIDACIÓN ──
 function liqGetSemanas(){
-  // Devuelve semanas L-V del mes actual, arrancando desde el primer lunes del mes
+  // Devuelve semanas L-V del mes actual, incluyendo semanas que cruzan meses
   const mesStr = chicosMesActual(); // "YYYY-MM"
   const [y,m] = mesStr.split('-').map(Number);
 
-  // Encontrar el primer lunes del mes
+  // Encontrar el primer lunes del mes O el lunes de la semana anterior que cruza al mes
   const primero = new Date(y, m-1, 1);
+  const ultimo  = new Date(y, m, 0); // último día del mes
+
+  // Lunes de la semana que contiene el día 1
   let inicioLunes = new Date(primero);
   while(inicioLunes.getDay() !== 1){
-    inicioLunes.setDate(inicioLunes.getDate()+1);
+    inicioLunes.setDate(inicioLunes.getDate()-1);
   }
 
-  // Generar semanas L-V desde ese lunes hasta fin de mes
+  // Generar semanas L-V mientras el lunes esté antes del fin del mes
   const semanas = [];
   let lunesActual = new Date(inicioLunes);
 
-  while(lunesActual.getMonth() === m-1){
+  while(lunesActual <= ultimo){
     const semana = [];
     for(let i=0; i<5; i++){
       const d = new Date(lunesActual);
       d.setDate(lunesActual.getDate()+i);
-      if(d.getMonth() === m-1) semana.push(d); // solo días del mes
+      semana.push(d); // incluir todos los días aunque sean de otro mes
     }
-    if(semana.length > 0) semanas.push(semana);
+    // Solo incluir la semana si tiene al menos un día del mes actual
+    const tieneDiaDelMes = semana.some(d=>d.getMonth()===m-1);
+    if(tieneDiaDelMes) semanas.push(semana);
     lunesActual.setDate(lunesActual.getDate()+7);
   }
 
@@ -3437,7 +3442,8 @@ function liqGetSemanas(){
     idx: si,
     labs: labs.filter(d=>d.getDay()>=1&&d.getDay()<=5),
     label: (()=>{
-      const f = labs[0], l = labs[labs.length-1];
+      const dias = labs.filter(d=>d.getDay()>=1&&d.getDay()<=5);
+      const f = dias[0], l = dias[dias.length-1];
       return `${f.getDate()}/${f.getMonth()+1} al ${l.getDate()}/${l.getMonth()+1}`;
     })()
   })).filter(s=>s.labs.length>0);
@@ -4178,6 +4184,40 @@ function liqImprimir(){
   });
   if(!chicosActivos.length){ alert('No hay empleados con sueldo configurado.'); return; }
 
+  // Mostrar selector de empleados antes de imprimir
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;';
+  overlay.innerHTML = `
+    <div style="background:#fff;border-radius:16px;padding:28px;max-width:500px;width:92%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+      <div style="font-family:'Bebas Neue',cursive;font-size:1.3rem;letter-spacing:.06em;color:#1e2030;margin-bottom:4px;">SELECCIONAR RECIBOS</div>
+      <div style="font-size:12px;color:#6b7280;margin-bottom:16px;">Semana ${sem.label} — destildá los que no querés imprimir</div>
+      <div style="display:flex;gap:10px;margin-bottom:14px;">
+        <button onclick="document.querySelectorAll('.liq-chk').forEach(c=>c.checked=true)" style="padding:5px 12px;border:1px solid #d1d5e0;border-radius:6px;background:#f8f9fc;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">✓ Todos</button>
+        <button onclick="document.querySelectorAll('.liq-chk').forEach(c=>c.checked=false)" style="padding:5px 12px;border:1px solid #d1d5e0;border-radius:6px;background:#f8f9fc;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">✗ Ninguno</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;">
+        ${chicosActivos.map((ch,i)=>`
+          <label style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid #d1d5e0;border-radius:8px;cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;color:#1e2030;">
+            <input type="checkbox" class="liq-chk" data-idx="${i}" checked style="width:16px;height:16px;cursor:pointer;">
+            ${ch.nombre}
+          </label>`).join('')}
+      </div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button onclick="this.closest('div').parentElement.parentElement.remove()" style="padding:9px 20px;border:1px solid #d1d5e0;border-radius:8px;background:#f8f9fc;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;">Cancelar</button>
+        <button id="btn-liq-ok" style="padding:9px 20px;border:none;border-radius:8px;background:#2563eb;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">🖨️ Imprimir</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  document.getElementById('btn-liq-ok').onclick = ()=>{
+    const sel = [...document.querySelectorAll('.liq-chk:checked')].map(c=>chicosActivos[parseInt(c.dataset.idx)]);
+    overlay.remove();
+    if(!sel.length){ alert('No seleccionaste ningún empleado.'); return; }
+    liqImprimirLista(sel, sem);
+  };
+}
+
+function liqImprimirLista(chicosActivos, sem){
   let paginasHtml = '';
   let sacVacHtml = ''; // Recibos separados para SAC/Vacaciones
 
