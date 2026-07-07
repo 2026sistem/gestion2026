@@ -3254,6 +3254,7 @@ function importarBackup(){
 
 const SUELDO_DEFAULTS = {
   adicLunes:   20000,
+  adicMartes:  20000,
   adicMarVie:  15000,
   lluvia:      10000,
   puntDiaria:   2000,
@@ -3279,6 +3280,7 @@ function sueldosInit(){
       state.sueldos[n] = {
         sueldo:      SUELDOS_PREDEF[n]||0,
         adicLunes:   SUELDO_DEFAULTS.adicLunes,
+        adicMartes:  SUELDO_DEFAULTS.adicMartes,
         adicMarVie:  SUELDO_DEFAULTS.adicMarVie,
         lluvia:      SUELDO_DEFAULTS.lluvia,
         puntDiaria:  SUELDO_DEFAULTS.puntDiaria,
@@ -3291,7 +3293,10 @@ function sueldosInit(){
     const s = state.sueldos[n];
     if((!s.sueldo||s.sueldo===0) && SUELDOS_PREDEF[n]) s.sueldo = SUELDOS_PREDEF[n];
     if(s.adicLunes===undefined)   s.adicLunes   = SUELDO_DEFAULTS.adicLunes;
+    if(s.adicMartes===undefined)  s.adicMartes  = SUELDO_DEFAULTS.adicMartes;
     if(s.adicMarVie===undefined)  s.adicMarVie  = SUELDO_DEFAULTS.adicMarVie;
+    // Actualizar 15000→20000 para martes
+    if(parseN(s.adicMartes)===15000) s.adicMartes = 20000;
     // Actualizar 14000 → 15000 para todos los empleados
     if(parseN(s.adicMarVie)===14000) s.adicMarVie = 15000;
     if(s.lluvia===undefined)      s.lluvia      = SUELDO_DEFAULTS.lluvia;
@@ -3453,8 +3458,9 @@ function liqCalcEmpleado(ch, semIdx, semLabs, extras){
   sueldosInit();
   const s = state.sueldos[ch.nombre]||{};
   const sueldo    = parseN(s.sueldo)||0;
-  const adicLunes = parseN(s.adicLunes)||0;
-  const adicMV    = parseN(s.adicMarVie)||0;
+  const adicLunes  = parseN(s.adicLunes)||0;
+  const adicMartes = parseN(s.adicMartes)||20000;
+  const adicMV     = parseN(s.adicMarVie)||0;
   const lluviaM   = parseN(s.lluvia)||0;
   const puntM     = parseN(s.puntDiaria)||0;
   const asistM    = parseN(s.asistDiaria)||0;
@@ -3560,15 +3566,15 @@ function liqCalcEmpleado(ch, semIdx, semLabs, extras){
       asist=asistM;
       if(esLluvia) lluvia=lluviaM;
     } else if(esT){
-      adic=esPrimerDia?adicLunes:adicMV; // tarde cobra adicional pero no puntualidad
+      adic=esPrimerDia?adicLunes:(dow===2?adicMartes:adicMV); // tarde cobra adicional pero no puntualidad
       asist=asistM;
       if(esLluvia) lluvia=lluviaM;
     } else if(esTJ){
-      adic=esPrimerDia?adicLunes:adicMV;
+      adic=esPrimerDia?adicLunes:(dow===2?adicMartes:adicMV);
       punt=puntM; asist=asistM;
       if(esLluvia) lluvia=lluviaM;
     } else {
-      adic=esPrimerDia?adicLunes:adicMV;
+      adic=esPrimerDia?adicLunes:(dow===2?adicMartes:adicMV);
       punt=puntM; asist=asistM;
       if(esLluvia) lluvia=lluviaM;
     }
@@ -4037,18 +4043,20 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras, fechaOverride){
     const tardesReales = calc.detalleDias.filter(d=>d.vFinal==='T').length;
     const mediosReales = calc.detalleDias.filter(d=>d.vFinal==='1/2'||d.vFinal==='½').length;
     const feriadosN    = calc.detalleDias.filter(d=>d.vFinal==='F').length;
+    const suspN        = calc.detalleDias.filter(d=>d.vFinal==='S').length;
     const novedadesSem = [
-      ausReales>0    ? ausReales+(ausReales===1?' AUSENTE':' AUSENTES')        : '',
-      tardesReales>0 ? tardesReales+(tardesReales===1?' TARDE':' TARDES')      : '',
-      mediosReales>0 ? mediosReales+(mediosReales===1?' 1/2 DIA':' 1/2 DIAS') : '',
-      feriadosN>0    ? feriadosN+(feriadosN===1?' FERIADO':' FERIADOS')        : '',
+      ausReales>0    ? ausReales+(ausReales===1?' DIA AUSENTE':' DIAS AUSENTES')          : '',
+      tardesReales>0 ? tardesReales+(tardesReales===1?' DIA TARDE':' DIAS TARDE')         : '',
+      mediosReales>0 ? mediosReales+(mediosReales===1?' MEDIO DIA':' MEDIOS DIAS')        : '',
+      feriadosN>0    ? feriadosN+(feriadosN===1?' FERIADO':' FERIADOS')                   : '',
+      suspN>0        ? suspN+(suspN===1?' DIA SUSPENDIDO':' DIAS SUSPENDIDO')             : '',
     ].filter(Boolean).join('   ');
     const semanaLabel = novedadesSem ? 'SEMANA   '+novedadesSem : 'SEMANA';
     conceptosHtml += fila(semanaLabel, '', recBase, '');
     conceptosHtml += filaTexto('Cumpliendo jornada laboral de Lu a Vi de 7 a 16Hs.,');
     conceptosHtml += filaTexto('Sin horas Extras');
     if(recAdic > 0)
-      conceptosHtml += fila('PUNTUALIDAD DIARIA -B', '1er día:'+liqFmtPesos(adicLunes)+' / Resto:'+liqFmtPesos(adicMarVie), recAdic, '');
+      conceptosHtml += fila('PUNTUALIDAD DIARIA -B', '1er día:'+liqFmtPesos(adicLunes)+' / Mar:'+liqFmtPesos(adicMartes)+' / M-V:'+liqFmtPesos(adicMarVie), recAdic, '');
     if(recPuntAbsol > 0)
       conceptosHtml += fila('PUNT ABSOLUTA SEMANA', liqFmtPesos(recPuntAbsol), recPuntAbsol, '');
     if(recAsistPerf > 0)
