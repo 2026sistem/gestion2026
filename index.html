@@ -3963,6 +3963,7 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras, fechaOverride){
   const fechaRecibo = fechaOverride || (semLabs.length ? liqFechaRecibo(semLabs) : '—');
 
   const adicLunes   = parseN(s.adicLunes)||20000;
+  const adicMartes  = parseN(s.adicMartes)||20000;
   const adicMarVie  = parseN(s.adicMarVie)||15000;
   const puntDiaria  = parseN(s.puntDiaria)||2000;
   const asistDiaria = parseN(s.asistDiaria)||4000;
