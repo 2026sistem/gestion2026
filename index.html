@@ -4187,10 +4187,8 @@ function liqImprimir(){
   const sem = semanas[liqSemSelIdx];
   if(!sem){ alert('Seleccioná una semana primero.'); return; }
 
-  const chicosActivos = state.chicos.filter(ch=>{
-    const s = state.sueldos[ch.nombre]||{};
-    return parseN(s.sueldo)>0;
-  });
+  const nombresEnBajaLiq = (state.dadosDeBaja||[]).map(c=>c.nombre);
+  const chicosActivos = state.chicos.filter(ch=>!nombresEnBajaLiq.includes(ch.nombre));
   if(!chicosActivos.length){ alert('No hay empleados con sueldo configurado.'); return; }
 
   // Mostrar selector de empleados antes de imprimir
