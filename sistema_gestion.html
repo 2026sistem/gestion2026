@@ -3837,6 +3837,11 @@ function renderLiqTabla(){
         <input value="${ch.fechaIngreso||(ch.datosPersonales&&ch.datosPersonales.fechaIngreso)||''}" placeholder="ej: 01-03-2026"
           style="width:130px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;"
           onblur="state.chicos[${state.chicos.indexOf(ch)}].fechaIngreso=this.value;autoGuardar()">
+        <span style="font-size:12px;color:var(--muted);">📅 Fecha ingreso:</span>
+        <input value="${ch.fechaIngreso||(ch.datosPersonales&&ch.datosPersonales.fechaIngreso)||''}" placeholder="ej: 01-03-2026"
+          style="width:130px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;"
+          onblur="(()=>{const ci=state.chicos.findIndex(x=>x.nombre==='${ch.nombre}');if(ci>=0)state.chicos[ci].fechaIngreso=this.value;autoGuardar();})()"
+          onfocus="this.select()">
         <span style="font-size:12px;color:var(--muted);">📝 Nota recibo:</span>
         <input value="${extras.nota||''}" placeholder="Nota para el recibo..." 
           style="flex:1;min-width:200px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:13px;font-family:'DM Sans',sans-serif;"
