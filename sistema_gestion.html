@@ -1662,6 +1662,11 @@ function chicosMigrateState(){
     });
     if(!ch.apodo) ch.apodo = '';
     if(!ch.fechaIngreso) ch.fechaIngreso = '';
+    // Sincronizar fecha de ingreso entre datosPersonales y raíz
+    if(!ch.fechaIngreso && ch.datosPersonales && ch.datosPersonales.fechaIngreso)
+      ch.fechaIngreso = ch.datosPersonales.fechaIngreso;
+    if(ch.fechaIngreso && ch.datosPersonales && !ch.datosPersonales.fechaIngreso)
+      ch.datosPersonales.fechaIngreso = ch.fechaIngreso;
     if(!ch.notas) ch.notas = {};
     if(!ch.datosPersonales) ch.datosPersonales = {nombreCompleto:'',fechaIngreso:'',dni:'',domicilio:'',telefono:'',hijos:'',recomendadoPor:''};
     if(!ch.extras) ch.extras = {aguinaldo:'',vacaciones:'',deuda:'',notasGenerales:''};
@@ -2617,7 +2622,7 @@ function verChicoInd(idx){
     fichaHtml+=`<div>
       <div style="font-size:10px;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em;">${c.label}</div>
       <input value="${val}" placeholder="${c.placeholder}"
-        oninput="if(!state.chicos[${idx}].datosPersonales)state.chicos[${idx}].datosPersonales={};state.chicos[${idx}].datosPersonales['${c.key}']=this.value;autoGuardar()"
+        oninput="(()=>{if(!state.chicos[${idx}].datosPersonales)state.chicos[${idx}].datosPersonales={};state.chicos[${idx}].datosPersonales['${c.key}']=this.value;if('${c.key}'==='fechaIngreso')state.chicos[${idx}].fechaIngreso=this.value;autoGuardar();})()"
         style="width:100%;padding:6px 9px;font-size:12px;border:1px solid var(--border);border-radius:7px;background:rgba(37,99,235,.04);color:var(--text);font-family:'DM Sans',sans-serif;box-sizing:border-box;">
     </div>`;
   });
