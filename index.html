@@ -1662,6 +1662,11 @@ function chicosMigrateState(){
     });
     if(!ch.apodo) ch.apodo = '';
     if(!ch.fechaIngreso) ch.fechaIngreso = '';
+    // Sincronizar fecha de ingreso entre datosPersonales y raíz
+    if(!ch.fechaIngreso && ch.datosPersonales && ch.datosPersonales.fechaIngreso)
+      ch.fechaIngreso = ch.datosPersonales.fechaIngreso;
+    if(ch.fechaIngreso && ch.datosPersonales && !ch.datosPersonales.fechaIngreso)
+      ch.datosPersonales.fechaIngreso = ch.fechaIngreso;
     if(!ch.notas) ch.notas = {};
     if(!ch.datosPersonales) ch.datosPersonales = {nombreCompleto:'',fechaIngreso:'',dni:'',domicilio:'',telefono:'',hijos:'',recomendadoPor:''};
     if(!ch.extras) ch.extras = {aguinaldo:'',vacaciones:'',deuda:'',notasGenerales:''};
@@ -2617,7 +2622,7 @@ function verChicoInd(idx){
     fichaHtml+=`<div>
       <div style="font-size:10px;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em;">${c.label}</div>
       <input value="${val}" placeholder="${c.placeholder}"
-        oninput="if(!state.chicos[${idx}].datosPersonales)state.chicos[${idx}].datosPersonales={};state.chicos[${idx}].datosPersonales['${c.key}']=this.value;autoGuardar()"
+        oninput="(()=>{if(!state.chicos[${idx}].datosPersonales)state.chicos[${idx}].datosPersonales={};state.chicos[${idx}].datosPersonales['${c.key}']=this.value;if('${c.key}'==='fechaIngreso')state.chicos[${idx}].fechaIngreso=this.value;autoGuardar();})()"
         style="width:100%;padding:6px 9px;font-size:12px;border:1px solid var(--border);border-radius:7px;background:rgba(37,99,235,.04);color:var(--text);font-family:'DM Sans',sans-serif;box-sizing:border-box;">
     </div>`;
   });
@@ -3833,6 +3838,15 @@ function renderLiqTabla(){
         ${parseN(extras.adelantoAnterior)>0?'<span style="font-size:11px;color:#f5a623;opacity:.7;">Se propaga automáticamente</span>':''}
       </div>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
+        <span style="font-size:12px;color:var(--muted);">📅 Fecha ingreso:</span>
+        <input value="${ch.fechaIngreso||(ch.datosPersonales&&ch.datosPersonales.fechaIngreso)||''}" placeholder="ej: 01-03-2026"
+          style="width:130px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;"
+          onblur="state.chicos[${state.chicos.indexOf(ch)}].fechaIngreso=this.value;autoGuardar()">
+        <span style="font-size:12px;color:var(--muted);">📅 Fecha ingreso:</span>
+        <input value="${ch.fechaIngreso||(ch.datosPersonales&&ch.datosPersonales.fechaIngreso)||''}" placeholder="ej: 01-03-2026"
+          style="width:130px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;"
+          onblur="(()=>{const ci=state.chicos.findIndex(x=>x.nombre==='${ch.nombre}');if(ci>=0)state.chicos[ci].fechaIngreso=this.value;autoGuardar();})()"
+          onfocus="this.select()">
         <span style="font-size:12px;color:var(--muted);">📝 Nota recibo:</span>
         <input value="${extras.nota||''}" placeholder="Nota para el recibo..." 
           style="flex:1;min-width:200px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:13px;font-family:'DM Sans',sans-serif;"
@@ -3959,7 +3973,7 @@ function liqGenerarHtmlRecibo(ch, calc, semLabs, extras, fechaOverride){
   const nombreCompleto = (dp.nombreCompleto||ch.nombre).toUpperCase();
   const cuil     = s.cuil||'';
   const categoria= s.categoria||'AYUDANTE DE CHOFER';
-  const fechaIng = ch.fechaIngreso||'';
+  const fechaIng = ch.fechaIngreso || (ch.datosPersonales&&ch.datosPersonales.fechaIngreso) || '';
   const fechaRecibo = fechaOverride || (semLabs.length ? liqFechaRecibo(semLabs) : '—');
 
   const adicLunes   = parseN(s.adicLunes)||20000;
