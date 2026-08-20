@@ -2652,8 +2652,16 @@ function verChicoInd(idx){
 
   let html = `
     <div style="margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-      <span style="font-family:'Bebas Neue',cursive;font-size:1.5rem;color:#1e40af;letter-spacing:.08em;">${ch.nombre}</span>
-      ${ch.apodo?`<span style="font-size:12px;color:#8b8fa8;">${ch.apodo}</span>`:''}
+      <input value="${ch.nombre}" title="Nombre en planilla (para mostrar)"
+        style="font-family:'Bebas Neue',cursive;font-size:1.5rem;color:#1e40af;letter-spacing:.08em;border:none;border-bottom:2px solid transparent;background:transparent;outline:none;min-width:80px;width:auto;cursor:pointer;"
+        onmouseover="this.style.borderBottomColor='#2563eb'" onmouseout="this.style.borderBottomColor='transparent'"
+        onfocus="this.style.borderBottomColor='#2563eb';this.select()"
+        onblur="this.style.borderBottomColor='transparent';if(this.value.trim()&&this.value.trim()!=='${ch.nombre}'){const ci=${idx};const nuevoNombre=this.value.trim();if(state.sueldos['${ch.nombre}']){state.sueldos[nuevoNombre]=state.sueldos['${ch.nombre}'];delete state.sueldos['${ch.nombre}'];}state.chicos[ci].nombre=nuevoNombre;autoGuardar();renderChicosInd();}">
+      <input value="${ch.apodo||''}" placeholder="apodo..." title="Apodo"
+        style="font-size:12px;color:#6b7280;border:none;border-bottom:1px solid transparent;background:transparent;outline:none;width:80px;cursor:pointer;"
+        onmouseover="this.style.borderBottomColor='#9ca3af'" onmouseout="this.style.borderBottomColor='transparent'"
+        onfocus="this.style.borderBottomColor='#9ca3af';this.select()"
+        onblur="this.style.borderBottomColor='transparent';state.chicos[${idx}].apodo=this.value;autoGuardar()">
       ${ch.fechaIngreso?`<span style="font-size:11px;color:#4a5070;background:rgba(37,99,235,.04);padding:2px 8px;border-radius:10px;">${ch.fechaIngreso}</span>`:''}
       <button onclick="darDeBaja(${idx})" style="margin-left:auto;padding:5px 14px;background:rgba(204,0,0,.15);border:1px solid rgba(204,0,0,.35);border-radius:7px;color:#e05c5c;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">🗂 Dar de baja</button>
     </div>
@@ -3841,11 +3849,7 @@ function renderLiqTabla(){
         <span style="font-size:12px;color:var(--muted);">📅 Fecha ingreso:</span>
         <input value="${ch.fechaIngreso||(ch.datosPersonales&&ch.datosPersonales.fechaIngreso)||''}" placeholder="ej: 01-03-2026"
           style="width:130px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;"
-          onblur="state.chicos[${state.chicos.indexOf(ch)}].fechaIngreso=this.value;autoGuardar()">
-        <span style="font-size:12px;color:var(--muted);">📅 Fecha ingreso:</span>
-        <input value="${ch.fechaIngreso||(ch.datosPersonales&&ch.datosPersonales.fechaIngreso)||''}" placeholder="ej: 01-03-2026"
-          style="width:130px;padding:6px 10px;background:#f8f9fc;border:1px solid var(--border);border-radius:7px;color:#1e2030;font-size:12px;font-family:'DM Sans',sans-serif;"
-          onblur="(()=>{const ci=state.chicos.findIndex(x=>x.nombre==='${ch.nombre}');if(ci>=0)state.chicos[ci].fechaIngreso=this.value;autoGuardar();})()"
+          onblur="(()=>{const ci=state.chicos.findIndex(x=>x.nombre==='${ch.nombre}');if(ci>=0){state.chicos[ci].fechaIngreso=this.value;if(state.chicos[ci].datosPersonales)state.chicos[ci].datosPersonales.fechaIngreso=this.value;}autoGuardar();})()"
           onfocus="this.select()">
         <span style="font-size:12px;color:var(--muted);">📝 Nota recibo:</span>
         <input value="${extras.nota||''}" placeholder="Nota para el recibo..." 
